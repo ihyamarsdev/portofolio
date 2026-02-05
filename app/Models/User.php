@@ -49,6 +49,20 @@ class User extends Authenticatable
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return str_ends_with($this->email, '@ihyamars.my.id');
+        \Log::info('canAccessPanel called', [
+            'user_email' => $this->email,
+            'panel_id' => $panel->getId(),
+            'user_id' => $this->id,
+        ]);
+
+        $result = $this->email === 'admin@ihyamars.my.id';
+
+        \Log::info('canAccessPanel result', [
+            'result' => $result,
+            'expected_email' => 'admin@ihyamars.my.id',
+            'actual_email' => $this->email,
+        ]);
+
+        return $result;
     }
 }
