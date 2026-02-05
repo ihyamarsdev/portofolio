@@ -18,10 +18,10 @@ class DatabaseSeeder extends Seeder
     {
         // Create admin user for Filament
         User::updateOrCreate(
-            ['email' => 'admin@portfolio.dev'],
+            ['email' => 'admin@ihyamars.my.id'],
             [
                 'name' => 'Admin',
-                'email' => 'admin@portfolio.dev',
+                'email' => 'admin@ihyamars.my.id',
                 'password' => Hash::make('password'),
             ]
         );
