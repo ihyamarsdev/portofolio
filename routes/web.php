@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Route;
 
 // Public Pages
 Route::get('/cv/download', [CVController::class, 'download'])->name('cv.download');
+Route::get('/cv/download/docx', [CVController::class, 'downloadDOCX'])->name('cv.download.docx');
+Route::get('/cv/download/text', [CVController::class, 'downloadText'])->name('cv.download.text');
+Route::get('/cv/download/markdown', [CVController::class, 'downloadMarkdown'])->name('cv.download.markdown');
+Route::get('/cv/preview', [CVController::class, 'preview'])->name('cv.preview');
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/projects', [PageController::class, 'projects'])->name('projects');
 Route::get('/about', [PageController::class, 'about'])->name('about');

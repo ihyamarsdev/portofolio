@@ -1,29 +1,65 @@
 /* Google Fonts Import */
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+:root {
+    /* Light Mode Colors (GitHub Light inspired) */
+    --c-bg-primary: #ffffff;
+    --c-bg-secondary: #f6f8fa;
+    --c-bg-tertiary: #eff1f3;
+    --c-bg-card: #ffffff;
+
+    --c-text-primary: #1f2328;
+    --c-text-secondary: #656d76;
+    --c-text-muted: #6e7681;
+
+    --c-border: #d0d7de;
+    --c-border-highlight: #d8dee4;
+
+    /* RGB values for opacity support if needed */
+    --rgb-bg-primary: 255 255 255;
+}
+
+.dark {
+    /* Dark Mode Colors (Current Theme - Ref: ihyamars.my.id) */
+    --c-bg-primary: #0d1117;
+    --c-bg-secondary: #161b22;
+    --c-bg-tertiary: #21262d;
+    --c-bg-card: #1c2128;
+
+    --c-text-primary: #e6edf3;
+    --c-text-secondary: #8b949e;
+    --c-text-muted: #6e7681;
+
+    --c-border: #30363d;
+    --c-border-highlight: #3d444d;
+
+    --rgb-bg-primary: 13 17 23;
+}
+
 @theme {
     /* Typography */
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-    /* Terminal Dark Theme Colors */
-    --color-bg-primary: #0d1117;
-    --color-bg-secondary: #161b22;
-    --color-bg-tertiary: #21262d;
-    --color-bg-card: #1c2128;
+    /* Theme Colors Mapped to CSS Variables */
+    --color-bg-primary: var(--c-bg-primary);
+    --color-bg-secondary: var(--c-bg-secondary);
+    --color-bg-tertiary: var(--c-bg-tertiary);
+    --color-bg-card: var(--c-bg-card);
 
-    --color-text-primary: #e6edf3;
-    --color-text-secondary: #8b949e;
-    --color-text-muted: #6e7681;
+    --color-text-primary: var(--c-text-primary);
+    --color-text-secondary: var(--c-text-secondary);
+    --color-text-muted: var(--c-text-muted);
 
-    --color-border: #30363d;
-    --color-border-highlight: #3d444d;
+    --color-border: var(--c-border);
+    --color-border-highlight: var(--c-border-highlight);
 
     /* Accent Colors */
     --color-accent-emerald: #10b981;
@@ -34,19 +70,14 @@
     --color-accent-red: #ef4444;
 
     /* Status Colors */
-    --color-status-operational: #22c55e;
+    --color-status-operational: #10b981;
+    /* Emerald 500 */
     --color-status-degraded: #eab308;
     --color-status-down: #ef4444;
 }
 
 /* Base Styles */
-body {
-    background-color: var(--color-bg-primary);
-    color: var(--color-text-primary);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
+
 
 /* Code/Terminal Text */
 .font-mono,
@@ -58,10 +89,11 @@ pre,
 
 /* Glassmorphism Card */
 .glass-card {
-    background-color: rgba(28, 33, 40, 0.8);
+    background-color: var(--color-bg-card);
     backdrop-filter: blur(16px);
     border: 1px solid var(--color-border);
     border-radius: 0.75rem;
+    opacity: 0.95;
 }
 
 /* Terminal Prompt Animation */
@@ -96,18 +128,27 @@ pre,
 }
 
 @keyframes rotate-commands {
-    0%, 20% {
+
+    0%,
+    20% {
         content: 'kubectl apply -f infrastructure/';
     }
-    25%, 45% {
+
+    25%,
+    45% {
         content: 'terraform plan -out=tfplan';
     }
-    50%, 70% {
+
+    50%,
+    70% {
         content: 'docker-compose up -d';
     }
-    75%, 95% {
+
+    75%,
+    95% {
         content: 'ansible-playbook deploy.yml';
     }
+
     100% {
         content: 'kubectl apply -f infrastructure/';
     }
@@ -124,40 +165,64 @@ pre,
 }
 
 @keyframes type-delete {
-    0%, 5% {
+
+    0%,
+    5% {
         width: 0;
     }
-    5%, 20% {
+
+    5%,
+    20% {
         width: 280px;
     }
-    20%, 25% {
+
+    20%,
+    25% {
         width: 0;
     }
-    25%, 30% {
+
+    25%,
+    30% {
         width: 0;
     }
-    30%, 45% {
+
+    30%,
+    45% {
         width: 250px;
     }
-    45%, 50% {
+
+    45%,
+    50% {
         width: 0;
     }
-    50%, 55% {
+
+    50%,
+    55% {
         width: 0;
     }
-    55%, 70% {
+
+    55%,
+    70% {
         width: 230px;
     }
-    70%, 75% {
+
+    70%,
+    75% {
         width: 0;
     }
-    75%, 80% {
+
+    75%,
+    80% {
         width: 0;
     }
-    80%, 95% {
+
+    80%,
+    95% {
         width: 270px;
     }
-    95%, 100% {
+
+    95%,
+    100% {
         width: 0;
     }
 }
@@ -325,7 +390,7 @@ pre,
 
 /* Project Card Hover Effect */
 .project-card {
-    background-color: rgba(28, 33, 40, 0.8);
+    background-color: var(--color-bg-card);
     backdrop-filter: blur(16px);
     border: 1px solid var(--color-border);
     border-radius: 0.75rem;

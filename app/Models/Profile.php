@@ -22,9 +22,20 @@ class Profile extends Model
         'twitter_url',
         'website_url',
         'is_primary',
+        'cv_template',
     ];
 
     protected $casts = [
         'is_primary' => 'boolean',
     ];
+
+    public function cvAnalyses()
+    {
+        return $this->hasMany(CVAnalysis::class);
+    }
+
+    public function latestAnalysis()
+    {
+        return $this->hasOne(CVAnalysis::class)->latestOfMany();
+    }
 }

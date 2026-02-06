@@ -21,12 +21,13 @@
         <div class="section-container relative z-10">
             <div class="max-w-4xl">
                 @if($homeSettings->availability_active)
-                <!-- Terminal Prompt -->
-                <div
-                    class="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-[--color-bg-secondary] rounded-full border border-[--color-border]">
-                    <span class="status-dot operational"></span>
-                    <span class="text-sm font-mono text-[--color-text-secondary]">{{ $homeSettings->availability_status }}</span>
-                </div>
+                    <!-- Terminal Prompt -->
+                    <div
+                        class="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-[--color-bg-secondary] rounded-full border border-[--color-border]">
+                        <span class="status-dot operational"></span>
+                        <span
+                            class="text-sm font-mono text-[--color-text-secondary]">{{ $homeSettings->availability_status }}</span>
+                    </div>
                 @endif
 
                 <!-- Main Heading -->
@@ -37,48 +38,48 @@
 
                 <!-- Terminal Command -->
                 @if($homeSettings->terminal_commands && count($homeSettings->terminal_commands) > 0)
-                <div
-                    class="inline-flex items-center gap-2 px-4 py-3 bg-[--color-bg-card] rounded-lg border border-[--color-border] mb-8">
-                    <span class="text-[--color-accent-emerald] font-mono">$</span>
-                    <span class="font-mono text-[--color-text-primary] terminal-text" id="terminal-text"></span>
-                    <span class="terminal-cursor"></span>
-                </div>
+                    <div
+                        class="inline-flex items-center gap-2 px-4 py-3 bg-[--color-bg-card] rounded-lg border border-[--color-border] mb-8">
+                        <span class="text-[--color-accent-emerald] font-mono">$</span>
+                        <span class="font-mono text-[--color-text-primary] terminal-text" id="terminal-text"></span>
+                        <span class="terminal-cursor"></span>
+                    </div>
 
-                <script>
-                    const commands = {!! Illuminate\Support\Js::from($homeSettings->terminal_commands) !!};
+                    <script>
+                        const commands = {!! Illuminate\Support\Js::from($homeSettings->terminal_commands) !!};
 
-                    let commandIndex = 0;
-                    let charIndex = 0;
-                    let isDeleting = false;
-                    const terminalText = document.getElementById('terminal-text');
+                        let commandIndex = 0;
+                        let charIndex = 0;
+                        let isDeleting = false;
+                        const terminalText = document.getElementById('terminal-text');
 
-                    function typeCommand() {
-                        const currentCommand = commands[commandIndex];
+                        function typeCommand() {
+                            const currentCommand = commands[commandIndex];
 
-                        if (isDeleting) {
-                            terminalText.textContent = currentCommand.substring(0, charIndex - 1);
-                            charIndex--;
-                        } else {
-                            terminalText.textContent = currentCommand.substring(0, charIndex + 1);
-                            charIndex++;
+                            if (isDeleting) {
+                                terminalText.textContent = currentCommand.substring(0, charIndex - 1);
+                                charIndex--;
+                            } else {
+                                terminalText.textContent = currentCommand.substring(0, charIndex + 1);
+                                charIndex++;
+                            }
+
+                            let typeSpeed = isDeleting ? 50 : 100;
+
+                            if (!isDeleting && charIndex === currentCommand.length) {
+                                typeSpeed = 2000;
+                                isDeleting = true;
+                            } else if (isDeleting && charIndex === 0) {
+                                isDeleting = false;
+                                commandIndex = (commandIndex + 1) % commands.length;
+                                typeSpeed = 500;
+                            }
+
+                            setTimeout(typeCommand, typeSpeed);
                         }
 
-                        let typeSpeed = isDeleting ? 50 : 100;
-
-                        if (!isDeleting && charIndex === currentCommand.length) {
-                            typeSpeed = 2000;
-                            isDeleting = true;
-                        } else if (isDeleting && charIndex === 0) {
-                            isDeleting = false;
-                            commandIndex = (commandIndex + 1) % commands.length;
-                            typeSpeed = 500;
-                        }
-
-                        setTimeout(typeCommand, typeSpeed);
-                    }
-
-                    typeCommand();
-                </script>
+                        typeCommand();
+                    </script>
                 @endif
 
                 <!-- Description -->
@@ -95,13 +96,12 @@
                         </svg>
                         View Projects
                     </a>
-                    <a href="{{ route('contact') }}" class="btn-secondary">
+                    <a href="{{ route('cv.download', ['template' => 'modern']) }}" class="btn-secondary">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                            </path>
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                         </svg>
-                        Get In Touch
+                        Download CV
                     </a>
                 </div>
             </div>
@@ -112,7 +112,8 @@
     <section class="py-20 border-t border-[--color-border]">
         <div class="section-container">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-[--color-text-primary] mb-4">{{ $homeSettings->tech_stack_title }}</h2>
+                <h2 class="text-3xl font-bold text-[--color-text-primary] mb-4">{{ $homeSettings->tech_stack_title }}
+                </h2>
                 <p class="text-[--color-text-secondary]">{{ $homeSettings->tech_stack_description }}</p>
             </div>
 
@@ -150,7 +151,9 @@
         <div class="section-container">
             <div class="flex justify-between items-end mb-12">
                 <div>
-                    <h2 class="text-3xl font-bold text-[--color-text-primary] mb-4">{{ $homeSettings->featured_projects_title }}</h2>
+                    <h2 class="text-3xl font-bold text-[--color-text-primary] mb-4">
+                        {{ $homeSettings->featured_projects_title }}
+                    </h2>
                     <p class="text-[--color-text-secondary]">{{ $homeSettings->featured_projects_description }}</p>
                 </div>
                 <a href="{{ route('projects') }}"
@@ -219,121 +222,19 @@
                         @endif
                     </article>
                 @empty
-                    @for($i = 0; $i < 3; $i++)
-                        <article class="project-card group">
-                            <div class="flex items-start justify-between mb-4">
-                                <div class="w-12 h-12 bg-[--color-bg-tertiary] rounded-lg flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-[--color-accent-emerald]" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
-                                        </path>
-                                    </svg>
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-semibold text-[--color-text-primary] mb-2">Sample Project {{ $i + 1 }}</h3>
-                            <p class="text-[--color-text-secondary] text-sm mb-4">Add your projects through the admin panel to
-                                showcase your work here.</p>
-                            <div class="flex flex-wrap gap-2">
-                                <span class="tech-badge">Docker</span>
-                                <span class="tech-badge">Kubernetes</span>
-                            </div>
-                        </article>
-                    @endfor
-                @endforelse
-            </div>
-        </div>
-    </section>
-
-    <!-- Infrastructure Diagram Section -->
-    <section class="py-20">
-        <div class="section-container">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-[--color-text-primary] mb-4">{{ $homeSettings->infrastructure_title }}</h2>
-                <p class="text-[--color-text-secondary]">{{ $homeSettings->infrastructure_description }}</p>
-            </div>
-
-            <div class="glass-card p-8 max-w-4xl mx-auto">
-                <div class="flex flex-wrap justify-center items-center gap-4 md:gap-8">
-                    <!-- User -->
-                    <div class="flex flex-col items-center gap-2 p-4">
-                        <div class="w-14 h-14 bg-[--color-bg-tertiary] rounded-xl flex items-center justify-center">
-                            <svg class="w-7 h-7 text-[--color-accent-cyan]" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                        </div>
-                        <span class="text-xs font-mono text-[--color-text-muted]">User</span>
-                    </div>
-
-                    <svg class="w-8 h-8 text-[--color-border] hidden md:block" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                    </svg>
-
-                    <!-- Cloudflare -->
-                    <div class="flex flex-col items-center gap-2 p-4">
-                        <div class="w-14 h-14 bg-[--color-bg-tertiary] rounded-xl flex items-center justify-center">
-                            <span class="text-2xl">☁️</span>
-                        </div>
-                        <span class="text-xs font-mono text-[--color-text-muted]">Cloudflare</span>
-                    </div>
-
-                    <svg class="w-8 h-8 text-[--color-border] hidden md:block" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                    </svg>
-
-                    <!-- Traefik -->
-                    <div class="flex flex-col items-center gap-2 p-4">
-                        <div class="w-14 h-14 bg-[--color-bg-tertiary] rounded-xl flex items-center justify-center">
-                            <svg class="w-7 h-7 text-[--color-accent-emerald]" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
-                                </path>
-                            </svg>
-                        </div>
-                        <span class="text-xs font-mono text-[--color-text-muted]">Traefik</span>
-                    </div>
-
-                    <svg class="w-8 h-8 text-[--color-border] hidden md:block" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                    </svg>
-
-                    <!-- Docker -->
-                    <div class="relative flex flex-col items-center gap-2 p-4">
+                    <div class="col-span-full text-center py-12">
                         <div
-                            class="w-14 h-14 bg-[--color-accent-blue]/20 border-2 border-[--color-accent-blue] rounded-xl flex items-center justify-center">
-                            <span class="text-2xl">🐳</span>
+                            class="w-16 h-16 mx-auto mb-4 bg-[--color-bg-tertiary] rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8 text-[--color-text-muted]" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
                         </div>
-                        <span class="text-xs font-mono text-[--color-accent-blue]">Docker</span>
-
-                        <!-- Nested Apps -->
-                        <div class="absolute -bottom-16 left-1/2 -translate-x-1/2 flex gap-2">
-                            <div class="w-10 h-10 bg-[--color-accent-purple]/20 rounded-lg flex items-center justify-center"
-                                title="Laravel">
-                                <span class="text-lg">🚀</span>
-                            </div>
-                            <div class="w-10 h-10 bg-[--color-accent-amber]/20 rounded-lg flex items-center justify-center"
-                                title="Database">
-                                <span class="text-lg">🗄️</span>
-                            </div>
-                        </div>
+                        <h3 class="text-xl font-medium text-[--color-text-primary] mb-2">No Project Yet, Stay Tune</h3>
+                        <p class="text-[--color-text-secondary]">We are working on something amazing.</p>
                     </div>
-                </div>
-
-                <div class="mt-20 pt-8 border-t border-[--color-border] flex justify-center gap-8">
-                    <div class="flex items-center gap-2">
-                        <span class="status-dot {{ $homeSettings->infrastructure_status }}"></span>
-                        <span class="text-sm font-mono text-[--color-text-secondary]">{{ $homeSettings->infrastructure_status_text }}</span>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>
@@ -348,9 +249,6 @@
             <div class="flex flex-wrap justify-center gap-4">
                 <a href="{{ route('contact') }}" class="btn-primary">
                     {{ $homeSettings->cta_primary_button_text }}
-                </a>
-                <a href="#" class="btn-secondary">
-                    {{ $homeSettings->cta_secondary_button_text }}
                 </a>
             </div>
         </div>

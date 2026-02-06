@@ -120,8 +120,8 @@
                                 <label for="name"
                                     class="block text-sm font-medium text-[--color-text-primary] mb-2">Name</label>
                                 <input type="text" name="name" id="name" required value="{{ old('name') }}"
-                                    class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-[--color-text-muted] focus:outline-none focus:border-[--color-accent-emerald] transition-colors"
-                                    placeholder="John Doe">
+                                    class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-black dark:placeholder-gray-400 focus:outline-none focus:border-[--color-accent-emerald] transition-colors"
+                                    placeholder="Your Name">
                                 @error('name')
                                     <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
                                 @enderror
@@ -131,8 +131,8 @@
                                 <label for="email"
                                     class="block text-sm font-medium text-[--color-text-primary] mb-2">Email</label>
                                 <input type="email" name="email" id="email" required value="{{ old('email') }}"
-                                    class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-[--color-text-muted] focus:outline-none focus:border-[--color-accent-emerald] transition-colors"
-                                    placeholder="john@example.com">
+                                    class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-black dark:placeholder-gray-400 focus:outline-none focus:border-[--color-accent-emerald] transition-colors"
+                                    placeholder="your@email.com">
                                 @error('email')
                                     <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
                                 @enderror
@@ -143,7 +143,7 @@
                             <label for="subject"
                                 class="block text-sm font-medium text-[--color-text-primary] mb-2">Subject</label>
                             <input type="text" name="subject" id="subject" required value="{{ old('subject') }}"
-                                class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-[--color-text-muted] focus:outline-none focus:border-[--color-accent-emerald] transition-colors"
+                                class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-black dark:placeholder-gray-400 focus:outline-none focus:border-[--color-accent-emerald] transition-colors"
                                 placeholder="Project Inquiry">
                             @error('subject')
                                 <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
@@ -154,7 +154,7 @@
                             <label for="message"
                                 class="block text-sm font-medium text-[--color-text-primary] mb-2">Message</label>
                             <textarea name="message" id="message" rows="5" required
-                                class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-[--color-text-muted] focus:outline-none focus:border-[--color-accent-emerald] transition-colors resize-none"
+                                class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-black dark:placeholder-gray-400 focus:outline-none focus:border-[--color-accent-emerald] transition-colors resize-none"
                                 placeholder="Tell me about your project...">{{ old('message') }}</textarea>
                             @error('message')
                                 <p class="mt-1 text-sm text-red-400">{{ $message }}</p>

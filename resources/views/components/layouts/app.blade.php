@@ -12,8 +12,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $title ?? config('app.name', 'DevOps Portfolio') }} | {{ $homeSettings->site_title }}</title>
-    <meta name="description"
-        content="{{ $description ?? $homeSettings->meta_description }}">
+    <meta name="description" content="{{ $description ?? $homeSettings->meta_description }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml"
@@ -26,10 +25,29 @@
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+
     @livewireStyles
+    <script>
+        // Check local storage or default to dark mode
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
 </head>
 
-<body class="min-h-screen bg-[--color-bg-primary]">
+<body class="min-h-screen bg-white dark:bg-black text-black dark:text-white font-sans antialiased">
     <!-- Navigation -->
     <nav
         class="fixed top-0 left-0 right-0 z-50 border-b border-[--color-border] bg-[--color-bg-primary]/80 backdrop-blur-lg">
@@ -60,22 +78,42 @@
                         class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
                 </div>
 
-                <!-- Status Badge -->
-                <div
-                    class="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-[--color-bg-secondary] rounded-full border border-[--color-border]">
-                    <span class="status-dot {{ $homeSettings->infrastructure_status }}"></span>
-                    <span class="text-xs font-mono text-[--color-text-secondary]">{{ $homeSettings->infrastructure_status_text }}</span>
-                </div>
+                <div class="flex items-center gap-4">
+                    <!-- Status Badge -->
+                    <div
+                        class="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-[--color-bg-secondary] rounded-full border border-[--color-border]">
+                        <span class="status-dot {{ $homeSettings->infrastructure_status }}"></span>
+                        <span
+                            class="text-xs font-mono text-[--color-text-secondary]">{{ $homeSettings->infrastructure_status_text }}</span>
+                    </div>
 
-                <!-- Mobile Menu Button -->
-                <button type="button"
-                    class="md:hidden p-2 text-[--color-text-secondary] hover:text-[--color-text-primary]"
-                    onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
+                    <!-- Theme Toggle -->
+                    <button onclick="toggleTheme()"
+                        class="p-2 text-[--color-text-secondary] hover:text-[--color-text-primary] transition-colors rounded-lg hover:bg-[--color-bg-secondary]">
+                        <!-- Sun Icon (Show in Dark Mode) -->
+                        <svg class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                        <!-- Moon Icon (Show in Light Mode) -->
+                        <svg class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                            </path>
+                        </svg>
+                    </button>
+
+                    <!-- Mobile Menu Button -->
+                    <button type="button"
+                        class="md:hidden p-2 text-[--color-text-secondary] hover:text-[--color-text-primary]"
+                        onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <!-- Mobile Menu -->
@@ -87,7 +125,7 @@
                 <a href="{{ route('about') }}"
                     class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('about') ? 'active bg-[--color-bg-secondary]' : '' }}">About</a>
                 <a href="{{ route('certificates') }}"
-                    class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('certificates') ? 'active bg-[--color-bg-secondary]' :'' }}">Certificates</a>
+                    class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('certificates') ? 'active bg-[--color-bg-secondary]' : '' }}">Certificates</a>
                 <a href="{{ route('blog') }}"
                     class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('blog*') ? 'active bg-[--color-bg-secondary]' : '' }}">Blog</a>
                 <a href="{{ route('contact') }}"
@@ -112,7 +150,8 @@
                         <span class="font-mono font-bold text-lg">{{ $homeSettings->site_brand }}</span>
                     </div>
                     <p class="text-[--color-text-secondary] text-sm">
-                        {{ $homeSettings->site_title }} specializing in cloud infrastructure, CI/CD pipelines, and container
+                        {{ $homeSettings->site_title }} specializing in cloud infrastructure, CI/CD pipelines, and
+                        container
                         orchestration.
                     </p>
                 </div>
