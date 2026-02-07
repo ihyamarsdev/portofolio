@@ -1,5 +1,5 @@
 <x-layouts.app title="About">
-    <section class="py-20">
+    <section class="py-20 bg-bg-primary">
         <div class="section-container">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 <!-- Sidebar -->

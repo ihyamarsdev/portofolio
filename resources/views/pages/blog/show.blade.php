@@ -1,5 +1,5 @@
 <x-layouts.app :title="$post->title">
-    <article class="py-20">
+    <article class="py-20 bg-bg-primary">
         <div class="section-container">
             <div class="max-w-3xl mx-auto">
                 <!-- Header -->

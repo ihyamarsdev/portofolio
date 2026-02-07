@@ -1,5 +1,5 @@
 <x-layouts.app title="Certificates">
-    <section class="py-20">
+    <section class="py-20 bg-bg-primary">
         <div class="section-container">
             <div class="max-w-3xl mb-12">
                 <h1 class="text-4xl font-bold text-[--color-text-primary] mb-4">Certifications</h1>

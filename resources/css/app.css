@@ -1,6 +1,5 @@
-/* Google Fonts Import */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
 @custom-variant dark (&:where(.dark, .dark *));
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -9,18 +8,52 @@
 @source '../**/*.js';
 
 :root {
-    /* Light Mode Colors (GitHub Light inspired) */
+    /* Light Mode Colors (ColorHunt Palette: #09637E, #088395, #7AB2B2, #EBF4F6) */
+
+    --c-brand-primary: #088395;
+    /* Teal */
+    --c-brand-secondary: #7AB2B2;
+    /* Soft Teal */
+    --c-brand-accent: #09637E;
+    /* Dark Teal */
+
     --c-bg-primary: #ffffff;
-    --c-bg-secondary: #f6f8fa;
-    --c-bg-tertiary: #eff1f3;
-    --c-bg-card: #ffffff;
+    /* White: Main Content Background */
+    --c-bg-body: #ffffff;
+    /* Mist: App Body Background */
+    --c-bg-navbar: #FFFFFF;
+    /* Navbar: Clean White */
+    --c-bg-hero-start: #088395;
+    /* Hero Gradient Start */
+    --c-bg-hero-end: #09637E;
+    /* Hero Gradient End */
+    --c-bg-footer: #09637E;
+    /* Footer: Dark Teal */
 
-    --c-text-primary: #1f2328;
-    --c-text-secondary: #656d76;
-    --c-text-muted: #6e7681;
+    --c-bg-secondary: #000000;
+    /* Slightly darker mist */
+    --c-bg-tertiary: #7AB2B2;
+    /* Soft Teal */
+    --c-bg-card: #FFFFFF;
+    /* White cards */
 
-    --c-border: #d0d7de;
-    --c-border-highlight: #d8dee4;
+    /* Text */
+    --c-text-primary: #09637E;
+    /* Dark Teal: Main Text */
+    --c-text-secondary: #117686;
+    /* Teal: Secondary Text */
+    --c-text-muted: #4A6E75;
+    /* Muted Teal-Gray */
+    --c-text-on-dark: #EBF4F6;
+    /* Mist: Text on Footer/Hero */
+    --c-text-hero: #d0f6ff;
+    /* Mist: Text on Hero */
+
+    /* Borders */
+    --c-border: #7AB2B2;
+    /* Soft Teal */
+    --c-border-highlight: #088395;
+    /* Teal */
 
     /* RGB values for opacity support if needed */
     --rgb-bg-primary: 255 255 255;
@@ -28,7 +61,11 @@
 
 .dark {
     /* Dark Mode Colors (Current Theme - Ref: ihyamars.my.id) */
+    --c-brand-primary: #10b981;
+    --c-brand-secondary: #06b6d4;
+
     --c-bg-primary: #0d1117;
+    --c-bg-body: #0d1117;
     --c-bg-secondary: #161b22;
     --c-bg-tertiary: #21262d;
     --c-bg-card: #1c2128;
@@ -49,7 +86,9 @@
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
     /* Theme Colors Mapped to CSS Variables */
+    /* Theme Colors Mapped to CSS Variables */
     --color-bg-primary: var(--c-bg-primary);
+    --color-bg-body: var(--c-bg-body);
     --color-bg-secondary: var(--c-bg-secondary);
     --color-bg-tertiary: var(--c-bg-tertiary);
     --color-bg-card: var(--c-bg-card);
@@ -62,7 +101,7 @@
     --color-border-highlight: var(--c-border-highlight);
 
     /* Accent Colors */
-    --color-accent-emerald: #10b981;
+    --color-accent-emerald: var(--c-brand-primary);
     --color-accent-cyan: #06b6d4;
     --color-accent-blue: #3b82f6;
     --color-accent-purple: #8b5cf6;

@@ -4,10 +4,10 @@
     @endphp
 
     <!-- Hero Section -->
-    <section class="relative min-h-[90vh] flex items-center overflow-hidden">
+    <section class="relative min-h-[90vh] flex items-center overflow-hidden bg-bg-primary">
         <!-- Background Grid Pattern -->
         <div
-            class="absolute inset-0 bg-[linear-gradient(to_right,#30363d_1px,transparent_1px),linear-gradient(to_bottom,#30363d_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20">
+            class="absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20">
         </div>
 
         <!-- Gradient Orbs -->
@@ -96,7 +96,7 @@
                         </svg>
                         View Projects
                     </a>
-                    <a href="{{ route('cv.download', ['template' => 'modern']) }}" class="btn-secondary">
+                    <a href="{{ route('cv.download', ['template' => 'modern']) }}" class="btn-primary">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -109,7 +109,7 @@
     </section>
 
     <!-- Tech Stack Section -->
-    <section class="py-20 border-t border-[--color-border]">
+    <section class="py-20 bg-bg-primary border-t border-[--color-border]">
         <div class="section-container">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-[--color-text-primary] mb-4">{{ $homeSettings->tech_stack_title }}
@@ -147,7 +147,7 @@
     </section>
 
     <!-- Featured Projects Section -->
-    <section class="py-20 bg-[--color-bg-secondary]">
+    <section id="projects" class="py-20 bg-bg-primary">
         <div class="section-container">
             <div class="flex justify-between items-end mb-12">
                 <div>

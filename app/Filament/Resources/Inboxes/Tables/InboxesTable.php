@@ -27,6 +27,9 @@ class InboxesTable
                 TextColumn::make('replied_at')
                     ->dateTime()
                     ->sortable(),
+                TextColumn::make('message')
+                    ->limit(50)
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

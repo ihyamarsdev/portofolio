@@ -1,5 +1,5 @@
 <x-layouts.app title="Contact">
-    <section class="py-20">
+    <section class="py-20 bg-bg-primary">
         <div class="section-container">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <!-- Contact Info -->
@@ -76,30 +76,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Service Status Widget -->
-                    <div class="glass-card p-5">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-semibold text-[--color-text-primary]">System Status</h3>
-                            <div class="flex items-center gap-2">
-                                <span class="status-dot operational"></span>
-                                <span class="text-xs text-[--color-text-secondary]">All operational</span>
-                            </div>
-                        </div>
-                        @php
-                            $services = \App\Models\ServiceStatus::take(4)->get();
-                        @endphp
-                        @if($services->isNotEmpty())
-                            <div class="space-y-2">
-                                @foreach($services as $service)
-                                    <div class="flex items-center justify-between text-sm">
-                                        <span class="text-[--color-text-secondary]">{{ $service->name }}</span>
-                                        <span class="status-dot {{ $service->status }}"></span>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
                 </div>
 
                 <!-- Contact Form -->
@@ -120,7 +96,7 @@
                                 <label for="name"
                                     class="block text-sm font-medium text-[--color-text-primary] mb-2">Name</label>
                                 <input type="text" name="name" id="name" required value="{{ old('name') }}"
-                                    class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-black dark:placeholder-gray-400 focus:outline-none focus:border-[--color-accent-emerald] transition-colors"
+                                    class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-gray-400 focus:outline-none focus:border-[--color-accent-emerald] transition-colors"
                                     placeholder="Your Name">
                                 @error('name')
                                     <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
@@ -131,7 +107,7 @@
                                 <label for="email"
                                     class="block text-sm font-medium text-[--color-text-primary] mb-2">Email</label>
                                 <input type="email" name="email" id="email" required value="{{ old('email') }}"
-                                    class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-black dark:placeholder-gray-400 focus:outline-none focus:border-[--color-accent-emerald] transition-colors"
+                                    class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-gray-400 focus:outline-none focus:border-[--color-accent-emerald] transition-colors"
                                     placeholder="your@email.com">
                                 @error('email')
                                     <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
@@ -143,8 +119,8 @@
                             <label for="subject"
                                 class="block text-sm font-medium text-[--color-text-primary] mb-2">Subject</label>
                             <input type="text" name="subject" id="subject" required value="{{ old('subject') }}"
-                                class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-black dark:placeholder-gray-400 focus:outline-none focus:border-[--color-accent-emerald] transition-colors"
-                                placeholder="Project Inquiry">
+                                    class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-gray-400 focus:outline-none focus:border-[--color-accent-emerald] transition-colors"
+                                    placeholder="Project Inquiry">
                             @error('subject')
                                 <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
                             @enderror
@@ -154,7 +130,7 @@
                             <label for="message"
                                 class="block text-sm font-medium text-[--color-text-primary] mb-2">Message</label>
                             <textarea name="message" id="message" rows="5" required
-                                class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-black dark:placeholder-gray-400 focus:outline-none focus:border-[--color-accent-emerald] transition-colors resize-none"
+                                class="w-full px-4 py-3 bg-[--color-bg-tertiary] border border-[--color-border] rounded-lg text-[--color-text-primary] placeholder-gray-400 focus:outline-none focus:border-[--color-accent-emerald] transition-colors resize-none"
                                 placeholder="Tell me about your project...">{{ old('message') }}</textarea>
                             @error('message')
                                 <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
@@ -162,10 +138,7 @@
                         </div>
 
                         <button type="submit" class="btn-primary w-full justify-center">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                            </svg>
+                            <x-heroicon-o-paper-airplane class="w-5 h-5" />
                             Send Message
                         </button>
                     </form>

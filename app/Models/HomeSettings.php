@@ -67,7 +67,7 @@ class HomeSettings extends Model
             'site_brand' => '~/devops',
             'site_title' => 'DevOps Engineer',
             'meta_description' => 'Portfolio website of a DevOps Engineer specializing in cloud infrastructure, CI/CD, containerization, and automation.',
-            'footer_text' => 'DevOps Portfolio. Built with Laravel & Filament.',
+            'footer_text' => 'DevOps Portfolio',
         ]);
     }
 }
