@@ -54,7 +54,7 @@
 <body class="min-h-screen bg-bg-body text-text-primary font-sans antialiased flex flex-col">
     <!-- Navigation -->
     <nav
-        class="fixed top-0 left-0 right-0 z-50 border-b border-text-primary">
+        class="fixed bg-white dark:bg-black top-0 left-0 right-0 z-50 border-b border-text-primary">
         <div class="section-container">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
