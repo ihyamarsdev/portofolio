@@ -14,7 +14,8 @@ class SkillForm
             ->components([
                 TextInput::make('name')
                     ->required(),
-                TextInput::make('category')
+                Select::make('category_id')
+                    ->relationship('category', 'name')
                     ->required(),
                 TextInput::make('proficiency')
                     ->required()

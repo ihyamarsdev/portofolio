@@ -10,7 +10,7 @@ class Skill extends Model
 {
     protected $fillable = [
         'name',
-        'category',
+        'category_id',
         'proficiency',
         'years_experience',
         'stack_id',
@@ -20,6 +20,11 @@ class Skill extends Model
         'proficiency' => 'integer',
         'years_experience' => 'decimal:1',
     ];
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
 
     public function stack(): BelongsTo
     {

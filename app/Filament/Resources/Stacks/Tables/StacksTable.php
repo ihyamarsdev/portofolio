@@ -21,9 +21,6 @@ class StacksTable
                 TextColumn::make('category.name')
                     ->searchable(),
                 ImageColumn::make('icon'),
-                ColorColumn::make('category.color')
-                    ->label('Color')
-                    ->searchable(),
             ])
             ->filters([
                 //

@@ -26,9 +26,6 @@ class CategoryForm
                         TextInput::make('slug')
                             ->required()
                             ->unique(ignoreRecord: true),
-                        
-                        ColorPicker::make('color')
-                            ->default('#6366f1'),
                     ]),
             ]);
     }
