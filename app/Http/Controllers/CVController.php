@@ -7,7 +7,7 @@ use App\Models\Experience;
 use App\Models\Profile;
 use App\Models\Skill;
 use App\Services\CVGeneratorService;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class CVController extends Controller
@@ -31,9 +31,9 @@ class CVController extends Controller
             return back()->with('error', 'Please create a profile first.');
         }
 
-        return Pdf::view("cv.{$template}", compact('profile', 'experiences', 'educations', 'skills'))
-            ->format('a4')
-            ->name('cv-' . ($profile->name ?? 'ats') . '.pdf');
+        return Pdf::loadView("cv.{$template}", compact('profile', 'experiences', 'educations', 'skills'))
+            ->setPaper('a4')
+            ->download('cv-' . ($profile->name ?? 'ats') . '.pdf');
     }
 
     public function downloadDOCX(Request $request)
