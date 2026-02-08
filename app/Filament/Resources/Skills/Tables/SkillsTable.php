@@ -16,7 +16,7 @@ class SkillsTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('category')
+                TextColumn::make('category.name')
                     ->searchable(),
                 TextColumn::make('proficiency')
                     ->numeric()
