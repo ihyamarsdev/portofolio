@@ -4,6 +4,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Minimal CV - {{ $profile->name ?? 'Candidate' }}</title>
     <style>
+        @page {
+            size: A4;
+            margin: 15mm 20mm;
+        }
+
         * {
             margin: 0;
             padding: 0;

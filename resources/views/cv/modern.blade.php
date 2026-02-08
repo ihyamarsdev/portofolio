@@ -5,6 +5,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Modern CV - {{ $profile->name ?? 'Candidate' }}</title>
     <style>
+        @page {
+            size: A4;
+            margin: 15mm 20mm;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -56,17 +61,13 @@
 
         .contact-info {
             font-size: 9pt;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
+            text-align: center;
             margin-top: 10px;
         }
 
         .contact-info span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            display: inline-block;
+            margin: 0 15px;
         }
 
         .content {
@@ -193,19 +194,13 @@
             <div class="title">{{ $profile->title ?? 'Professional Title' }}</div>
             <div class="contact-info">
                 <span>
-                    <x-heroicon-o-envelope
-                        style="width: 14px; height: 14px; vertical-align: middle; display: inline-block;" />
-                    {{ $profile->email ?? 'email@example.com' }}
+                    <strong>Email:</strong> {{ $profile->email ?? 'email@example.com' }}
                 </span>
                 <span>
-                    <x-heroicon-o-phone
-                        style="width: 14px; height: 14px; vertical-align: middle; display: inline-block;" />
-                    {{ $profile->phone ?? 'Phone' }}
+                    <strong>Phone:</strong> {{ $profile->phone ?? 'Phone' }}
                 </span>
                 <span>
-                    <x-heroicon-o-map-pin
-                        style="width: 14px; height: 14px; vertical-align: middle; display: inline-block;" />
-                    {{ $profile->location ?? 'Location' }}
+                    <strong>Location:</strong> {{ $profile->location ?? 'Location' }}
                 </span>
             </div>
         </div>
