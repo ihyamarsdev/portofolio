@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Stacks\Schemas;
 
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -13,12 +14,10 @@ class StackForm
             ->components([
                 TextInput::make('name')
                     ->required(),
-                TextInput::make('slug')
-                    ->required(),
-                TextInput::make('category')
+                Select::make('category_id')
+                    ->relationship('category', 'name')
                     ->required(),
                 TextInput::make('icon'),
-                TextInput::make('color'),
             ]);
     }
 }

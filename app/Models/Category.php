@@ -17,4 +17,9 @@ class Category extends Model
     {
         return $this->hasMany(Post::class);
     }
+
+    public function stacks(): HasMany
+    {
+        return $this->hasMany(Stack::class);
+    }
 }

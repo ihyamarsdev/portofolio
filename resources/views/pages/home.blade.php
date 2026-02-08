@@ -117,31 +117,66 @@
                 <p class="text-[--color-text-secondary]">{{ $homeSettings->tech_stack_description }}</p>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                @php
-                    $stacks = \App\Models\Stack::take(12)->get();
-                @endphp
+            <div class="relative w-full overflow-hidden">
+                <div class="animate-marquee flex gap-4 w-max hover:[animation-play-state:paused]">
+                    @php
+                        $stacks = \App\Models\Stack::all();
+                        // If no stacks, use default list
+                        if($stacks->isEmpty()) {
+                            $defaultStacks = collect(['Docker', 'Kubernetes', 'Terraform', 'Ansible', 'AWS', 'GitHub Actions', 'Linux', 'Python', 'Go', 'PHP', 'Laravel', 'React']);
+                        }
+                    @endphp
 
-                @forelse($stacks as $stack)
-                    <div
-                        class="glass-card p-4 flex flex-col items-center gap-2 hover:border-[--color-accent-emerald]/50 transition-colors">
-                        @if($stack->icon)
-                            <span class="text-3xl">{{ $stack->icon }}</span>
-                        @else
-                            <span class="text-3xl">🔧</span>
-                        @endif
-                        <span class="font-mono text-sm text-[--color-text-primary]">{{ $stack->name }}</span>
-                        <span class="text-xs text-[--color-text-muted]">{{ ucfirst($stack->category) }}</span>
-                    </div>
-                @empty
-                    @foreach(['Docker', 'Kubernetes', 'Terraform', 'Ansible', 'AWS', 'GitHub Actions'] as $tech)
-                        <div
-                            class="glass-card p-4 flex flex-col items-center gap-2 hover:border-[--color-accent-emerald]/50 transition-colors">
-                            <span class="text-3xl">🔧</span>
-                            <span class="font-mono text-sm text-[--color-text-primary]">{{ $tech }}</span>
-                        </div>
-                    @endforeach
-                @endforelse
+                    @if($stacks->isNotEmpty())
+                        <!-- Original Items -->
+                        @foreach($stacks as $stack)
+                            <div
+                                class="glass-card p-4 flex flex-col items-center gap-2 min-w-[120px] hover:border-[--color-accent-emerald]/50 transition-colors">
+                                @if($stack->icon)
+                                    <img src="{{ $stack->icon }}" alt="{{ $stack->name }}" class="w-8 h-8 object-contain">
+                                @else
+                                    <span class="text-3xl">🔧</span>
+                                @endif
+                                <span class="font-mono text-sm text-[--color-text-primary] whitespace-nowrap">{{ $stack->name }}</span>
+                                <span class="text-xs text-[--color-text-muted] whitespace-nowrap">{{ $stack->category?->name ?? 'Uncategorized' }}</span>
+                            </div>
+                        @endforeach
+                        
+                        <!-- Duplicate Items for Seamless Loop -->
+                        @foreach($stacks as $stack)
+                            <div
+                                class="glass-card p-4 flex flex-col items-center gap-2 min-w-[120px] hover:border-[--color-accent-emerald]/50 transition-colors">
+                                @if($stack->icon)
+                                    <img src="{{ $stack->icon }}" alt="{{ $stack->name }}" class="w-8 h-8 object-contain">
+                                @else
+                                    <span class="text-3xl">🔧</span>
+                                @endif
+                                <span class="font-mono text-sm text-[--color-text-primary] whitespace-nowrap">{{ $stack->name }}</span>
+                                <span class="text-xs text-[--color-text-muted] whitespace-nowrap">{{ $stack->category?->name ?? 'Uncategorized' }}</span>
+                            </div>
+                        @endforeach
+                    @else
+                        <!-- Default Items -->
+                        @foreach($defaultStacks as $tech)
+                            <div
+                                class="glass-card p-4 flex flex-col items-center gap-2 min-w-[120px] hover:border-[--color-accent-emerald]/50 transition-colors">
+                                <span class="text-3xl">🔧</span>
+                                <span class="font-mono text-sm text-[--color-text-primary] whitespace-nowrap">{{ $tech }}</span>
+                                <span class="text-xs text-[--color-text-muted] whitespace-nowrap">DevOps</span>
+                            </div>
+                        @endforeach
+
+                        <!-- Duplicate Default Items -->
+                         @foreach($defaultStacks as $tech)
+                            <div
+                                class="glass-card p-4 flex flex-col items-center gap-2 min-w-[120px] hover:border-[--color-accent-emerald]/50 transition-colors">
+                                <span class="text-3xl">🔧</span>
+                                <span class="font-mono text-sm text-[--color-text-primary] whitespace-nowrap">{{ $tech }}</span>
+                                <span class="text-xs text-[--color-text-muted] whitespace-nowrap">DevOps</span>
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
             </div>
         </div>
     </section>

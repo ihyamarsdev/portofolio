@@ -7,6 +7,8 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\ColorColumn;
+use Filament\Tables\Columns\ImageColumn;
 
 class StacksTable
 {
@@ -16,22 +18,12 @@ class StacksTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('slug')
+                TextColumn::make('category.name')
                     ->searchable(),
-                TextColumn::make('category')
+                ImageColumn::make('icon'),
+                ColorColumn::make('category.color')
+                    ->label('Color')
                     ->searchable(),
-                TextColumn::make('icon')
-                    ->searchable(),
-                TextColumn::make('color')
-                    ->searchable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
