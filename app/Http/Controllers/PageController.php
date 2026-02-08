@@ -44,15 +44,17 @@ class PageController extends Controller
     public function blog()
     {
         $homeSettings = \App\Models\HomeSettings::getSettings();
+        $posts = Post::published()->latest('published_at')->paginate(9);
 
-        return view('pages.blog.index', compact('homeSettings'));
+        return view('pages.blog.index', compact('homeSettings', 'posts'));
     }
 
     public function blogShow(string $slug)
     {
         $post = Post::where('slug', $slug)
-            ->where('is_published', true)
+            ->published()
             ->firstOrFail();
+        
         $homeSettings = \App\Models\HomeSettings::getSettings();
 
         return view('pages.blog.show', compact('post', 'homeSettings'));

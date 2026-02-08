@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -14,7 +15,6 @@ class Project extends Model implements HasMedia
         'title',
         'slug',
         'description',
-        'tech_stack',
         'repository_url',
         'live_url',
         'architecture_diagram',
@@ -23,9 +23,13 @@ class Project extends Model implements HasMedia
     ];
 
     protected $casts = [
-        'tech_stack' => 'array',
         'is_featured' => 'boolean',
     ];
+
+    public function skills(): BelongsToMany
+    {
+        return $this->belongsToMany(Skill::class);
+    }
 
     public function registerMediaCollections(): void
     {

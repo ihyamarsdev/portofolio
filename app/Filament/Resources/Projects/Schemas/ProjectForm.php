@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\Schemas;
 
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -19,7 +20,11 @@ class ProjectForm
                     ->required(),
                 Textarea::make('description')
                     ->columnSpanFull(),
-                Textarea::make('tech_stack')
+                Select::make('skills')
+                    ->multiple()
+                    ->relationship('skills', 'name')
+                    ->searchable()
+                    ->preload()
                     ->columnSpanFull(),
                 TextInput::make('repository_url')
                     ->url(),

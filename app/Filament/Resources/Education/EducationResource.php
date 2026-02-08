@@ -18,7 +18,7 @@ class EducationResource extends Resource
 {
     protected static ?string $model = Education::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
 
     protected static ?string $recordTitleAttribute = 'institution';
 

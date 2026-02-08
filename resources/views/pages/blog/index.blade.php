@@ -11,10 +11,6 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Posts List -->
                 <div class="lg:col-span-2 space-y-6">
-                    @php
-                        $posts = \App\Models\Post::published()->orderBy('published_at', 'desc')->get();
-                    @endphp
-                    
                     @forelse($posts as $post)
                         <article class="glass-card p-6 group">
                             <div class="flex items-center gap-4 mb-4 text-sm text-[--color-text-muted]">
@@ -55,6 +51,10 @@
                             <p class="text-[--color-text-secondary]">Blog posts will appear here once published through the admin panel.</p>
                         </div>
                     @endforelse
+
+                    <div class="mt-8">
+                        {{ $posts->links() }}
+                    </div>
                 </div>
                 
                 <!-- Sidebar -->

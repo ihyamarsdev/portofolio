@@ -16,4 +16,9 @@ class ListPosts extends ListRecords
             CreateAction::make(),
         ];
     }
+
+    public function getMaxContentWidth(): string|\Filament\Support\Enums\Width|null
+    {
+        return 'full';
+    }
 }
