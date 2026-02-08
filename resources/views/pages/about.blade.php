@@ -81,7 +81,10 @@
                         <h2 class="text-2xl font-bold text-[--color-text-primary] mb-6">Skills Matrix</h2>
 
                         @php
-                            $skillsByCategory = \App\Models\Skill::orderBy('proficiency', 'desc')->get()->groupBy('category');
+                            $skillsByCategory = \App\Models\Skill::with('category')
+                                ->orderBy('proficiency', 'desc')
+                                ->get()
+                                ->groupBy(fn($skill) => $skill->category?->name ?? 'Other');
                         @endphp
 
                         @if($skillsByCategory->isNotEmpty())
