@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateInbox extends CreateRecord
 {
     protected static string $resource = InboxResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
