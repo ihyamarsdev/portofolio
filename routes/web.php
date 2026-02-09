@@ -13,6 +13,7 @@ Route::get('/cv/download/markdown', [CVController::class, 'downloadMarkdown'])->
 Route::get('/cv/preview', [CVController::class, 'preview'])->name('cv.preview');
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/projects', [PageController::class, 'projects'])->name('projects');
+Route::get('/projects/{slug}', [PageController::class, 'projectShow'])->name('projects.show');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/certificates', [PageController::class, 'certificates'])->name('certificates');
 Route::get('/blog', [PageController::class, 'blog'])->name('blog');

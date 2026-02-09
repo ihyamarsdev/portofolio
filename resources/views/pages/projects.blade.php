@@ -15,22 +15,36 @@
 
                 @forelse($projects as $project)
                     <article class="project-card group">
-                        @if($project->getFirstMediaUrl('images'))
-                            <div class="aspect-video rounded-lg overflow-hidden mb-4 bg-[--color-bg-tertiary]">
-                                <img src="{{ $project->getFirstMediaUrl('images') }}" alt="{{ $project->title }}"
-                                    class="w-full h-full object-cover">
-                            </div>
-                        @endif
+                        <a href="{{ route('projects.show', $project->slug) }}" class="block">
+                            @if($project->getFirstMediaUrl('images'))
+                                <div class="aspect-video rounded-lg overflow-hidden mb-4 bg-[--color-bg-tertiary]">
+                                    <img src="{{ $project->getFirstMediaUrl('images') }}" alt="{{ $project->title }}"
+                                        class="w-full h-full object-cover">
+                                </div>
+                            @endif
 
-                        <div class="flex items-start justify-between mb-4">
-                            <div class="w-10 h-10 bg-[--color-bg-tertiary] rounded-lg flex items-center justify-center">
-                                <svg class="w-5 h-5 text-[--color-accent-emerald]" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
-                                    </path>
-                                </svg>
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-10 h-10 bg-[--color-bg-tertiary] rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-[--color-accent-emerald]" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
+                                        </path>
+                                    </svg>
+                                </div>
                             </div>
+
+                            <h2
+                                class="text-xl font-semibold text-[--color-text-primary] mb-2 group-hover:text-[--color-accent-emerald] transition-colors">
+                                {{ $project->title }}
+                            </h2>
+
+                            <p class="text-[--color-text-secondary] text-sm mb-4 line-clamp-3">
+                                {{ Str::limit(strip_tags($project->description), 150) }}
+                            </p>
+                        </a>
+
+                        <div class="flex items-center justify-between">
                             <div class="flex gap-2">
                                 @if($project->repository_url)
                                     <a href="{{ $project->repository_url }}" target="_blank"
@@ -52,24 +66,17 @@
                                     </a>
                                 @endif
                             </div>
+                            @if($project->architecture_diagram)
+                                <span class="text-xs text-[--color-accent-emerald] flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                        </path>
+                                    </svg>
+                                    Has Diagram
+                                </span>
+                            @endif
                         </div>
-
-                        <h2
-                            class="text-xl font-semibold text-[--color-text-primary] mb-2 group-hover:text-[--color-accent-emerald] transition-colors">
-                            {{ $project->title }}
-                        </h2>
-
-                        <p class="text-[--color-text-secondary] text-sm mb-4 line-clamp-3">
-                            {{ Str::limit(strip_tags($project->description), 150) }}
-                        </p>
-
-                        @if($project->tech_stack)
-                            <div class="flex flex-wrap gap-2">
-                                @foreach($project->tech_stack as $tech)
-                                    <span class="tech-badge">{{ $tech }}</span>
-                                @endforeach
-                            </div>
-                        @endif
                     </article>
                 @empty
                     <div class="col-span-full text-center py-12">

@@ -430,6 +430,72 @@ class GeminiService
             $text = $data['candidates'][0]['content']['parts'][0]['text'] ?? '{}';
             $text = str_replace(['```json', '```'], '', $text);
 
+        return json_decode($text, true) ?? ['error' => 'Failed to parse JSON response'];
+
+        } catch (\Exception $e) {
+            Log::error('Gemini Service Exception: '.$e->getMessage());
+
+            return ['error' => 'An error occurred: '.$e->getMessage()];
+        }
+    }
+
+    public function generateArchitectureDiagram(string $description): array
+    {
+        if (empty($this->apiKey)) {
+            return [
+                'error' => 'API Key not found. Please set GEMINI_API_KEY in .env file.',
+            ];
+        }
+
+        if (empty(trim($description))) {
+            return [
+                'error' => 'Project description is required to generate an architecture diagram.',
+            ];
+        }
+
+        $prompt = 'Based on the following project description, generate a Mermaid.js flowchart diagram that represents the system architecture.
+
+        Requirements:
+        - Use Mermaid flowchart syntax (start with "flowchart TD" or "flowchart LR")
+        - Include all major components mentioned in the description
+        - Show relationships and data flow between components
+        - Use clear, descriptive labels for nodes
+        - Keep the diagram reasonably simple and readable
+
+        Provide the response in strict JSON format with the following structure:
+        {
+            "diagram": "flowchart TD\\n    A[Component] --> B[Component]\\n    ...",
+            "explanation": "Brief explanation of the architecture"
+        }
+
+        Do not include markdown formatting (```json or ```mermaid) in the response, just the raw JSON.
+
+        Project Description:
+        '.$description;
+
+        try {
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])->post($this->baseUrl.'?key='.$this->apiKey, [
+                'contents' => [
+                    [
+                        'parts' => [
+                            ['text' => $prompt],
+                        ],
+                    ],
+                ],
+            ]);
+
+            if ($response->failed()) {
+                Log::error('Gemini API Error: '.$response->body());
+
+                return ['error' => 'Failed to connect to Gemini API: '.$response->status()];
+            }
+
+            $data = $response->json();
+            $text = $data['candidates'][0]['content']['parts'][0]['text'] ?? '{}';
+            $text = str_replace(['```json', '```mermaid', '```'], '', $text);
+
             return json_decode($text, true) ?? ['error' => 'Failed to parse JSON response'];
 
         } catch (\Exception $e) {

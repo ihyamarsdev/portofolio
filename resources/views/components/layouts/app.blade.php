@@ -207,6 +207,7 @@
     </footer>
 
     @livewireScripts
+    @stack('scripts')
 </body>
 
 </html>

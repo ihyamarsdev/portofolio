@@ -26,6 +26,14 @@ class PageController extends Controller
         return view('pages.projects', compact('homeSettings'));
     }
 
+    public function projectShow(string $slug)
+    {
+        $project = \App\Models\Project::where('slug', $slug)->firstOrFail();
+        $homeSettings = \App\Models\HomeSettings::getSettings();
+
+        return view('pages.projects.show', compact('project', 'homeSettings'));
+    }
+
     public function about()
     {
         $profile = $this->getProfile();
