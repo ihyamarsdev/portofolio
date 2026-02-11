@@ -54,7 +54,7 @@
             <div class="bg-card bg-gray-200 dark:bg-gray-800 p-6 shadow-sm dark:border-gray-400 rounded-xl">
                 <h3 class="text-lg font-semibold text-black dark:text-white mb-4">Analysis Results</h3>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                     <div
                         class="bg-gray-300 dark:bg-gray-700 text-center p-4 rounded-lg score-card {{ $analysisResult['ats_score'] >= 80 ? 'score-excellent dark:score-excellent-dark' : ($analysisResult['ats_score'] >= 50 ? 'score-good dark:score-good-dark' : 'score-poor dark:score-poor-dark') }}">
                         <div class="text-4xl font-bold text-black dark:text-white">{{ $analysisResult['ats_score'] }}%
@@ -74,6 +74,19 @@
                             <div class="h-full score-progress-bar" style="width: {{ $analysisResult['format_score'] }}%">
                             </div>
                         </div>
+                    </div>
+
+                    <div
+                        class="bg-gray-300 dark:bg-gray-700 text-center p-4 rounded-lg score-card {{ isset($analysisResult['about_me_score']) ? ($analysisResult['about_me_score'] >= 80 ? 'score-excellent dark:score-excellent-dark' : ($analysisResult['about_me_score'] >= 50 ? 'score-good dark:score-good-dark' : 'score-poor dark:score-poor-dark')) : 'score-neutral-dark' }}">
+                        <div class="text-4xl font-bold text-black dark:text-white">
+                            {{ $analysisResult['about_me_score'] ?? '-' }}%</div>
+                        <div class="text-black dark:text-gray-400 text-sm mt-1">About Me</div>
+                        @if(isset($analysisResult['about_me_score']))
+                            <div class="h-2 bg-background rounded-full overflow-hidden">
+                                <div class="h-full bg-purple-500 dark:bg-purple-600" style="width: {{ $analysisResult['about_me_score'] }}%">
+                                </div>
+                            </div>
+                        @endif
                     </div>
 
                     <div
@@ -186,6 +199,9 @@
                                     Format Score</th>
                                 <th
                                     class="py-3 px-4 text-xs font-semibold text-secondary dark:text-gray-400 uppercase tracking-wider">
+                                    About Me</th>
+                                <th
+                                    class="py-3 px-4 text-xs font-semibold text-secondary dark:text-gray-400 uppercase tracking-wider">
                                     Job Match</th>
                                 <th
                                     class="py-3 px-4 text-xs font-semibold text-secondary dark:text-gray-400 uppercase tracking-wider">
@@ -204,6 +220,15 @@
                                         </span>
                                     </td>
                                     <td class="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">{{ $item->format_score }}%
+                                    </td>
+                                    <td class="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">
+                                        @if($item->about_me_score)
+                                            <span class="px-2 py-1 rounded text-xs font-medium bg-purple-100 dark:bg-purple-200 text-purple-800">
+                                                {{ $item->about_me_score }}%
+                                            </span>
+                                        @else
+                                            <span class="text-gray-400">-</span>
+                                        @endif
                                     </td>
                                     <td class="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">
                                         {{ $item->job_match_score ?? '-' }}</td>

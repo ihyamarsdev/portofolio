@@ -2,12 +2,12 @@
 
 namespace App\Filament\Pages;
 
+use App\Ai\Agents\ComprehensiveCVAnalysisAgent;
 use App\Models\CVAnalysis;
 use App\Models\Education;
 use App\Models\Experience;
 use App\Models\Profile;
 use App\Models\Skill;
-use App\Services\GeminiService;
 use BackedEnum;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -56,6 +56,7 @@ class CVGenerator extends Page
                 $this->analysisResult = [
                     'ats_score' => $this->currentAnalysis->ats_score,
                     'format_score' => $this->currentAnalysis->format_score,
+                    'about_me_score' => $this->currentAnalysis->about_me_score ?? 0,
                     'keywords' => [
                         'found' => $this->currentAnalysis->keywords_found ?? [],
                         'missing' => $this->currentAnalysis->keywords_missing ?? [],
@@ -71,7 +72,7 @@ class CVGenerator extends Page
 
 
 
-    public function analyze(GeminiService $service)
+    public function analyze()
     {
         $this->isAnalyzing = true;
 
@@ -91,50 +92,59 @@ class CVGenerator extends Page
 
             $cvContent = $this->buildCVContent($profile);
 
-            $result = $service->comprehensiveCVAnalysis($cvContent, $this->jobDescription);
+            $agent = new ComprehensiveCVAnalysisAgent($cvContent, $this->jobDescription);
+            $result = json_decode($agent->prompt(
+                prompt: 'Please analyze the CV content and provide comprehensive feedback following the instructions.',
+                model: 'gemini-2.5-flash'
+            )->text, true);
 
-            if (isset($result['error'])) {
-                Notification::make()
-                    ->title('Analysis Failed')
-                    ->body($result['error'])
-                    ->danger()
-                    ->send();
-            } else {
-                $this->analysisResult = $result;
+            $this->analysisResult = [
+                'ats_score' => $result['ats_score'],
+                'format_score' => $result['format_score'],
+                'about_me_score' => $result['about_me_score'] ?? 0,
+                'keywords' => $result['keywords'],
+                'suggestions' => $result['suggestions'],
+                'industry_match' => $result['industry_match'],
+                'summary' => $result['summary'],
+                'job_match_score' => $result['job_match_score'] ?? null,
+            ];
 
-                $analysis = CVAnalysis::create([
-                    'profile_id' => $profile->id,
-                    'ats_score' => $result['ats_score'],
-                    'format_score' => $result['format_score'],
-                    'keywords_found' => $result['keywords']['found'] ?? [],
-                    'keywords_missing' => $result['keywords']['missing'] ?? [],
-                    'suggestions' => $result['suggestions'] ?? [],
-                    'industry_match' => $result['industry_match'] ?? [],
-                    'summary' => $result['summary'] ?? null,
-                    'job_match_score' => $result['job_match_score'] ?? null,
-                ]);
+            // Save to database
+            $profile->cvAnalyses()->create([
+                'content' => $cvContent,
+                'ats_score' => $result['ats_score'],
+                'format_score' => $result['format_score'],
+                'about_me_score' => $result['about_me_score'] ?? 0,
+                'keywords_found' => $result['keywords']['found'] ?? [],
+                'keywords_missing' => $result['keywords']['missing'] ?? [],
+                'suggestions' => $result['suggestions'] ?? [],
+                'industry_compatibility' => $result['industry_match'] ?? [],
+                'job_match_score' => $result['job_match_score'] ?? null,
+                'summary' => $result['summary'] ?? null,
+                'job_description' => $this->jobDescription,
+            ]);
 
-                $this->currentAnalysis = $analysis;
-                $this->history = $profile->cvAnalyses()->latest()->take(10)->get();
-
-                Notification::make()
-                    ->title('Analysis Complete')
-                    ->success()
-                    ->send();
-            }
-
+            Notification::make()
+                ->title('Analysis Complete')
+                ->body('Your CV has been analyzed successfully.')
+                ->success()
+                ->send();
         } catch (\Exception $e) {
             Notification::make()
-                ->title('Error')
-                ->body($e->getMessage())
+                ->title('Analysis Failed')
+                ->body('Error: ' . $e->getMessage())
                 ->danger()
                 ->send();
-        }
 
-        $this->isAnalyzing = false;
+            \Log::error('CV Analysis Error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+        } finally {
+            $this->isAnalyzing = false;
+        }
     }
 
-    public function analyzeJobMatch(GeminiService $service)
+    public function analyzeJobMatch()
     {
         if (empty($this->jobDescription)) {
             Notification::make()
@@ -146,7 +156,7 @@ class CVGenerator extends Page
             return;
         }
 
-        $this->analyze($service);
+        $this->analyze();
     }
 
     public function updatedSelectedTemplate($state)
@@ -212,8 +222,11 @@ class CVGenerator extends Page
         $skills = Skill::all();
 
         $cvContent = 'FULL NAME: ' . $profile->name . "\n";
-        $cvContent .= 'TITLE: ' . $profile->title . "\n";
-        $cvContent .= 'SUMMARY: ' . strip_tags($profile->biography) . "\n\n";
+        $cvContent .= 'TITLE: ' . $profile->title . "\n\n";
+
+        // Add explicit ABOUT ME section for AI analysis
+        $cvContent .= "ABOUT ME / PROFESSIONAL SUMMARY:\n";
+        $cvContent .= strip_tags($profile->biography) . "\n\n";
 
         $cvContent .= "EXPERIENCE:\n";
         foreach ($experiences as $exp) {
@@ -233,7 +246,15 @@ class CVGenerator extends Page
 
         $cvContent .= "\nSKILLS:\n";
         foreach ($skills as $skill) {
-            $cvContent .= '- ' . $skill->name . ' (' . $skill->category . ', Proficiency: ' . $skill->proficiency . "/100)\n";
+            if ($skill->years_experience > 0) {
+                $years = floatval($skill->years_experience);
+                $displayYears = fmod($years, 1) > 0 ? number_format($years, 1) : intval($years);
+                $yearText = $years == 1 ? 'year' : 'years';
+                $yearsExp = " ({$displayYears} {$yearText})";
+            } else {
+                $yearsExp = "";
+            }
+            $cvContent .= '- ' . $skill->name . ' (' . $skill->category . ')' . $yearsExp . "\n";
         }
 
         return $cvContent;

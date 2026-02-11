@@ -53,9 +53,35 @@ class ExperienceForm
                             ->columnSpanFull(),
                     ]),
 
+                Section::make('Skills Used')
+                    ->description('Select the skills you utilized in this experience')
+                    ->icon('heroicon-o-sparkles')
+                    ->components([
+                        Select::make('skills')
+                            ->relationship('skills', 'name')
+                            ->multiple()
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->helperText('Select all skills that you used or developed during this experience')
+                            ->columnSpanFull()
+                            ->createOptionForm([
+                                TextInput::make('name')
+                                    ->required(),
+                                Select::make('category_id')
+                                    ->relationship('category', 'name')
+                                    ->required(),
+                                TextInput::make('years_experience')
+                                    ->numeric()
+                                    ->default(0),
+                            ]),
+                    ]),
+
                 TextInput::make('order')
                     ->numeric()
-                    ->default(0),
+                    ->default(0)
+                    ->label('Display Order')
+                    ->helperText('Lower numbers appear first'),
             ]);
     }
 }

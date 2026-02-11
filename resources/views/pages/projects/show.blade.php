@@ -63,7 +63,11 @@
                         <h2 class="text-xl font-semibold text-text-primary mb-4">Tech Stack</h2>
                         <div class="flex flex-wrap gap-2">
                             @foreach($project->skills as $skill)
-                                <span class="border border-[--color-text-secondary] px-2 py-1 rounded-full">{{ $skill->name }}</span>
+                                <span
+                                    class="inline-flex items-center px-2 py-1 rounded-md border border-[--color-accent-emerald]/20 bg-gradient-to-br from-[--color-accent-emerald]/10 to-[--color-accent-cyan]/10 text-xs text-[--color-text-primary] hover:border-[--color-accent-emerald]/40 hover:scale-105 transition-all duration-200">
+                                    <span class="w-1 h-1 rounded-full bg-[--color-accent-emerald] mr-1.5"></span>
+                                    {{ $skill->name }}
+                                </span>
                             @endforeach
                         </div>
                     </div>
@@ -76,9 +80,8 @@
                         <div class="bg-white rounded-lg p-4 overflow-x-auto">
                             @if($project->getFirstMediaUrl('diagrams'))
                                 {{-- Display pre-rendered SVG --}}
-                                <img src="{{ $project->getFirstMediaUrl('diagrams') }}" 
-                                    alt="Architecture Diagram for {{ $project->title }}"
-                                    class="max-w-full h-auto mx-auto">
+                                <img src="{{ $project->getFirstMediaUrl('diagrams') }}"
+                                    alt="Architecture Diagram for {{ $project->title }}" class="max-w-full h-auto mx-auto">
                             @elseif($project->architecture_diagram)
                                 {{-- Fallback to Mermaid.js rendering --}}
                                 <div class="mermaid">
@@ -96,7 +99,7 @@
         @push('scripts')
             <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
             <script>
-                document.addEventListener('DOMContentLoaded', function() {
+                document.addEventListener('DOMContentLoaded', function () {
                     mermaid.initialize({
                         startOnLoad: true,
                         theme: 'default',

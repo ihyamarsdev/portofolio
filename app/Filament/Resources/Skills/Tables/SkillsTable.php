@@ -15,16 +15,18 @@ class SkillsTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('category.name')
-                    ->searchable(),
-                TextColumn::make('proficiency')
-                    ->numeric()
+                    ->label('Category')
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('years_experience')
+                    ->label('Years of Experience')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('stack.name')
+                    ->label('Tech Stack')
                     ->searchable(),
             ])
             ->filters([

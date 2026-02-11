@@ -82,7 +82,8 @@
 
                         @php
                             $skillsByCategory = \App\Models\Skill::with('category')
-                                ->orderBy('proficiency', 'desc')
+                                ->orderBy('years_experience', 'desc')
+                                ->orderBy('name')
                                 ->get()
                                 ->groupBy(fn($skill) => $skill->category?->name ?? 'Other');
                         @endphp
@@ -90,20 +91,41 @@
                         @if($skillsByCategory->isNotEmpty())
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 @foreach($skillsByCategory as $category => $skills)
-                                    <div class="glass-card p-5">
-                                        <h3 class="font-semibold text-[--color-accent-emerald] mb-4">{{ $category }}</h3>
-                                        <div class="space-y-4">
+                                    <div class="glass-card p-6 hover:shadow-lg transition-all duration-300">
+                                        <div class="text-center mb-5">
+                                            <h3 class="font-semibold text-lg text-[--color-text-primary] mb-2">{{ $category }}</h3>
+                                            <span class="inline-block text-xs text-[--color-text-muted] bg-[--color-bg-secondary] px-2 py-1 rounded-full">
+                                                {{ count($skills) }} {{ count($skills) == 1 ? 'skill' : 'skills' }}
+                                            </span>
+                                        </div>
+                                        <div class="space-y-3">
                                             @foreach($skills as $skill)
-                                                <div>
-                                                    <div class="flex justify-between mb-1">
-                                                        <span class="text-sm text-[--color-text-primary]">{{ $skill->name }}</span>
-                                                        <span
-                                                            class="text-xs text-[--color-text-muted]">{{ $skill->years_experience }}+
-                                                            years</span>
-                                                    </div>
-                                                    <div class="skill-bar">
-                                                        <div class="skill-bar-fill" style="width: {{ $skill->proficiency * 20 }}%">
+                                                <div class="group">
+                                                    <div class="flex items-center justify-between py-2.5 px-3 rounded-lg hover:bg-[--color-bg-secondary] transition-all duration-200">
+                                                        <div class="flex items-center gap-3 flex-1">
+                                                            <div class="w-1.5 h-1.5 rounded-full bg-[--color-accent-emerald] group-hover:scale-150 transition-transform"></div>
+                                                            <span class="text-sm text-[--color-text-primary] group-hover:text-[--color-accent-emerald] font-medium transition-colors">
+                                                                {{ $skill->name }}
+                                                            </span>
                                                         </div>
+                                                        @if($skill->years_experience > 0)
+                                                            @php
+                                                                $years = floatval($skill->years_experience);
+                                                                $isHalfYear = fmod($years, 1) > 0;
+                                                                $displayYears = $isHalfYear ? number_format($years, 1) : intval($years);
+                                                            @endphp
+                                                            <div class="flex items-center gap-1.5">
+                                                                <svg class="w-3.5 h-3.5 text-[--color-accent-cyan]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                                </svg>
+                                                                <span class="text-xs font-semibold text-[--color-accent-emerald]">
+                                                                    {{ $displayYears }}
+                                                                </span>
+                                                                <span class="text-xs text-[--color-text-muted]">
+                                                                    {{ $years == 1 ? 'yr' : 'yrs' }}
+                                                                </span>
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -128,7 +150,10 @@
                         <h2 class="text-2xl font-bold text-[--color-text-primary] mb-6">Experience</h2>
                         <div class="space-y-6">
                             @php
-                                $experiences = \App\Models\Experience::orderBy('order')->orderByDesc('start_date')->get();
+                                $experiences = \App\Models\Experience::with('skills.category')
+                                    ->orderBy('order')
+                                    ->orderByDesc('start_date')
+                                    ->get();
                             @endphp
                             @if($experiences->isNotEmpty())
                                 @foreach($experiences as $index => $experience)
@@ -156,14 +181,37 @@
                                                 <p class="text-[--color-text-secondary] text-sm mb-3">{{ $experience->description }}</p>
                                             @endif
                                             @if($experience->achievements && count($experience->achievements) > 0)
-                                                <ul class="text-sm text-[--color-text-secondary] space-y-1">
+                                                <ul class="text-sm text-[--color-text-secondary] space-y-2 mb-6">
                                                     @foreach($experience->achievements as $achievement)
                                                         <li class="flex items-start gap-2">
-                                                            <span class="text-[--color-accent-emerald] mt-1">•</span>
-                                                            <span>{{ $achievement }}</span>
+                                                            <span class="text-[--color-accent-emerald]">•</span>
+                                                            <span class="flex-1">{{ $achievement }}</span>
                                                         </li>
                                                     @endforeach
                                                 </ul>
+                                            @endif
+                                            
+                                            {{-- Skills Used --}}
+                                            @if($experience->skills->isNotEmpty())
+                                                <div class="mt-5 pt-4 border-t border-[--color-border]">
+                                                    <div class="flex items-center gap-2 mb-3">
+                                                        <svg class="w-4 h-4 text-[--color-accent-cyan]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                                        </svg>
+                                                        <span class="text-xs font-semibold text-[--color-text-muted] uppercase tracking-wide">Skills Used</span>
+                                                    </div>
+                                                    <div class="flex flex-wrap gap-2">
+                                                        @foreach($experience->skills as $skill)
+                                                            <span class="group relative inline-flex items-center gap-1.5 py-1 px-2 rounded-lg bg-gradient-to-br from-[--color-accent-emerald]/10 to-[--color-accent-cyan]/10 border border-[--color-accent-emerald]/20 hover:border-[--color-accent-emerald]/40 transition-all duration-200 hover:scale-105">
+                                                                <span class="text-xs font-medium text-[--color-text-primary]">{{ $skill->name }}</span>
+                                                                @if($skill->category)
+                                                                    <span class="text-xs text-[--color-text-muted]">·</span>
+                                                                    <span class="text-xs text-[--color-text-muted]">{{ $skill->category->name }}</span>
+                                                                @endif
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
                                             @endif
                                         </div>
                                     </div>

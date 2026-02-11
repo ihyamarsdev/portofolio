@@ -1,0 +1,21 @@
+{
+    "version": "1.0.0",
+    "last_updated": "2026-02-11",
+    "description": "Static keyword database for ATS CV optimization focused on DevOps and Cloud Engineering",
+    "categories": {
+        "devops": {
+            "file": "devops.json",
+            "description": "Comprehensive DevOps keywords including CI/CD, containerization, IaC, monitoring, and automation tools",
+            "keyword_count": 200
+        },
+        "cloud": {
+            "file": "cloud.json",
+            "description": "Cloud engineering keywords covering AWS, Azure, GCP services, and cloud-native technologies",
+            "keyword_count": 300
+        }
+    },
+    "usage": {
+        "description": "These keyword files are used by the CV analysis system to identify technical skills and provide ATS optimization recommendations",
+        "integration": "Keywords are loaded and compared against CV content to generate 'found' and 'missing' keyword lists"
+    }
+}

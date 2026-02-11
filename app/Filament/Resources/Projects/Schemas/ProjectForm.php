@@ -2,7 +2,8 @@
 
 namespace App\Filament\Resources\Projects\Schemas;
 
-use App\Services\GeminiService;
+use App\Ai\Agents\ArchitectureDiagramAgent;
+use App\Models\Project;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -12,6 +13,7 @@ use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class ProjectForm
 {
@@ -20,7 +22,8 @@ class ProjectForm
         return $schema
             ->components([
                 TextInput::make('title')
-                    ->required(),
+                    ->required()
+                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
                 TextInput::make('slug')
                     ->required(),
                 Textarea::make('description')
@@ -45,50 +48,27 @@ class ProjectForm
                             ->color('primary')
                             ->action(function (Get $get, Set $set) {
                                 $description = $get('description');
-
                                 if (empty(trim($description ?? ''))) {
-                                    Notification::make()
-                                        ->title('Description Required')
-                                        ->body('Please enter a project description first.')
-                                        ->warning()
-                                        ->send();
+                                    Notification::make()->title('Description Required')->body('Please enter a project description first.')->warning()->send();
                                     return;
                                 }
 
-                                $service = new GeminiService();
-                                $result = $service->generateArchitectureDiagram($description);
-
-                                if (isset($result['error'])) {
-                                    Notification::make()
-                                        ->title('Error')
-                                        ->body($result['error'])
-                                        ->danger()
-                                        ->send();
-                                    return;
-                                }
+                                $agent = new ArchitectureDiagramAgent($description);
+                                $result = json_decode($agent->prompt(
+                                    prompt: 'Please generate a Mermaid architecture diagram based on the project description provided in the instructions.',
+                                    model: 'gemini-2.5-flash'
+                                )->text, true);
 
                                 if (isset($result['diagram'])) {
                                     $set('architecture_diagram', $result['diagram']);
-                                    Notification::make()
-                                        ->title('Diagram Generated')
-                                        ->body($result['explanation'] ?? 'Architecture diagram generated successfully!')
-                                        ->success()
-                                        ->send();
+                                    Notification::make()->title('Diagram Generated')->body($result['explanation'] ?? 'Architecture diagram generated successfully!')->success()->send();
                                 } else {
-                                    Notification::make()
-                                        ->title('Error')
-                                        ->body('Failed to generate diagram. Please try again.')
-                                        ->danger()
-                                        ->send();
+                                    Notification::make()->title('Error')->body('Failed to generate diagram. Please try again.')->danger()->send();
                                 }
                             })
                     ),
-                Toggle::make('is_featured')
-                    ->required(),
-                TextInput::make('order')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
+                Toggle::make('is_featured')->required(),
+                TextInput::make('order')->required()->numeric()->default(0),
             ]);
     }
 }

@@ -13,6 +13,7 @@ class CVAnalysis extends Model
         'profile_id',
         'ats_score',
         'format_score',
+        'about_me_score',
         'keywords_found',
         'keywords_missing',
         'suggestions',
@@ -29,6 +30,7 @@ class CVAnalysis extends Model
         'industry_match' => 'array',
         'ats_score' => 'integer',
         'format_score' => 'integer',
+        'about_me_score' => 'integer',
         'job_match_score' => 'integer',
     ];
 

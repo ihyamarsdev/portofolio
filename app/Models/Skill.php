@@ -35,4 +35,12 @@ class Skill extends Model
     {
         return $this->belongsToMany(Project::class);
     }
+
+    /**
+     * Get the experiences where this skill was used
+     */
+    public function experiences(): BelongsToMany
+    {
+        return $this->belongsToMany(Experience::class);
+    }
 }

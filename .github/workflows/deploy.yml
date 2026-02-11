@@ -7,26 +7,15 @@ on:
 
 jobs:
   deploy:
-    name: Deploy via FTP & Run Storage Link
+    name: Run Storage Link
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Sync files via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            .env
-            storage/**
-            tests/**
+      - name: Wait for deployment webhook to complete
+        run: |
+          echo "Waiting for deployment webhook to finish..."
+          sleep 30
+          echo "Proceeding with storage:link..."
 
       - name: Run php artisan storage:link via SSH
         uses: appleboy/ssh-action@v1.2.0
@@ -37,4 +26,4 @@ jobs:
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
             cd domains/ihyamars.my.id/public_html/
-            php artisan storage:link --force
+            php artisan storage:link

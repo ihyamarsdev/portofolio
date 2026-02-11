@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Experience extends Model
 {
@@ -24,4 +25,12 @@ class Experience extends Model
         'end_date' => 'date',
         'order' => 'integer',
     ];
+
+    /**
+     * Get the skills associated with this experience
+     */
+    public function skills(): BelongsToMany
+    {
+        return $this->belongsToMany(Skill::class);
+    }
 }

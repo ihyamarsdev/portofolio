@@ -69,7 +69,7 @@ class CVGeneratorService
             $contactInfo[] = $profile->location;
         }
 
-        if (! empty($contactInfo)) {
+        if (!empty($contactInfo)) {
             $section->addText(implode(' | ', $contactInfo), ['size' => 10]);
         }
 
@@ -93,8 +93,8 @@ class CVGeneratorService
         foreach ($experiences as $exp) {
             $section->addText($exp->position, ['bold' => true, 'size' => 12]);
             $section->addText(
-                $exp->company.' | '.$exp->location.' | '.
-                $exp->start_date->format('M Y').' - '.
+                $exp->company . ' | ' . $exp->location . ' | ' .
+                $exp->start_date->format('M Y') . ' - ' .
                 ($exp->end_date ? $exp->end_date->format('M Y') : 'Present'),
                 ['size' => 11, 'italic' => true]
             );
@@ -119,20 +119,20 @@ class CVGeneratorService
         $section->addTextBreak(1);
 
         foreach ($educations as $edu) {
-            $section->addText($edu->degree.' in '.$edu->field_of_study, ['bold' => true, 'size' => 12]);
+            $section->addText($edu->degree . ' in ' . $edu->field_of_study, ['bold' => true, 'size' => 12]);
             $section->addText(
-                $edu->institution.' | '.
-                $edu->start_date->format('Y').' - '.
+                $edu->institution . ' | ' .
+                $edu->start_date->format('Y') . ' - ' .
                 ($edu->end_date ? $edu->end_date->format('Y') : 'Present'),
                 ['size' => 11, 'italic' => true]
             );
 
             if ($edu->grade) {
-                $section->addText('GPA/Grade: '.$edu->grade, ['size' => 10]);
+                $section->addText('GPA/Grade: ' . $edu->grade, ['size' => 10]);
             }
 
             if ($edu->activities) {
-                $section->addText('Activities: '.$edu->activities, ['size' => 10]);
+                $section->addText('Activities: ' . $edu->activities, ['size' => 10]);
             }
 
             $section->addTextBreak(1);
@@ -147,7 +147,7 @@ class CVGeneratorService
         $groupedSkills = $skills->groupBy('category');
 
         foreach ($groupedSkills as $category => $categorySkills) {
-            $section->addText(ucfirst($category).':', ['bold' => true, 'size' => 11]);
+            $section->addText(ucfirst($category) . ':', ['bold' => true, 'size' => 11]);
             $section->addText($categorySkills->pluck('name')->join(', '), ['size' => 11]);
             $section->addTextBreak(1);
         }
@@ -159,8 +159,8 @@ class CVGeneratorService
         $educations = $educations ?? Education::orderBy('start_date', 'desc')->get();
         $skills = $skills ?? Skill::all();
 
-        $text = strtoupper($profile->name)."\n";
-        $text .= $profile->title."\n\n";
+        $text = strtoupper($profile->name) . "\n";
+        $text .= $profile->title . "\n\n";
 
         $contactInfo = [];
         if ($profile->email) {
@@ -173,31 +173,31 @@ class CVGeneratorService
             $contactInfo[] = $profile->location;
         }
 
-        if (! empty($contactInfo)) {
-            $text .= implode(' | ', $contactInfo)."\n\n";
+        if (!empty($contactInfo)) {
+            $text .= implode(' | ', $contactInfo) . "\n\n";
         }
 
         if ($profile->biography) {
             $text .= "PROFESSIONAL SUMMARY\n";
-            $text .= str_repeat('=', 50)."\n";
-            $text .= strip_tags($profile->biography)."\n\n";
+            $text .= str_repeat('=', 50) . "\n";
+            $text .= strip_tags($profile->biography) . "\n\n";
         }
 
         $text .= "EXPERIENCE\n";
-        $text .= str_repeat('=', 50)."\n\n";
+        $text .= str_repeat('=', 50) . "\n\n";
 
         foreach ($experiences as $exp) {
-            $text .= strtoupper($exp->position)."\n";
-            $text .= $exp->company.', '.$exp->location."\n";
-            $text .= $exp->start_date->format('M Y').' - '.($exp->end_date ? $exp->end_date->format('M Y') : 'Present')."\n";
+            $text .= strtoupper($exp->position) . "\n";
+            $text .= $exp->company . ', ' . $exp->location . "\n";
+            $text .= $exp->start_date->format('M Y') . ' - ' . ($exp->end_date ? $exp->end_date->format('M Y') : 'Present') . "\n";
 
             if ($exp->description) {
-                $text .= "\n".strip_tags($exp->description)."\n";
+                $text .= "\n" . strip_tags($exp->description) . "\n";
             }
 
             if ($exp->achievements) {
                 foreach ($exp->achievements as $achievement) {
-                    $text .= '- '.$achievement."\n";
+                    $text .= '- ' . $achievement . "\n";
                 }
             }
 
@@ -205,31 +205,31 @@ class CVGeneratorService
         }
 
         $text .= "\nEDUCATION\n";
-        $text .= str_repeat('=', 50)."\n\n";
+        $text .= str_repeat('=', 50) . "\n\n";
 
         foreach ($educations as $edu) {
-            $text .= $edu->degree.' in '.$edu->field_of_study."\n";
-            $text .= $edu->institution."\n";
-            $text .= $edu->start_date->format('Y').' - '.($edu->end_date ? $edu->end_date->format('Y') : 'Present')."\n";
+            $text .= $edu->degree . ' in ' . $edu->field_of_study . "\n";
+            $text .= $edu->institution . "\n";
+            $text .= $edu->start_date->format('Y') . ' - ' . ($edu->end_date ? $edu->end_date->format('Y') : 'Present') . "\n";
 
             if ($edu->grade) {
-                $text .= 'GPA/Grade: '.$edu->grade."\n";
+                $text .= 'GPA/Grade: ' . $edu->grade . "\n";
             }
 
             if ($edu->activities) {
-                $text .= 'Activities: '.$edu->activities."\n";
+                $text .= 'Activities: ' . $edu->activities . "\n";
             }
 
             $text .= "\n";
         }
 
         $text .= "\nSKILLS\n";
-        $text .= str_repeat('=', 50)."\n\n";
+        $text .= str_repeat('=', 50) . "\n\n";
 
         $groupedSkills = $skills->groupBy('category');
 
         foreach ($groupedSkills as $category => $categorySkills) {
-            $text .= ucfirst($category).': '.$categorySkills->pluck('name')->join(', ')."\n";
+            $text .= ucfirst($category) . ': ' . $categorySkills->pluck('name')->join(', ') . "\n";
         }
 
         return $text;
@@ -255,23 +255,23 @@ class CVGeneratorService
             $contactInfo[] = "Location: {$profile->location}";
         }
 
-        if (! empty($contactInfo)) {
-            $md .= implode(' | ', $contactInfo)."\n\n";
+        if (!empty($contactInfo)) {
+            $md .= implode(' | ', $contactInfo) . "\n\n";
         }
 
         if ($profile->biography) {
             $md .= "## Professional Summary\n\n";
-            $md .= strip_tags($profile->biography)."\n\n";
+            $md .= strip_tags($profile->biography) . "\n\n";
         }
 
         $md .= "## Experience\n\n";
 
         foreach ($experiences as $exp) {
             $md .= "### **{$exp->position}** - {$exp->company}\n";
-            $md .= "*{$exp->location}* | {$exp->start_date->format('M Y')} - ".($exp->end_date ? $exp->end_date->format('M Y') : 'Present')."\n\n";
+            $md .= "*{$exp->location}* | {$exp->start_date->format('M Y')} - " . ($exp->end_date ? $exp->end_date->format('M Y') : 'Present') . "\n\n";
 
             if ($exp->description) {
-                $md .= strip_tags($exp->description)."\n\n";
+                $md .= strip_tags($exp->description) . "\n\n";
             }
 
             if ($exp->achievements) {
@@ -286,7 +286,7 @@ class CVGeneratorService
 
         foreach ($educations as $edu) {
             $md .= "### **{$edu->degree}** in {$edu->field_of_study}\n";
-            $md .= "{$edu->institution} | {$edu->start_date->format('Y')} - ".($edu->end_date ? $edu->end_date->format('Y') : 'Present')."\n\n";
+            $md .= "{$edu->institution} | {$edu->start_date->format('Y')} - " . ($edu->end_date ? $edu->end_date->format('Y') : 'Present') . "\n\n";
 
             if ($edu->grade) {
                 $md .= "**GPA/Grade:** {$edu->grade}\n";
@@ -304,7 +304,7 @@ class CVGeneratorService
         $groupedSkills = $skills->groupBy('category');
 
         foreach ($groupedSkills as $category => $categorySkills) {
-            $md .= '**'.ucfirst($category).'**: '.$categorySkills->pluck('name')->join(', ')."\n\n";
+            $md .= '**' . ucfirst($category) . '**: ' . $categorySkills->pluck('name')->join(', ') . "\n\n";
         }
 
         return $md;
@@ -316,29 +316,37 @@ class CVGeneratorService
         $educations = Education::orderBy('start_date', 'desc')->get();
         $skills = Skill::all();
 
-        $cvContent = 'FULL NAME: '.$profile->name."\n";
-        $cvContent .= 'TITLE: '.$profile->title."\n";
-        $cvContent .= 'SUMMARY: '.strip_tags($profile->biography)."\n\n";
+        $cvContent = 'FULL NAME: ' . $profile->name . "\n";
+        $cvContent .= 'TITLE: ' . $profile->title . "\n";
+        $cvContent .= 'SUMMARY: ' . strip_tags($profile->biography) . "\n\n";
 
         $cvContent .= "EXPERIENCE:\n";
         foreach ($experiences as $exp) {
-            $cvContent .= '- '.$exp->position.' at '.$exp->company.' ('.$exp->start_date->format('Y').'-'.($exp->end_date ? $exp->end_date->format('Y') : 'Present').")\n";
-            $cvContent .= '  '.strip_tags($exp->description)."\n";
+            $cvContent .= '- ' . $exp->position . ' at ' . $exp->company . ' (' . $exp->start_date->format('Y') . '-' . ($exp->end_date ? $exp->end_date->format('Y') : 'Present') . ")\n";
+            $cvContent .= '  ' . strip_tags($exp->description) . "\n";
             if ($exp->achievements) {
                 foreach ($exp->achievements as $achievement) {
-                    $cvContent .= '  Achievement: '.$achievement."\n";
+                    $cvContent .= '  Achievement: ' . $achievement . "\n";
                 }
             }
         }
 
         $cvContent .= "\nEDUCATION:\n";
         foreach ($educations as $edu) {
-            $cvContent .= '- '.$edu->degree.' in '.$edu->field_of_study.' at '.$edu->institution."\n";
+            $cvContent .= '- ' . $edu->degree . ' in ' . $edu->field_of_study . ' at ' . $edu->institution . "\n";
         }
 
         $cvContent .= "\nSKILLS:\n";
         foreach ($skills as $skill) {
-            $cvContent .= '- '.$skill->name.' ('.$skill->category.', Proficiency: '.$skill->proficiency."/100)\n";
+            if ($skill->years_experience > 0) {
+                $years = floatval($skill->years_experience);
+                $displayYears = fmod($years, 1) > 0 ? number_format($years, 1) : intval($years);
+                $yearText = $years == 1 ? 'year' : 'years';
+                $yearsExp = ' (' . $displayYears . ' ' . $yearText . ')';
+            } else {
+                $yearsExp = '';
+            }
+            $cvContent .= '- ' . $skill->name . ' (' . $skill->category . ')' . $yearsExp . "\n";
         }
 
         return $cvContent;
@@ -346,25 +354,10 @@ class CVGeneratorService
 
     public function formatDate($date): string
     {
-        if (! $date) {
+        if (!$date) {
             return 'Present';
         }
 
         return $date->format('M Y');
-    }
-
-    public function formatSkillLevel(int $proficiency): string
-    {
-        if ($proficiency >= 90) {
-            return 'Expert';
-        } elseif ($proficiency >= 70) {
-            return 'Advanced';
-        } elseif ($proficiency >= 50) {
-            return 'Intermediate';
-        } elseif ($proficiency >= 30) {
-            return 'Basic';
-        } else {
-            return 'Beginner';
-        }
     }
 }
