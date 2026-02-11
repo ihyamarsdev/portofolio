@@ -9,17 +9,37 @@ class AboutMeScoreChartWidget extends ChartWidget
 {
     protected ?string $heading = 'About Me Score Trend';
 
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 4;
 
     protected int|string|array $columnSpan = '1/2';
 
+    public ?string $filter = 'month';
+
+    protected function getFilters(): ?array
+    {
+        return [
+            'today' => 'Today',
+            'week' => 'This Week',
+            'month' => 'This Month',
+            'year' => 'This Year',
+        ];
+    }
+
     protected function getData(): array
     {
-        $analyses = CVAnalysis::query()
-            ->whereNotNull('about_me_score')
-            ->orderBy('created_at', 'asc')
-            ->take(30)
-            ->get();
+        $query = CVAnalysis::query()->orderBy('created_at', 'asc');
+
+        // Apply filter based on selected period
+        match ($this->filter) {
+            'today' => $query->whereDate('created_at', today()),
+            'week' => $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]),
+            'month' => $query->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year),
+            'year' => $query->whereYear('created_at', now()->year),
+            default => $query->take(30),
+        };
+
+        $analyses = $query->whereNotNull('about_me_score')->get();
 
         if ($analyses->isEmpty()) {
             return [

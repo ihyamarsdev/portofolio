@@ -532,3 +532,14 @@ pre,
 .prose li {
     margin-bottom: 0.5rem;
 }
+
+/* CV Generator Card Spacing */
+.cv-generator-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.cv-generator-wrapper > * {
+    margin: 0 !important;
+}
