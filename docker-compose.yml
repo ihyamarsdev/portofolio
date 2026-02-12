@@ -16,27 +16,32 @@ services:
         command: --watch
         depends_on:
             - db
-        networks:
-            - app-network
+            - redis
 
     db:
         image: postgres:16-alpine
         container_name: portofolio-db
         restart: unless-stopped
         environment:
-            POSTGRES_DB: ${DB_DATABASE:-portofolio}
-            POSTGRES_USER: ${DB_USERNAME:-postgres}
-            POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+            POSTGRES_DB: ${DB_DATABASE}
+            POSTGRES_USER: ${DB_USERNAME}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
         volumes:
             - pgdata:/var/lib/postgresql/data
         ports:
-            - "5432:5432"
-        networks:
-            - app-network
+            - "127.0.0.1:5432:5432"
 
-networks:
-    app-network:
-        driver: bridge
+    redis:
+        image: 'docker.io/dragonflydb/dragonfly'
+        container_name: portofolio-redis
+        restart: unless-stopped
+        ports:
+            - "6379:6379"
+        volumes:
+            - dragondata:/data
+ 
+
 
 volumes:
     pgdata:
+    dragondata:
