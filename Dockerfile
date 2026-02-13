@@ -34,7 +34,6 @@ RUN composer dump-autoload --optimize && \
 
 
 RUN php artisan storage:link && \
-    php artisan optimize:clear && \
     php artisan optimize
 
 ENTRYPOINT ["php", "artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=8888"]
