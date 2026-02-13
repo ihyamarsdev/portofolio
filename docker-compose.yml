@@ -13,7 +13,7 @@ services:
             - "127.0.0.1:5432:5432"
 
     redis:
-        image: 'docker.io/dragonflydb/dragonfly'
+        image: docker.dragonflydb.io/dragonflydb/dragonfly
         container_name: portofolio-redis
         restart: unless-stopped
         ports:
