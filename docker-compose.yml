@@ -16,13 +16,13 @@ services:
             - .:/app
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.portainer.entrypoints=web"
-            - "traefik.http.routers.portainer.rule=Host(`ihyamars.my.id`)"
-            - "traefik.http.routers.portainer-secure.entrypoints=websecure"
-            - "traefik.http.routers.portainer-secure.rule=Host(`ihyamars.my.id`)"
-            - "traefik.http.routers.portainer-secure.tls=true"
-            - "traefik.http.routers.portainer-secure.tls.certresolver=cloudflare"
-            - "traefik.http.services.portainer.loadbalancer.server.port=8888"
+            - "traefik.http.routers.app.entrypoints=web"
+            - "traefik.http.routers.app.rule=Host(`ihyamars.my.id`)"
+            - "traefik.http.routers.app-secure.entrypoints=websecure"
+            - "traefik.http.routers.app-secure.rule=Host(`ihyamars.my.id`)"
+            - "traefik.http.routers.app-secure.tls=true"
+            - "traefik.http.routers.app-secure.tls.certresolver=cloudflare"
+            - "traefik.http.services.app.loadbalancer.server.port=8888"
         depends_on:
             - db
             - redis
