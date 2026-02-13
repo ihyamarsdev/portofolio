@@ -16,13 +16,16 @@ services:
             - .:/app
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.app.entrypoints=web"
-            - "traefik.http.routers.app.rule=Host(`ihyamars.my.id`)"
-            - "traefik.http.routers.app-secure.entrypoints=websecure"
-            - "traefik.http.routers.app-secure.rule=Host(`ihyamars.my.id`)"
-            - "traefik.http.routers.app-secure.tls=true"
-            - "traefik.http.routers.app-secure.tls.certresolver=cloudflare"
-            - "traefik.http.services.app.loadbalancer.server.port=8888"
+            - "traefik.http.routers.portofolio.entrypoints=web"
+            - "traefik.http.routers.portofolio.rule=Host(`ihyamars.my.id`)"
+            - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+            - "traefik.http.middlewares.ssl-header.headers.customrequestheaders.X-Forwarded-Proto=https"
+            - "traefik.http.routers.portofolio.middlewares=https-redirect"
+            - "traefik.http.routers.portofolio-secure.entrypoints=websecure"
+            - "traefik.http.routers.portofolio-secure.rule=Host(`ihyamars.my.id`)"
+            - "traefik.http.services.portofolio.loadbalancer.server.port=8888"
+            - "traefik.http.routers.portofolio-secure.service=portofolio"
+            - "traefik.http.routers.portofolio-secure.tls=true"
         depends_on:
             - db
             - redis
