@@ -1,18 +1,18 @@
 FROM dunglas/frankenphp:php8.4-alpine
 
+# Set working directory
+WORKDIR /app
+
 # Install extensions
-RUN install-php-extensions \
-    pcntl \
+RUN docker-php-ext-install \
     bcmath \
     gd \
     intl \
-    zip \
-    opcache \
     pdo_pgsql \
-    pgsql 
+    pgsql \
+    zip \
+    exif
 
-# Set working directory
-WORKDIR /app
 
 # Composer installation
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
