@@ -3,6 +3,16 @@ FROM dunglas/frankenphp:php8.4-alpine
 # Set working directory
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y \
+    zlib1g-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libwebp-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install extensions
 RUN docker-php-ext-install \
     bcmath \
