@@ -3,46 +3,38 @@ FROM dunglas/frankenphp:php8.4-alpine
 # Set working directory
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    zlib1g-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libwebp-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    pkg-config \
-    && rm -rf /var/lib/apt/lists/*
-
 # Install extensions
-RUN docker-php-ext-install \
+RUN install-php-extensions \
+    pcntl \
     bcmath \
     gd \
     intl \
+    zip \
+    opcache \
     pdo_pgsql \
     pgsql \
-    zip \
-    exif
-
+    exif \
+    && apk add --no-cache nodejs npm 
 
 # Composer installation
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Copy dependency files
-COPY composer.json composer.lock ./
+COPY composer.json composer.lock package.json package-lock.json ./
 
-# Install dependencies
-ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer install --no-dev --no-autoloader --no-scripts
+RUN composer install --no-dev --no-autoloader --no-scripts && \
+    npm ci
 
 # Copy application files
 COPY . .
 
-# Finish composer installation
-RUN composer dump-autoload --optimize
+# Finish composer installation and build frontend
+RUN composer dump-autoload --optimize && \
+    npm run build
 
-# Set permissions (optional but good for some setups)
-RUN chmod -R 777 storage bootstrap/cache
 
-RUN php artisan storage:link
+RUN php artisan storage:link && \
+    php artisan optimize:clear && \
+    php artisan optimize
 
 ENTRYPOINT ["php", "artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=8888"]
