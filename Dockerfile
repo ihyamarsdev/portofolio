@@ -33,4 +33,6 @@ RUN composer dump-autoload --optimize
 # Set permissions (optional but good for some setups)
 RUN chmod -R 777 storage bootstrap/cache
 
-ENTRYPOINT ["php", "artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=8000", "--admin-port=2019"]
+RUN php artisan storage:link
+
+ENTRYPOINT ["php", "artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=8888"]

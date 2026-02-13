@@ -1,4 +1,30 @@
 services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: portofolio-app
+        container_name: portofolio-app
+        restart: unless-stopped
+        ports:
+            - "8888:8888"
+        env_file:
+            - .env
+        volumes:
+            - .:/app
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.portainer.entrypoints=web"
+            - "traefik.http.routers.portainer.rule=Host(`ihyamars.my.id`)"
+            - "traefik.http.routers.portainer-secure.entrypoints=websecure"
+            - "traefik.http.routers.portainer-secure.rule=Host(`ihyamars.my.id`)"
+            - "traefik.http.routers.portainer-secure.tls=true"
+            - "traefik.http.routers.portainer-secure.tls.certresolver=cloudflare"
+            - "traefik.http.services.portainer.loadbalancer.server.port=8888"
+        depends_on:
+            - db
+            - redis
+
     db:
         image: postgres:16-alpine
         container_name: portofolio-db
