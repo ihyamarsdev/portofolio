@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>CV - {{ $profile->name ?? 'Candidate' }}</title>
     <style>
         @page {
             size: A4;
-            margin: 15mm 20mm;
+            margin: 20mm 25mm;
         }
 
         * {
@@ -22,7 +21,7 @@
             line-height: 1.5;
             color: #2c3e50;
             margin: 0;
-            padding: 0;
+            padding: 10;
         }
 
         .container {
@@ -47,10 +46,10 @@
             color: #1a252f;
         }
 
-        .professional-title {
+        .title {
             font-size: 13pt;
             font-weight: 600;
-            color: #3498db;
+            color: #088395;
             margin-bottom: 12px;
         }
 
@@ -64,9 +63,10 @@
             margin: 0 10px;
         }
 
-        .contact-info a {
-            color: #3498db;
+        .contact-link {
+            color: #088395;
             text-decoration: none;
+            font-weight: 500;
         }
 
         /* Section Headings */
@@ -75,7 +75,7 @@
             font-weight: 700;
             text-transform: uppercase;
             color: #2c3e50;
-            border-bottom: 2px solid #3498db;
+            border-bottom: 2px solid #088395;
             padding-bottom: 6px;
             margin-top: 22px;
             margin-bottom: 14px;
@@ -99,16 +99,20 @@
             margin-bottom: 4px;
         }
 
-        .position-title {
+        .position {
             font-weight: 700;
             font-size: 11.5pt;
             color: #2c3e50;
         }
 
-        .organization {
+        .company {
             font-weight: 600;
             font-size: 11pt;
             color: #34495e;
+        }
+
+        .company-location {
+            margin-bottom: 6px;
         }
 
         .location {
@@ -119,13 +123,9 @@
 
         .date {
             font-weight: 600;
-            color: #3498db;
+            color: #088395;
             font-size: 10pt;
             white-space: nowrap;
-        }
-
-        .company-line {
-            margin-bottom: 6px;
         }
 
         .description {
@@ -148,17 +148,22 @@
             color: #555;
         }
 
+        li::marker {
+            color: #088395;
+        }
+
         /* Skills Section */
-        .skills-grid {
+        .skills-container {
             margin-top: 10px;
         }
 
-        .skill-category-block {
+        .skill-category {
             margin-bottom: 14px;
             page-break-inside: avoid;
         }
 
-        .skill-category-title {
+        .category-title {
+            display: block;
             font-weight: 700;
             font-size: 11pt;
             color: #2c3e50;
@@ -176,7 +181,7 @@
             display: inline-block;
             padding: 4px 10px;
             background: #ecf0f1;
-            border-left: 3px solid #3498db;
+            border-left: 3px solid #088395;
             font-size: 10pt;
             color: #2c3e50;
         }
@@ -193,21 +198,23 @@
             font-weight: 600;
         }
 
-        /* Professional Summary */
+        /* Summary */
         .summary {
             text-align: justify;
             line-height: 1.6;
             color: #555;
         }
 
-        /* Certification & Achievement Badges */
-        .achievement-marker {
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            background: #3498db;
-            border-radius: 50%;
-            margin-right: 6px;
+        /* Meta Info */
+        .meta-info {
+            margin-top: 4px;
+            color: #7f8c8d;
+            font-size: 10pt;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: #088395;
         }
 
         /* Print Optimization */
@@ -219,132 +226,62 @@
         }
     </style>
 </head>
-
 <body>
     <div class="container">
-        {{-- Header Section --}}
-        <div class="header">
-            <div class="name">{{ $profile->name ?? 'YOUR NAME' }}</div>
-            <div class="professional-title">{{ $profile->title ?? 'Professional Title' }}</div>
-            <div class="contact-info">
-                <span>{{ $profile->email ?? 'email@example.com' }}</span> |
-                <span>{{ $profile->phone ?? 'Phone' }}</span> |
-                <span>{{ $profile->location ?? 'Location' }}</span>
-            </div>
-            @if(isset($profile->social_links) && count($profile->social_links) > 0)
-                <div class="contact-info">
-                    @foreach($profile->social_links as $platform => $url)
-                        <span><a href="{{ $url }}">{{ ucfirst($platform) }}</a></span>
-                        @if(!$loop->last) | @endif
-                    @endforeach
-                </div>
-            @endif
-        </div>
+        {{-- Header --}}
+        @include('cv.partials._header', [
+            'profile' => $profile,
+            'header_class' => 'header',
+            'name_class' => 'name',
+            'title_class' => 'title',
+            'contact_class' => 'contact-info',
+            'link_class' => 'contact-link'
+        ])
 
         {{-- Professional Summary --}}
-        @if($profile->biography)
-            <div class="section">
-                <h2>Professional Summary</h2>
-                <div class="summary">
-                    {{ strip_tags($profile->biography) }}
-                </div>
-            </div>
-        @endif
+        @include('cv.partials._summary', [
+            'biography' => $profile->biography,
+            'section_class' => 'section',
+            'heading_class' => '',
+            'content_class' => 'summary'
+        ])
 
-        {{-- Professional Experience --}}
-        <div class="section">
-            <h2>Professional Experience</h2>
-            @foreach($experiences as $experience)
-                <div class="item">
-                    <div class="item-header">
-                        <span class="position-title">{{ $experience->position }}</span>
-                        <span class="date">
-                            {{ $experience->start_date->format('M Y') }} -
-                            {{ $experience->end_date ? $experience->end_date->format('M Y') : 'Present' }}
-                        </span>
-                    </div>
-                    <div class="company-line">
-                        <span class="organization">{{ $experience->company }}</span>,
-                        <span class="location">{{ $experience->location }}</span>
-                    </div>
-                    <div class="description">
-                        @if($experience->description)
-                            {!! nl2br(e(strip_tags($experience->description))) !!}
-                        @endif
-
-                        @if($experience->achievements && count($experience->achievements) > 0)
-                            <ul>
-                                @foreach($experience->achievements as $achievement)
-                                    <li>{{ $achievement }}</li>
-                                @endforeach
-                            </ul>
-                        @endif
-                    </div>
-                </div>
-            @endforeach
-        </div>
+        {{-- Experience --}}
+        @include('cv.partials._experience', [
+            'experiences' => $experiences,
+            'section_class' => 'section',
+            'heading_class' => '',
+            'item_class' => 'item',
+            'position_class' => 'position',
+            'company_class' => 'company',
+            'location_class' => 'location',
+            'date_class' => 'date',
+            'description_class' => 'description',
+            'list_class' => ''
+        ])
 
         {{-- Education --}}
-        <div class="section">
-            <h2>Education</h2>
-            @foreach($educations as $education)
-                <div class="item">
-                    <div class="item-header">
-                        <span class="organization">{{ $education->institution }}</span>
-                        <span class="date">
-                            {{ $education->start_date->format('Y') }} -
-                            {{ $education->end_date ? $education->end_date->format('Y') : 'Present' }}
-                        </span>
-                    </div>
-                    <div class="position-title" style="font-size: 11pt;">
-                        {{ $education->degree }} in {{ $education->field_of_study }}
-                    </div>
-                    @if($education->grade)
-                        <div style="margin-top: 4px; color: #7f8c8d; font-size: 10pt;">
-                            GPA/Grade: {{ $education->grade }}
-                        </div>
-                    @endif
-                    @if($education->activities)
-                        <div style="margin-top: 4px; color: #555; font-size: 10pt;">
-                            Activities: {{ $education->activities }}
-                        </div>
-                    @endif
-                </div>
-            @endforeach
-        </div>
+        @include('cv.partials._education', [
+            'educations' => $educations,
+            'section_class' => 'section',
+            'heading_class' => '',
+            'item_class' => 'item',
+            'institution_class' => 'company',
+            'degree_class' => 'position',
+            'date_class' => 'date',
+            'meta_class' => 'meta-info'
+        ])
 
-        {{-- Skills & Expertise --}}
-        <div class="section">
-            <h2>Skills & Expertise</h2>
-            <div class="skills-grid">
-                @php
-                    $groupedSkills = $skills->groupBy(fn($skill) => $skill->category?->name ?? 'General');
-                @endphp
-                @foreach($groupedSkills as $categoryName => $categorySkills)
-                    <div class="skill-category-block">
-                        <div class="skill-category-title">{{ $categoryName }}</div>
-                        <div class="skill-items">
-                            @foreach($categorySkills as $skill)
-                                <div class="skill-item">
-                                    <div class="skill-item-with-years">
-                                        <span>{{ $skill->name }}</span>
-                                        @if($skill->years_experience > 0)
-                                            @php
-                                                $years = floatval($skill->years_experience);
-                                                $displayYears = fmod($years, 1) > 0 ? number_format($years, 1) : intval($years);
-                                                $yearText = $years == 1 ? 'yr' : 'yrs';
-                                            @endphp
-                                            <span class="skill-years">({{ $displayYears }} {{ $yearText }})</span>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
+        {{-- Skills --}}
+        @include('cv.partials._skills', [
+            'skills' => $skills,
+            'section_class' => 'section',
+            'heading_class' => '',
+            'container_class' => 'skills-container',
+            'category_class' => 'skill-category',
+            'category_title_class' => 'category-title',
+            'skill_item_class' => 'skill-item'
+        ])
     </div>
 </body>
-
 </html>

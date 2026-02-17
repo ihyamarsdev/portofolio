@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Modern CV - {{ $profile->name ?? 'Candidate' }}</title>
     <style>
         @page {
             size: A4;
-            margin: 15mm 20mm;
+            margin: 20mm 25mm;
         }
 
         * {
@@ -17,25 +16,21 @@
         }
 
         body {
-            font-family: 'Segoe UI', 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             font-size: 10.5pt;
             line-height: 1.6;
             color: #2c3e50;
-            background: #f8f9fa;
+            background: white;
         }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            border-radius: 8px;
-            overflow: hidden;
         }
 
-        /* Modern Gradient Header */
+        /* Modern Header - Solid color fallback for DomPDF */
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #088395;
             color: white;
             padding: 40px 45px;
             text-align: center;
@@ -55,7 +50,7 @@
             font-size: 14pt;
             margin-bottom: 20px;
             font-weight: 400;
-            opacity: 0.95;
+            color: #7AB2B2;
         }
 
         .contact-info {
@@ -67,13 +62,13 @@
         .contact-info span {
             display: inline-block;
             margin: 0 12px;
-            opacity: 0.9;
+            color: #d0f6ff;
         }
 
         .contact-link {
-            color: white;
+            color: #d0f6ff;
             text-decoration: none;
-            border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+            border-bottom: 1px dotted #d0f6ff;
         }
 
         /* Content Area */
@@ -81,17 +76,13 @@
             padding: 40px 45px;
         }
 
-        /* Section Headings - Modern Gradient Style */
+        /* Section Headings - DomPDF Compatible */
         h2 {
             font-size: 13pt;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #088395;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, #667eea 0%, #764ba2 100%) 1;
+            border-bottom: 3px solid #088395;
             padding-bottom: 10px;
             margin-top: 30px;
             margin-bottom: 20px;
@@ -106,30 +97,33 @@
         .item {
             margin-bottom: 24px;
             padding-left: 20px;
-            border-left: 3px solid #667eea;
+            border-left: 3px solid #088395;
             page-break-inside: avoid;
             position: relative;
         }
 
-        .item::before {
-            content: '';
+        .item-dot {
             position: absolute;
-            left: -7px;
+            left: -26px;
             top: 8px;
             width: 11px;
             height: 11px;
             background: white;
-            border: 3px solid #667eea;
-            border-radius: 50%;
+            border: 3px solid #088395;
+            /* DomPDF doesn't support border-radius well, using square with border */
         }
 
         .item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
             margin-bottom: 8px;
-            flex-wrap: wrap;
-            gap: 8px;
+        }
+
+        .item-header .position {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .item-header .date {
+            display: inline-block;
         }
 
         .position {
@@ -140,10 +134,7 @@
 
         .company {
             font-weight: 600;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #088395;
             font-size: 11pt;
         }
 
@@ -185,33 +176,27 @@
         }
 
         li::marker {
-            color: #667eea;
+            color: #088395;
         }
 
-        /* Skills - Modern Card Grid */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 16px;
+        /* Skills - Card Style for DomPDF */
+        .skills-container {
             margin-top: 16px;
         }
 
         .skill-category {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: #f0f8f9;
             padding: 16px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #088395;
             page-break-inside: avoid;
+            margin-bottom: 16px;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
 
-        .skill-category-title {
+        .category-title {
             display: block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #088395;
             margin-bottom: 10px;
             font-size: 10.5pt;
             text-transform: uppercase;
@@ -220,42 +205,38 @@
         }
 
         .skill-items {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+            display: block;
         }
 
         .skill-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: block;
             color: #2c3e50;
             font-size: 10pt;
-            line-height: 1.5;
+            line-height: 1.8;
+            padding-left: 10px;
         }
 
         .skill-name {
-            flex: 1;
+            font-weight: 500;
         }
 
         .skill-years {
             padding: 2px 8px;
             background: white;
-            border-radius: 4px;
-            font-size: 8.5pt;
-            color: #667eea;
+            color: #088395;
             font-weight: 600;
             white-space: nowrap;
+            margin-left: 8px;
         }
 
-        /* Professional Summary */
+        /* Summary */
         .summary {
             text-align: justify;
             color: #556;
             line-height: 1.7;
         }
 
-        /* Additional Meta Info */
+        /* Meta Info */
         .meta-info {
             margin-top: 8px;
             color: #7f8c8d;
@@ -264,67 +245,49 @@
 
         .meta-label {
             font-weight: 600;
-            color: #667eea;
+            color: #088395;
         }
 
         /* Print Optimization */
         @media print {
             body {
-                background: white;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
 
-            .container {
-                box-shadow: none;
-                border-radius: 0;
-            }
-
-            .skills-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .skill-category {
+                break-inside: avoid;
             }
         }
     </style>
 </head>
-
 <body>
     <div class="container">
-        {{-- Modern Gradient Header --}}
-        <div class="header">
-            <div class="name">{{ $profile->name ?? 'Your Name' }}</div>
-            <div class="title">{{ $profile->title ?? 'Professional Title' }}</div>
-            <div class="contact-info">
-                <span>{{ $profile->email ?? 'email@example.com' }}</span>
-                <span>{{ $profile->phone ?? 'Phone' }}</span>
-                <span>{{ $profile->location ?? 'Location' }}</span>
-            </div>
-            @if(isset($profile->social_links) && count($profile->social_links) > 0)
-                <div class="contact-info" style="margin-top: 8px;">
-                    @foreach($profile->social_links as $platform => $url)
-                        <span>
-                            <a href="{{ $url }}" class="contact-link">{{ ucfirst($platform) }}</a>
-                        </span>
-                    @endforeach
-                </div>
-            @endif
-        </div>
+        {{-- Modern Header --}}
+        @include('cv.partials._header', [
+            'profile' => $profile,
+            'header_class' => 'header',
+            'name_class' => 'name',
+            'title_class' => 'title',
+            'contact_class' => 'contact-info',
+            'link_class' => 'contact-link'
+        ])
 
         <div class="content">
             {{-- Professional Summary --}}
-            @if($profile->biography)
-                <div class="section">
-                    <h2>Professional Summary</h2>
-                    <div class="summary">
-                        {{ strip_tags($profile->biography) }}
-                    </div>
-                </div>
-            @endif
+            @include('cv.partials._summary', [
+                'biography' => $profile->biography,
+                'section_class' => 'section',
+                'heading_class' => '',
+                'content_class' => 'summary'
+            ])
 
             {{-- Experience --}}
             <div class="section">
-                <h2>Experience</h2>
+                <h2>Professional Experience</h2>
                 @foreach($experiences as $experience)
                     <div class="item">
+                        <div class="item-dot"></div>
                         <div class="item-header">
                             <span class="position">{{ $experience->position }}</span>
                             <span class="date">
@@ -341,7 +304,6 @@
                                 {!! nl2br(e(strip_tags($experience->description))) !!}
                             </div>
                         @endif
-
                         @if($experience->achievements && count($experience->achievements) > 0)
                             <ul>
                                 @foreach($experience->achievements as $achievement)
@@ -358,6 +320,7 @@
                 <h2>Education</h2>
                 @foreach($educations as $education)
                     <div class="item">
+                        <div class="item-dot"></div>
                         <div class="item-header">
                             <span class="company">{{ $education->institution }}</span>
                             <span class="date">
@@ -384,36 +347,16 @@
             </div>
 
             {{-- Skills --}}
-            <div class="section">
-                <h2>Skills</h2>
-                <div class="skills-grid">
-                    @php
-                        $groupedSkills = $skills->groupBy(fn($skill) => $skill->category?->name ?? 'General');
-                    @endphp
-                    @foreach($groupedSkills as $categoryName => $categorySkills)
-                        <div class="skill-category">
-                            <strong class="skill-category-title">{{ $categoryName }}</strong>
-                            <div class="skill-items">
-                                @foreach($categorySkills as $skill)
-                                    <div class="skill-item">
-                                        <span class="skill-name">{{ $skill->name }}</span>
-                                        @if($skill->years_experience > 0)
-                                            @php
-                                                $years = floatval($skill->years_experience);
-                                                $displayYears = fmod($years, 1) > 0 ? number_format($years, 1) : intval($years);
-                                                $yearText = $years == 1 ? 'yr' : 'yrs';
-                                            @endphp
-                                            <span class="skill-years">{{ $displayYears }} {{ $yearText }}</span>
-                                        @endif
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
+            @include('cv.partials._skills', [
+                'skills' => $skills,
+                'section_class' => 'section',
+                'heading_class' => '',
+                'container_class' => 'skills-container',
+                'category_class' => 'skill-category',
+                'category_title_class' => 'category-title',
+                'skill_item_class' => 'skill-item'
+            ])
         </div>
     </div>
 </body>
-
 </html>

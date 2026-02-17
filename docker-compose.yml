@@ -1,64 +1,63 @@
 services:
-    portofolio:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        image: portofolio-app
-        container_name: portofolio-app
-        restart: unless-stopped
-        env_file:
-            - .env
-        networks:
-            - backend
-        volumes:
-            - .:/app
-        labels:
-            - "traefik.enable=true"
-            - "traefik.http.routers.portofolio.entrypoints=web"
-            - "traefik.http.routers.portofolio.rule=Host(`ihyamars.my.id`)"
-            - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
-            - "traefik.http.middlewares.ssl-header.headers.customrequestheaders.X-Forwarded-Proto=https"
-            - "traefik.http.routers.portofolio.middlewares=https-redirect"
-            - "traefik.http.routers.portofolio-secure.entrypoints=websecure"
-            - "traefik.http.routers.portofolio-secure.rule=Host(`ihyamars.my.id`)"
-            - "traefik.http.services.portofolio.loadbalancer.server.port=8888"
-            - "traefik.http.routers.portofolio-secure.service=portofolio"
-            - "traefik.http.routers.portofolio-secure.tls=true"
-        depends_on:
-            - db
-            - redis
+  portofolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: portofolio-app
+    container_name: portofolio-app
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - backend
+    volumes:
+      - storage:/app/storage
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portofolio.entrypoints=web"
+      - "traefik.http.routers.portofolio.rule=Host(`ihyamars.my.id`)"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.ssl-header.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.routers.portofolio.middlewares=https-redirect"
+      - "traefik.http.routers.portofolio-secure.entrypoints=websecure"
+      - "traefik.http.routers.portofolio-secure.rule=Host(`ihyamars.my.id`)"
+      - "traefik.http.services.portofolio.loadbalancer.server.port=8888"
+      - "traefik.http.routers.portofolio-secure.service=portofolio"
+      - "traefik.http.routers.portofolio-secure.tls=true"
+    depends_on:
+      - db
+      - redis
 
-    db:
-        image: postgres:16-alpine
-        container_name: portofolio-db
-        restart: unless-stopped
-        networks:
-            - backend
-        environment:
-            POSTGRES_DB: ${DB_DATABASE}
-            POSTGRES_USER: ${DB_USERNAME}
-            POSTGRES_PASSWORD: ${DB_PASSWORD}
-        volumes:
-            - pgdata:/var/lib/postgresql/data
-        ports:
-            - "127.0.0.1:5432:5432"
+  db:
+    image: postgres:16-alpine
+    container_name: portofolio-db
+    restart: unless-stopped
+    networks:
+      - backend
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
 
-    redis:
-        image: docker.dragonflydb.io/dragonflydb/dragonfly
-        container_name: portofolio-redis
-        networks:
-            - backend
-        restart: unless-stopped
-        ports:
-            - "127.0.0.1:6379:6379"
-        volumes:
-            - dragondata:/data
- 
-
+  redis:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly
+    container_name: portofolio-redis
+    networks:
+      - backend
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - dragondata:/data
 
 volumes:
-    pgdata:
-    dragondata:
+  pgdata:
+  dragondata:
+  storage:
 
 networks:
   backend:
