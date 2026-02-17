@@ -67,10 +67,11 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 RUN composer dump-autoload --optimize && \
     npm run build
 
-# Create storage link and clear caches
-RUN php artisan storage:link && \
-    php artisan config:clear && \
-    php artisan cache:clear && \
+# Create storage link
+RUN php artisan storage:link
+
+# Clear file-based caches only (skip database cache)
+RUN php artisan config:clear && \
     php artisan route:clear && \
     php artisan view:clear
 

@@ -15,16 +15,11 @@ while ! nc -z redis 6379; do
 done
 echo "Redis is ready!"
 
-# Run migrations if needed
-echo "Running migrations..."
-php artisan migrate --force
-
-# Clear caches
-echo "Clearing caches..."
-php artisan config:clear
-php artisan cache:clear
-php artisan route:clear
-php artisan view:clear
+# Run migrations if needed (only in production)
+if [ "$APP_ENV" = "production" ]; then
+    echo "Running migrations..."
+    php artisan migrate --force
+fi
 
 # Start Octane
 echo "Starting FrankenPHP Octane server..."
