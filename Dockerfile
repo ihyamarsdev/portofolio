@@ -5,6 +5,8 @@ WORKDIR /app
 # Install PHP, extensions, and build tools
 RUN apk add --no-cache \
     curl \
+    wget \
+    netcat-openbsd \
     nodejs \
     npm \
     php84 \
@@ -34,7 +36,8 @@ RUN apk add --no-cache \
     php84-xmlreader \
     php84-xmlwriter \
     php84-zip \
-    php84-bcmath
+    php84-bcmath \
+    php84-sockets
 
 # Symlink PHP
 RUN ln -sf /usr/bin/php84 /usr/bin/php
@@ -56,13 +59,25 @@ RUN composer install --no-dev --no-autoloader --no-scripts && \
 # Copy application files
 COPY . .
 
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Build assets and optimize
 RUN composer dump-autoload --optimize && \
     npm run build
 
+# Create storage link and clear caches
 RUN php artisan storage:link && \
-    php artisan optimize
+    php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan route:clear && \
+    php artisan view:clear
 
 EXPOSE 8888
 
-ENTRYPOINT ["php", "artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=8888"]
+# Set environment for FrankenPHP worker
+ENV FRANKENPHP_WORKER=1
+ENV OCTANE_SERVER=frankenphp
+
+ENTRYPOINT ["docker-entrypoint.sh"]
