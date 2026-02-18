@@ -31,7 +31,11 @@ class AdminPanelProvider extends PanelProvider
             ->profile(EditProfile::class)
             ->maxContentWidth("full") // Set max width ke full
             ->colors([
-                "primary" => Color::Amber,
+                'primary' => Color::Cyan,
+                'danger' => Color::Rose,
+                'success' => Color::Emerald,
+                'warning' => Color::Amber,
+                'info' => Color::Blue,
             ])
             ->discoverResources(
                 in: app_path("Filament/Resources"),
@@ -46,7 +50,14 @@ class AdminPanelProvider extends PanelProvider
                 in: app_path("Filament/Widgets"),
                 for: "App\\Filament\\Widgets",
             )
-            ->widgets([])
+            ->widgets([
+                // \App\Filament\Widgets\StatsOverview::class,
+                // \App\Filament\Widgets\LatestProjectsWidget::class,
+                // \App\Filament\Widgets\ATSScoreChartWidget::class,
+                // \App\Filament\Widgets\FormatScoreChartWidget::class,
+                // \App\Filament\Widgets\JobMatchChartWidget::class,
+                // \App\Filament\Widgets\AboutMeScoreChartWidget::class,
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
