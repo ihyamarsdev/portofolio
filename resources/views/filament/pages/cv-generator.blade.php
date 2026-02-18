@@ -923,21 +923,34 @@
             color: #bfdbfe;
         }
 
-        /* Preview Section */
+        /* Preview Section - A4 Size Centered */
         .preview-iframe-wrapper {
-            border-radius: 8px;
-            overflow: hidden;
-            background: #f9fafb;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 2rem;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            min-height: 900px;
+            overflow: auto;
         }
 
         .dark .preview-iframe-wrapper {
-            background: #111827;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         }
 
         .preview-iframe {
-            width: 100%;
-            height: 800px;
+            width: 210mm;
+            height: 297mm;
+            max-width: 210mm;
+            min-height: 297mm;
             border: none;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05);
+            background: #ffffff;
+            transform-origin: top center;
+        }
+
+        .dark .preview-iframe {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(6, 182, 212, 0.2);
         }
 
         /* History Table */
@@ -1066,8 +1079,41 @@
                 font-size: 20px;
             }
 
+            .preview-iframe-wrapper {
+                padding: 1rem;
+            }
+
             .preview-iframe {
-                height: 600px;
+                width: 100%;
+                height: 141.42vw;
+                max-width: none;
+                min-height: auto;
+            }
+        }
+
+        /* Scale A4 preview on screens smaller than 900px */
+        @media (max-width: 900px) {
+            .preview-iframe-wrapper {
+                overflow-x: auto;
+            }
+
+            .preview-iframe {
+                transform: scale(0.6);
+                transform-origin: top center;
+            }
+        }
+
+        @media (min-width: 901px) and (max-width: 1100px) {
+            .preview-iframe {
+                transform: scale(0.75);
+                transform-origin: top center;
+            }
+        }
+
+        @media (min-width: 1101px) and (max-width: 1300px) {
+            .preview-iframe {
+                transform: scale(0.85);
+                transform-origin: top center;
             }
         }
     </style>
