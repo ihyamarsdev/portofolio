@@ -4,9 +4,9 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 <!-- Sidebar -->
                 <div class="lg:col-span-1">
-                    <div class="glass-card p-6 sticky top-24">
+                    <div class="glass-card p-6 sticky top-24 gradient-card">
                         <div
-                            class="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-[--color-accent-emerald] to-[--color-accent-cyan] rounded-full flex items-center justify-center overflow-hidden">
+                            class="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-emerald-500 via-cyan-500 to-violet-500 rounded-full flex items-center justify-center overflow-hidden shadow-lg glow-violet">
                             @if($profile && $profile->avatar)
                                 <img src="{{ Storage::url($profile->avatar) }}" alt="{{ $profile->name }}"
                                     class="w-full h-full object-cover">
@@ -44,7 +44,7 @@
                         </div>
 
                         <div class="mt-6 pt-6 border-t border-[--color-border]">
-                            <a href="{{ route('contact') }}" class="btn-primary w-full justify-center">
+                            <a href="{{ route('contact') }}" class="btn-primary-sunset w-full justify-center">
                                 Get In Touch
                             </a>
                         </div>
@@ -91,7 +91,7 @@
                         @if($skillsByCategory->isNotEmpty())
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 @foreach($skillsByCategory as $category => $skills)
-                                    <div class="glass-card p-6 hover:shadow-lg transition-all duration-300">
+                                    <div class="glass-card p-6 gradient-card">
                                         <div class="text-center mb-5">
                                             <h3 class="font-semibold text-lg text-[--color-text-primary] mb-2">{{ $category }}</h3>
                                             <span class="inline-block text-xs text-[--color-text-muted] bg-[--color-bg-secondary] px-2 py-1 rounded-full">
@@ -136,7 +136,7 @@
                         @else
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 @foreach(['Cloud Platforms', 'Container & Orchestration', 'CI/CD', 'Infrastructure as Code'] as $category)
-                                    <div class="glass-card p-5">
+                                    <div class="glass-card p-5 gradient-card">
                                         <h3 class="font-semibold text-[--color-accent-emerald] mb-4">{{ $category }}</h3>
                                         <p class="text-sm text-[--color-text-secondary]">Add skills through the admin panel.</p>
                                     </div>
@@ -157,11 +157,11 @@
                             @endphp
                             @if($experiences->isNotEmpty())
                                 @foreach($experiences as $index => $experience)
-                                    <div class="relative pl-8 border-l-2 {{ $index === 0 ? 'border-[--color-accent-emerald]' : 'border-[--color-border]' }}">
+                                    <div class="relative pl-8 border-l-2 {{ $index === 0 ? 'border-violet-500' : 'border-[--color-border]' }}">
                                         <div
-                                            class="absolute left-0 top-0 w-4 h-4 -translate-x-[9px] {{ $index === 0 ? 'bg-[--color-accent-emerald]' : 'bg-[--color-border]' }} rounded-full">
+                                            class="absolute left-0 top-0 w-4 h-4 -translate-x-[9px] {{ $index === 0 ? 'bg-gradient-to-br from-violet-500 to-purple-500 glow-violet' : 'bg-[--color-border]' }} rounded-full">
                                         </div>
-                                        <div class="glass-card p-5">
+                                        <div class="glass-card p-5 gradient-card">
                                             <div class="flex flex-wrap justify-between gap-2 mb-2">
                                                 <div>
                                                     <h3 class="font-semibold text-[--color-text-primary]">{{ $experience->position }}</h3>
@@ -217,7 +217,7 @@
                                     </div>
                                 @endforeach
                             @else
-                                <div class="glass-card p-5 text-center">
+                                <div class="glass-card p-5 text-center gradient-card">
                                     <p class="text-[--color-text-secondary]">No experiences added yet. Add experiences through the admin panel.</p>
                                 </div>
                             @endif
