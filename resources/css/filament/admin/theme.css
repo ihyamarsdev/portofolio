@@ -1,3 +1,10 @@
+/* ============================================
+   NEON GLASS DASHBOARD - Custom Filament Theme
+   ============================================ */
+
+/* Import distinctive fonts - MUST come first */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 
 @source '../../../../app/Filament/**/*';
@@ -6,3 +13,1131 @@
 @source '../../../../resources/views/livewire/**/*';
 @source '../../../../app/Livewire/**/*';
 @source '../../../../vendor/guava/filament-icon-picker/resources/**/*';
+
+/* CSS Variables for Neon Glass Theme */
+:root {
+    /* Primary Colors - Neon Cyberpunk Palette */
+    --fi-primary: 00d4ff;
+    --fi-primary-hover: 00b8e6;
+    --fi-primary-active: 0099cc;
+    
+    /* Secondary Colors */
+    --fi-secondary: 8b5cf6;
+    --fi-secondary-hover: 7c3aed;
+    
+    /* Accent Colors */
+    --neon-cyan: 06b6d4;
+    --neon-magenta: f472b6;
+    --neon-purple: a78bfa;
+    --neon-green: 10b981;
+    --neon-orange: f97316;
+    
+    /* Dark Background Palette */
+    --bg-primary: 0a0a0f;
+    --bg-secondary: 12121a;
+    --bg-tertiary: 1a1a24;
+    --bg-card: rgba(26, 26, 36, 0.8);
+    --bg-hover: rgba(99, 102, 241, 0.1);
+    
+    /* Text Colors */
+    --text-primary: f1f5f9;
+    --text-secondary: 94a3b8;
+    --text-muted: 64748b;
+    
+    /* Border Colors */
+    --border-default: 2d2d3a;
+    --border-highlight: 3d3d5c;
+    --border-glow: rgba(0, 212, 255, 0.3);
+    
+    /* Glow Effects */
+    --glow-cyan: 0 0 20px rgba(6, 182, 212, 0.4);
+    --glow-magenta: 0 0 20px rgba(244, 114, 182, 0.4);
+    --glow-purple: 0 0 20px rgba(167, 139, 250, 0.4);
+    
+    /* Grid Pattern */
+    --grid-color: rgba(45, 45, 58, 0.5);
+}
+
+/* Override Filament Base Styles */
+.fi-app {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg-primary);
+    background-image: 
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 40px 40px;
+    color: rgb(var(--text-primary));
+}
+
+/* Navigation Sidebar - Glass Effect */
+.fi-sidebar {
+    background: rgba(18, 18, 26, 0.95) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    border-right: 1px solid rgb(var(--border-highlight));
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.fi-sidebar-group {
+    border-bottom: 1px solid rgba(45, 45, 58, 0.5);
+}
+
+.fi-sidebar-item {
+    position: relative;
+    border-radius: 8px;
+    margin: 4px 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.fi-sidebar-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(139, 92, 246, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.fi-sidebar-item:hover::before {
+    opacity: 1;
+}
+
+.fi-sidebar-item.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(139, 92, 246, 0.15));
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    box-shadow: var(--glow-cyan);
+}
+
+.fi-sidebar-item.active .fi-sidebar-item-icon {
+    color: rgb(var(--neon-cyan));
+    filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.6));
+}
+
+/* Top Navigation Bar */
+.fi-topbar {
+    background: rgba(18, 18, 26, 0.95) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgb(var(--border-highlight));
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* User Menu */
+.fi-user-menu {
+    background: rgba(26, 26, 36, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgb(var(--border-highlight));
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Cards - Glass Morphism */
+.fi-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgb(var(--border-default));
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fi-card:hover {
+    border-color: rgba(0, 212, 255, 0.3);
+    box-shadow: 0 8px 30px rgba(0, 212, 255, 0.15);
+}
+
+/* Tables */
+.fi-table {
+    background: transparent;
+}
+
+.fi-table-container {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    border: 1px solid rgb(var(--border-default));
+    overflow: hidden;
+}
+
+.fi-table-thead {
+    background: rgba(45, 45, 58, 0.5);
+    border-bottom: 1px solid rgb(var(--border-highlight));
+}
+
+.fi-table-th {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: rgb(var(--text-secondary));
+    padding: 1rem 1.5rem;
+}
+
+.fi-table-td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(45, 45, 58, 0.5);
+}
+
+.fi-table-row:hover {
+    background: var(--bg-hover);
+}
+
+.fi-table-row:hover .fi-table-td {
+    color: rgb(var(--text-primary));
+}
+
+/* Buttons - Neon Glow */
+.fi-btn-primary {
+    background: linear-gradient(135deg, rgb(var(--neon-cyan)), rgb(var(--neon-purple)));
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    box-shadow: var(--glow-cyan);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.fi-btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.fi-btn-primary:hover::before {
+    transform: translateX(100%);
+}
+
+.fi-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(6, 182, 212, 0.6);
+}
+
+.fi-btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+}
+
+/* Inputs & Textareas */
+.fi-input {
+    background: rgba(26, 26, 36, 0.8);
+    border: 1px solid rgb(var(--border-default));
+    border-radius: 10px;
+    color: rgb(var(--text-primary));
+    transition: all 0.3s ease;
+}
+
+.fi-input:focus {
+    border-color: rgb(var(--neon-cyan));
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1), var(--glow-cyan);
+    outline: none;
+}
+
+.fi-input::placeholder {
+    color: rgb(var(--text-muted));
+}
+
+/* Select Dropdown */
+.fi-select-dropdown {
+    background: rgba(18, 18, 26, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgb(var(--border-highlight));
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.fi-select-option {
+    border-radius: 8px;
+    margin: 4px 8px;
+    transition: all 0.2s ease;
+}
+
+.fi-select-option:hover {
+    background: var(--bg-hover);
+}
+
+.fi-select-option.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(139, 92, 246, 0.15));
+}
+
+/* Badge & Tags */
+.fi-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    letter-spacing: 0.05em;
+}
+
+.fi-badge-success {
+    background: rgba(16, 185, 129, 0.15);
+    color: rgb(var(--neon-green));
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.fi-badge-warning {
+    background: rgba(249, 115, 22, 0.15);
+    color: rgb(var(--neon-orange));
+    border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.fi-badge-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.fi-badge-info {
+    background: rgba(6, 182, 212, 0.15);
+    color: rgb(var(--neon-cyan));
+    border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+/* Modal & Dialog */
+.fi-modal {
+    background: rgba(18, 18, 26, 0.98);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgb(var(--border-highlight));
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.fi-modal-header {
+    border-bottom: 1px solid rgba(45, 45, 58, 0.5);
+}
+
+/* Tabs */
+.fi-tabs {
+    border-bottom: 1px solid rgb(var(--border-default));
+}
+
+.fi-tab {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    color: rgb(var(--text-secondary));
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.fi-tab:hover {
+    color: rgb(var(--text-primary));
+}
+
+.fi-tab.active {
+    color: rgb(var(--neon-cyan));
+    border-bottom-color: rgb(var(--neon-cyan));
+}
+
+.fi-tab.active .fi-tab-icon {
+    color: rgb(var(--neon-cyan));
+    filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.6));
+}
+
+/* Section Headers */
+.fi-section-header {
+    border-bottom: 1px solid rgb(var(--border-default));
+}
+
+.fi-section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    color: rgb(var(--text-primary));
+}
+
+.fi-section-description {
+    color: rgb(var(--text-secondary));
+}
+
+/* Loading States */
+.fi-loading-spinner {
+    border-color: rgb(var(--border-default));
+    border-top-color: rgb(var(--neon-cyan));
+}
+
+/* Stats Cards */
+.fi-stats-card {
+    background: linear-gradient(135deg, rgba(26, 26, 36, 0.9), rgba(18, 18, 26, 0.9));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgb(var(--border-default));
+    border-radius: 16px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.fi-stats-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-magenta));
+}
+
+.fi-stats-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 212, 255, 0.2);
+}
+
+.fi-stats-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 2rem;
+    background: linear-gradient(135deg, rgb(var(--neon-cyan)), rgb(var(--neon-purple)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.fi-stats-label {
+    font-family: 'Space Grotesk', sans-serif;
+    color: rgb(var(--text-secondary));
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Notifications */
+.fi-notification {
+    backdrop-filter: blur(20px);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.fi-notification-success {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.fi-notification-error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.fi-notification-info {
+    background: rgba(6, 182, 212, 0.15);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(var(--border-highlight));
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--neon-cyan));
+}
+
+/* Animations */
+@keyframes neonPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(6, 182, 212, 0.6);
+    }
+}
+
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Status Indicators */
+.fi-status-online {
+    background: rgb(var(--neon-green));
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+    animation: neonPulse 2s infinite;
+}
+
+.fi-status-offline {
+    background: rgb(var(--text-muted));
+}
+
+.fi-status-busy {
+    background: rgb(var(--neon-orange));
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.6);
+}
+
+/* Code Blocks */
+.fi-code-block {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(10, 10, 15, 0.9);
+    border: 1px solid rgb(var(--border-default));
+    border-radius: 10px;
+}
+
+/* Icons */
+.fi-icon {
+    color: rgb(var(--text-secondary));
+    transition: all 0.3s ease;
+}
+
+.fi-icon:hover {
+    color: rgb(var(--neon-cyan));
+    filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.6));
+}
+
+/* Toggle Switch */
+.fi-toggle {
+    background: rgb(var(--border-default));
+    border-radius: 20px;
+}
+
+.fi-toggle-active {
+    background: linear-gradient(135deg, rgb(var(--neon-cyan)), rgb(var(--neon-purple)));
+    box-shadow: var(--glow-cyan);
+}
+
+.fi-toggle-knob {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Progress Bar */
+.fi-progress-bar {
+    background: rgb(var(--border-default));
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.fi-progress-fill {
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-magenta));
+    background-size: 200% 100%;
+    animation: gradientShift 3s linear infinite;
+    box-shadow: var(--glow-cyan);
+}
+
+/* Chart Container */
+.fi-chart-container {
+    background: rgba(26, 26, 36, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgb(var(--border-default));
+    border-radius: 16px;
+    padding: 1.5rem;
+}
+
+/* File Upload */
+.fi-file-upload {
+    background: rgba(26, 26, 36, 0.8);
+    border: 2px dashed rgb(var(--border-default));
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.fi-file-upload:hover {
+    border-color: rgb(var(--neon-cyan));
+    background: rgba(26, 26, 36, 0.9);
+}
+
+.fi-file-upload.dragging {
+    border-color: rgb(var(--neon-purple));
+    background: rgba(139, 92, 246, 0.1);
+    box-shadow: var(--glow-purple);
+}
+
+/* Rich Text Editor */
+.fi-rich-editor {
+    background: rgba(26, 26, 36, 0.8);
+    border: 1px solid rgb(var(--border-default));
+    border-radius: 10px;
+}
+
+.fi-rich-editor-toolbar {
+    background: rgba(45, 45, 58, 0.5);
+    border-bottom: 1px solid rgb(var(--border-default));
+    border-radius: 10px 10px 0 0;
+}
+
+.fi-rich-editor-content {
+    color: rgb(var(--text-primary));
+}
+
+/* Dropdown Menu */
+.fi-dropdown {
+    background: rgba(18, 18, 26, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgb(var(--border-highlight));
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.fi-dropdown-item {
+    border-radius: 8px;
+    margin: 4px 8px;
+    transition: all 0.2s ease;
+}
+
+.fi-dropdown-item:hover {
+    background: var(--bg-hover);
+}
+
+/* Action Buttons in Tables */
+.fi-action-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.fi-action-button:hover {
+    background: var(--bg-hover);
+    transform: scale(1.1);
+}
+
+.fi-action-button.edit:hover {
+    background: rgba(6, 182, 212, 0.15);
+    color: rgb(var(--neon-cyan));
+}
+
+.fi-action-button.delete:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+/* Header Logo Area */
+.fi-header-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    background: linear-gradient(135deg, rgb(var(--neon-cyan)), rgb(var(--neon-purple)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Search Input */
+.fi-search-input {
+    background: rgba(26, 26, 36, 0.8);
+    border: 1px solid rgb(var(--border-default));
+    border-radius: 10px;
+    color: rgb(var(--text-primary));
+}
+
+.fi-search-input:focus {
+    border-color: rgb(var(--neon-cyan));
+    box-shadow: var(--glow-cyan);
+}
+
+/* Breadcrumb */
+.fi-breadcrumb {
+    color: rgb(var(--text-secondary));
+}
+
+.fi-breadcrumb-item:hover {
+    color: rgb(var(--neon-cyan));
+}
+
+.fi-breadcrumb-item.active {
+    color: rgb(var(--text-primary));
+}
+
+/* Page Header */
+.fi-page-header {
+    border-bottom: 1px solid rgb(var(--border-default));
+    margin-bottom: 2rem;
+}
+
+.fi-page-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    color: rgb(var(--text-primary));
+}
+
+/* Form Sections */
+.fi-form-section {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgb(var(--border-default));
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+}
+
+.fi-form-section-header {
+    border-bottom: 1px solid rgba(45, 45, 58, 0.5);
+    padding: 1.25rem 1.5rem;
+}
+
+/* Color Picker */
+.fi-color-picker {
+    background: rgba(26, 26, 36, 0.8);
+    border: 1px solid rgb(var(--border-default));
+    border-radius: 10px;
+}
+
+/* Date Picker */
+.fi-date-picker {
+    background: rgba(18, 18, 26, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgb(var(--border-highlight));
+    border-radius: 12px;
+}
+
+/* Time Picker */
+.fi-time-picker {
+    background: rgba(18, 18, 26, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgb(var(--border-highlight));
+    border-radius: 12px;
+}
+
+/* Radio & Checkbox */
+.fi-radio,
+.fi-checkbox {
+    accent-color: rgb(var(--neon-cyan));
+}
+
+/* ============================================
+   LIGHT MODE OVERRIDES
+   ============================================ */
+
+/* Detect light mode and override dark theme */
+html:not(.dark) .fi-app,
+html:not(.dark) body {
+    background: #f8fafc !important;
+    background-image: none !important;
+}
+
+html:not(.dark) .fi-sidebar {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-right: 1px solid #e2e8f0 !important;
+    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+html:not(.dark) .fi-sidebar-group {
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html:not(.dark) .fi-sidebar-item {
+    color: #334155 !important;
+}
+
+html:not(.dark) .fi-sidebar-item:hover {
+    background: rgba(14, 165, 233, 0.08) !important;
+}
+
+html:not(.dark) .fi-sidebar-item.active {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.12), rgba(6, 182, 212, 0.12)) !important;
+    border: 1px solid rgba(14, 165, 233, 0.3) !important;
+    box-shadow: none !important;
+}
+
+html:not(.dark) .fi-sidebar-item.active .fi-sidebar-item-icon {
+    color: #0ea5e9 !important;
+    filter: none !important;
+}
+
+html:not(.dark) .fi-sidebar-item-icon {
+    color: #64748b !important;
+}
+
+html:not(.dark) .fi-topbar {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+html:not(.dark) .fi-user-menu {
+    background: rgba(255, 255, 255, 0.98) !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+html:not(.dark) .fi-card {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+html:not(.dark) .fi-card:hover {
+    border-color: rgba(14, 165, 233, 0.3) !important;
+    box-shadow: 0 4px 20px rgba(14, 165, 233, 0.1) !important;
+}
+
+html:not(.dark) .fi-table-container {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+html:not(.dark) .fi-table-thead {
+    background: rgba(241, 245, 249, 0.8) !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html:not(.dark) .fi-table-th {
+    color: #475569 !important;
+}
+
+html:not(.dark) .fi-table-td {
+    color: #334155 !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+
+html:not(.dark) .fi-table-row:hover {
+    background: rgba(14, 165, 233, 0.04) !important;
+}
+
+/* Inputs - Light Mode */
+html:not(.dark) .fi-input,
+html:not(.dark) .fi-textarea,
+html:not(.dark) input[type="text"],
+html:not(.dark) input[type="email"],
+html:not(.dark) input[type="password"],
+html:not(.dark) input[type="number"],
+html:not(.dark) input[type="url"],
+html:not(.dark) input[type="tel"],
+html:not(.dark) textarea {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+html:not(.dark) .fi-input:focus,
+html:not(.dark) .fi-textarea:focus,
+html:not(.dark) input:focus,
+html:not(.dark) textarea:focus {
+    border-color: #0ea5e9 !important;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1) !important;
+    outline: none !important;
+}
+
+html:not(.dark) .fi-input::placeholder,
+html:not(.dark) input::placeholder,
+html:not(.dark) textarea::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* Select Dropdown - Light Mode */
+html:not(.dark) .fi-select-dropdown {
+    background: rgba(255, 255, 255, 0.98) !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+html:not(.dark) .fi-select-option {
+    color: #334155 !important;
+}
+
+html:not(.dark) .fi-select-option:hover {
+    background: rgba(14, 165, 233, 0.08) !important;
+}
+
+html:not(.dark) .fi-select-option.active {
+    background: rgba(14, 165, 233, 0.12) !important;
+    color: #0ea5e9 !important;
+}
+
+/* Buttons - Light Mode */
+html:not(.dark) .fi-btn-primary {
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4) !important;
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3) !important;
+}
+
+html:not(.dark) .fi-btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4) !important;
+}
+
+/* Badge - Light Mode */
+html:not(.dark) .fi-badge-success {
+    background: rgba(52, 211, 153, 0.15) !important;
+    color: #10b981 !important;
+    border-color: rgba(52, 211, 153, 0.3) !important;
+}
+
+html:not(.dark) .fi-badge-warning {
+    background: rgba(251, 191, 36, 0.15) !important;
+    color: #f59e0b !important;
+    border-color: rgba(251, 191, 36, 0.3) !important;
+}
+
+html:not(.dark) .fi-badge-danger {
+    background: rgba(251, 113, 133, 0.15) !important;
+    color: #fb7185 !important;
+    border-color: rgba(251, 113, 133, 0.3) !important;
+}
+
+html:not(.dark) .fi-badge-info {
+    background: rgba(14, 165, 233, 0.15) !important;
+    color: #0ea5e9 !important;
+    border-color: rgba(14, 165, 233, 0.3) !important;
+}
+
+/* Modal - Light Mode */
+html:not(.dark) .fi-modal {
+    background: rgba(255, 255, 255, 0.98) !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1) !important;
+}
+
+html:not(.dark) .fi-modal-header {
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+/* Tabs - Light Mode */
+html:not(.dark) .fi-tabs {
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html:not(.dark) .fi-tab {
+    color: #64748b !important;
+}
+
+html:not(.dark) .fi-tab:hover {
+    color: #334155 !important;
+}
+
+html:not(.dark) .fi-tab.active {
+    color: #0ea5e9 !important;
+    border-bottom-color: #0ea5e9 !important;
+}
+
+html:not(.dark) .fi-tab.active .fi-tab-icon {
+    color: #0ea5e9 !important;
+    filter: none !important;
+}
+
+/* Section Headers - Light Mode */
+html:not(.dark) .fi-section-header {
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html:not(.dark) .fi-section-title {
+    color: #0f172a !important;
+}
+
+html:not(.dark) .fi-section-description {
+    color: #64748b !important;
+}
+
+/* Stats Cards - Light Mode */
+html:not(.dark) .fi-stats-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95)) !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+html:not(.dark) .fi-stats-value {
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+}
+
+html:not(.dark) .fi-stats-label {
+    color: #64748b !important;
+}
+
+/* Notifications - Light Mode */
+html:not(.dark) .fi-notification-success {
+    background: rgba(52, 211, 153, 0.15) !important;
+    border-color: rgba(52, 211, 153, 0.3) !important;
+}
+
+html:not(.dark) .fi-notification-error {
+    background: rgba(251, 113, 133, 0.15) !important;
+    border-color: rgba(251, 113, 133, 0.3) !important;
+}
+
+html:not(.dark) .fi-notification-info {
+    background: rgba(14, 165, 233, 0.15) !important;
+    border-color: rgba(14, 165, 233, 0.3) !important;
+}
+
+/* Icons - Light Mode */
+html:not(.dark) .fi-icon {
+    color: #64748b !important;
+}
+
+html:not(.dark) .fi-icon:hover {
+    color: #0ea5e9 !important;
+    filter: none !important;
+}
+
+/* Toggle - Light Mode */
+html:not(.dark) .fi-toggle {
+    background: #cbd5e1 !important;
+}
+
+html:not(.dark) .fi-toggle-active {
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4) !important;
+    box-shadow: none !important;
+}
+
+/* Progress Bar - Light Mode */
+html:not(.dark) .fi-progress-bar {
+    background: #e2e8f0 !important;
+}
+
+html:not(.dark) .fi-progress-fill {
+    background: linear-gradient(90deg, #0ea5e9, #06b6d4, #34d399) !important;
+    box-shadow: none !important;
+}
+
+/* Chart Container - Light Mode */
+html:not(.dark) .fi-chart-container {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+/* File Upload - Light Mode */
+html:not(.dark) .fi-file-upload {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: #cbd5e1 !important;
+}
+
+html:not(.dark) .fi-file-upload:hover {
+    border-color: #0ea5e9 !important;
+    background: rgba(255, 255, 255, 1) !important;
+}
+
+/* Rich Text Editor - Light Mode */
+html:not(.dark) .fi-rich-editor {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+html:not(.dark) .fi-rich-editor-toolbar {
+    background: rgba(241, 245, 249, 0.8) !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html:not(.dark) .fi-rich-editor-content {
+    color: #0f172a !important;
+}
+
+/* Dropdown Menu - Light Mode */
+html:not(.dark) .fi-dropdown {
+    background: rgba(255, 255, 255, 0.98) !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+html:not(.dark) .fi-dropdown-item {
+    color: #334155 !important;
+}
+
+html:not(.dark) .fi-dropdown-item:hover {
+    background: rgba(14, 165, 233, 0.08) !important;
+}
+
+/* Action Buttons - Light Mode */
+html:not(.dark) .fi-action-button.edit:hover {
+    background: rgba(14, 165, 233, 0.12) !important;
+    color: #0ea5e9 !important;
+}
+
+html:not(.dark) .fi-action-button.delete:hover {
+    background: rgba(251, 113, 133, 0.12) !important;
+    color: #fb7185 !important;
+}
+
+/* Search Input - Light Mode */
+html:not(.dark) .fi-search-input {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+html:not(.dark) .fi-search-input:focus {
+    border-color: #0ea5e9 !important;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1) !important;
+}
+
+/* Breadcrumb - Light Mode */
+html:not(.dark) .fi-breadcrumb {
+    color: #64748b !important;
+}
+
+html:not(.dark) .fi-breadcrumb-item:hover {
+    color: #0ea5e9 !important;
+}
+
+html:not(.dark) .fi-breadcrumb-item.active {
+    color: #0f172a !important;
+}
+
+/* Page Header - Light Mode */
+html:not(.dark) .fi-page-header {
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html:not(.dark) .fi-page-title {
+    color: #0f172a !important;
+}
+
+/* Form Sections - Light Mode */
+html:not(.dark) .fi-form-section {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+html:not(.dark) .fi-form-section-header {
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+/* Color Picker - Light Mode */
+html:not(.dark) .fi-color-picker {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+/* Date/Time Picker - Light Mode */
+html:not(.dark) .fi-date-picker,
+html:not(.dark) .fi-time-picker {
+    background: rgba(255, 255, 255, 0.98) !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+/* Scrollbar - Light Mode */
+html:not(.dark) ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+}
+
+html:not(.dark) ::-webkit-scrollbar-thumb:hover {
+    background: #0ea5e9;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .fi-stats-card {
+        padding: 1rem;
+    }
+    
+    .fi-stats-value {
+        font-size: 1.5rem;
+    }
+    
+    .fi-sidebar {
+        background: rgba(10, 10, 15, 0.98) !important;
+    }
+}
