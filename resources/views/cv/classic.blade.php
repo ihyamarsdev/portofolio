@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Classic CV - {{ $profile->name ?? 'Candidate' }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ $profile->name ?? 'Candidate' }} | Curriculum Vitae</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         @page {
             size: A4;
-            margin: 22mm 30mm;
+            margin: 0;
         }
 
         * {
@@ -15,217 +19,330 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --accent: #881337;
+            --accent-light: #ffe4e6;
+            --text-primary: #1c1917;
+            --text-secondary: #44403c;
+            --text-muted: #78716c;
+            --border: #d6d3d1;
+            --bg: #fafaf9;
+            --paper: #ffffff;
+        }
+
         body {
-            font-family: 'Georgia', 'Garamond', 'Times New Roman', serif;
+            font-family: 'Crimson Pro', Georgia, serif;
             font-size: 11pt;
             line-height: 1.6;
-            color: #1a1a1a;
-            background: #fff;
+            color: var(--text-primary);
+            background: var(--bg);
         }
 
-        .container {
-            max-width: 750px;
-            margin: 0 auto;
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            background: var(--paper);
+            position: relative;
         }
 
-        /* Elegant Header */
+        /* Decorative Border */
+        .page::before {
+            content: '';
+            position: absolute;
+            top: 20mm;
+            left: 20mm;
+            right: 20mm;
+            bottom: 20mm;
+            border: 1px solid var(--border);
+            pointer-events: none;
+        }
+
+        .page::after {
+            content: '';
+            position: absolute;
+            top: 22mm;
+            left: 22mm;
+            right: 22mm;
+            bottom: 22mm;
+            border: 1px solid var(--border);
+            pointer-events: none;
+        }
+
+        /* ═══════════════════════════════════════════════
+           HEADER - Editorial Style
+           ═══════════════════════════════════════════════ */
         .header {
+            padding: 48mm 40mm 32mm;
             text-align: center;
-            margin-bottom: 35px;
-            padding-bottom: 20px;
-            border-bottom: 2px double #088395;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 3px;
+            background: var(--accent);
         }
 
         .name {
-            font-size: 28pt;
-            font-weight: 700;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 36pt;
+            font-weight: 600;
+            letter-spacing: 6px;
             text-transform: uppercase;
-            letter-spacing: 4px;
+            color: var(--text-primary);
             margin-bottom: 12px;
-            color: #1a1a1a;
         }
 
         .title {
+            font-family: 'Crimson Pro', serif;
             font-size: 13pt;
             font-style: italic;
-            margin-bottom: 15px;
-            color: #088395;
+            color: var(--accent);
+            margin-bottom: 20px;
             font-weight: 400;
         }
 
-        .contact-info {
+        .contact-line {
+            font-family: 'Crimson Pro', serif;
             font-size: 10pt;
-            margin-bottom: 6px;
-            letter-spacing: 0.5px;
-            color: #444;
+            color: var(--text-muted);
+            letter-spacing: 1px;
         }
 
-        .contact-info span {
+        .contact-line span {
             margin: 0 12px;
         }
 
-        .contact-link {
-            color: #088395;
+        .contact-line a {
+            color: var(--text-muted);
             text-decoration: none;
-            font-weight: 500;
         }
 
-        /* Section Headings - Classic Style */
-        h2 {
-            font-size: 13pt;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            border-bottom: 1.5px solid #088395;
-            padding-bottom: 8px;
-            margin-top: 30px;
-            margin-bottom: 18px;
-            font-weight: 600;
-            color: #2c3e50;
+        /* ═══════════════════════════════════════════════
+           MAIN CONTENT
+           ═══════════════════════════════════════════════ */
+        .content {
+            padding: 8mm 40mm 40mm;
         }
 
+        /* Section */
         .section {
-            margin-bottom: 25px;
-        }
-
-        /* Experience & Education Items */
-        .item {
-            margin-bottom: 22px;
+            margin-bottom: 28px;
             page-break-inside: avoid;
         }
 
-        .item-header {
-            margin-bottom: 10px;
-        }
-
-        .item-header > div {
+        .section-header {
             display: flex;
-            justify-content: space-between;
-            align-items: baseline;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 20px;
         }
 
-        .position {
-            font-weight: 600;
-            font-size: 11.5pt;
-            color: #1a1a1a;
-            letter-spacing: 0.3px;
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
         }
 
-        .company {
-            font-weight: 600;
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
             font-size: 11pt;
-            font-style: italic;
-            color: #088395;
-        }
-
-        .company-location {
-            margin-bottom: 8px;
-            color: #444;
-        }
-
-        .location {
-            font-style: italic;
-            color: #666;
-            font-size: 10pt;
-        }
-
-        .date {
             font-weight: 600;
-            color: #088395;
-            font-size: 10pt;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--text-primary);
             white-space: nowrap;
         }
 
-        .description {
-            text-align: justify;
-            color: #333;
-            line-height: 1.7;
-            text-indent: 0;
-            margin-top: 8px;
+        /* Summary */
+        .summary {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            text-align: center;
+            font-style: italic;
+            max-width: 450px;
+            margin: 0 auto;
         }
 
-        /* Lists - Classic Style */
-        ul {
-            margin-top: 10px;
+        /* Experience */
+        .experience-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .experience-item {
+            page-break-inside: avoid;
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .experience-item::before {
+            content: '§';
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 14pt;
+            color: var(--accent);
+        }
+
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4px;
+            gap: 16px;
+        }
+
+        .position {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 12pt;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .date {
+            font-family: 'Crimson Pro', serif;
+            font-size: 10pt;
+            font-style: italic;
+            color: var(--accent);
+            white-space: nowrap;
+        }
+
+        .company-location {
+            font-size: 10pt;
+            color: var(--text-muted);
             margin-bottom: 8px;
-            padding-left: 30px;
+        }
+
+        .company {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-top: 6px;
+        }
+
+        ul {
+            margin-top: 8px;
+            padding-left: 20px;
         }
 
         li {
-            margin-bottom: 6px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
             line-height: 1.6;
-            color: #333;
         }
 
         li::marker {
-            color: #088395;
+            color: var(--accent);
         }
 
-        /* Skills - Elegant Inline Style */
+        /* Education */
+        .education-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .education-item {
+            page-break-inside: avoid;
+            text-align: center;
+        }
+
+        .degree {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 12pt;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .institution {
+            font-size: 10pt;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 2px;
+        }
+
+        .year {
+            font-family: 'Crimson Pro', serif;
+            font-size: 9pt;
+            color: var(--accent);
+            margin-top: 4px;
+        }
+
+        .meta {
+            font-size: 9pt;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Skills */
         .skills-container {
-            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .skill-category {
-            margin-bottom: 16px;
+            text-align: center;
             page-break-inside: avoid;
         }
 
-        .category-title {
-            font-weight: 700;
-            font-size: 10.5pt;
-            color: #088395;
+        .category-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 10pt;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            color: var(--accent);
             margin-bottom: 8px;
-            display: inline-block;
         }
 
         .skill-items {
+            font-size: 10pt;
+            color: var(--text-secondary);
             line-height: 1.8;
-            color: #444;
         }
 
         .skill-item {
             display: inline;
         }
 
-        .skill-name {
-            font-weight: 500;
+        .skill-separator {
+            color: var(--accent);
+            margin: 0 6px;
         }
 
         .skill-years {
             font-size: 9pt;
-            color: #088395;
+            color: var(--text-muted);
             font-style: italic;
         }
 
-        .skill-separator {
-            margin: 0 6px;
-            color: #999;
+        /* Social Links */
+        .social-links {
+            text-align: center;
+            margin-top: 16px;
         }
 
-        /* Summary - Classic Paragraph */
-        .summary {
-            text-align: justify;
-            line-height: 1.7;
-            color: #333;
-            text-indent: 2em;
+        .social-item {
+            font-size: 9pt;
+            color: var(--text-muted);
+            margin: 0 8px;
         }
 
-        /* Meta Info */
-        .meta-info {
-            margin-top: 4px;
-            color: #666;
-            font-size: 10pt;
-        }
-
-        .meta-label {
-            font-weight: 600;
-            color: #088395;
-            font-style: italic;
-        }
-
-        /* Print Optimization */
+        /* Print */
         @media print {
             body {
                 -webkit-print-color-adjust: exact;
@@ -235,81 +352,150 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        {{-- Classic Header --}}
-        @include('cv.partials._header', [
-            'profile' => $profile,
-            'header_class' => 'header',
-            'name_class' => 'name',
-            'title_class' => 'title',
-            'contact_class' => 'contact-info',
-            'link_class' => 'contact-link'
-        ])
-
-        {{-- Professional Summary --}}
-        @include('cv.partials._summary', [
-            'biography' => $profile->biography,
-            'section_class' => 'section',
-            'heading_class' => '',
-            'content_class' => 'summary'
-        ])
-
-        {{-- Professional Experience --}}
-        @include('cv.partials._experience', [
-            'experiences' => $experiences,
-            'section_class' => 'section',
-            'heading_class' => '',
-            'item_class' => 'item',
-            'position_class' => 'position',
-            'company_class' => 'company',
-            'location_class' => 'location',
-            'date_class' => 'date',
-            'description_class' => 'description',
-            'list_class' => ''
-        ])
-
-        {{-- Education --}}
-        @include('cv.partials._education', [
-            'educations' => $educations,
-            'section_class' => 'section',
-            'heading_class' => '',
-            'item_class' => 'item',
-            'institution_class' => 'company',
-            'degree_class' => 'position',
-            'date_class' => 'date',
-            'meta_class' => 'meta-info'
-        ])
-
-        {{-- Skills --}}
-        <div class="section">
-            <h2>Skills & Expertise</h2>
-            <div class="skills-container">
-                @php
-                    $groupedSkills = $skills->groupBy(fn($skill) => $skill->category?->name ?? 'General');
-                @endphp
-                @foreach($groupedSkills as $categoryName => $categorySkills)
-                    <div class="skill-category">
-                        <span class="category-title">{{ $categoryName }}</span>
-                        <div class="skill-items">
-                            @foreach($categorySkills as $skill)
-                                <span class="skill-item">
-                                    <span class="skill-name">{{ $skill->name }}</span>
-                                    @if($skill->years_experience > 0)
-                                        @php
-                                            $years = floatval($skill->years_experience);
-                                            $displayYears = fmod($years, 1) > 0 ? number_format($years, 1) : intval($years);
-                                            $yearText = $years == 1 ? 'yr' : 'yrs';
-                                        @endphp
-                                        <span class="skill-years"> ({{ $displayYears }} {{ $yearText }})</span>
-                                    @endif
-                                </span>
-                                @if(!$loop->last)<span class="skill-separator">•</span>@endif
-                            @endforeach
-                        </div>
-                    </div>
-                @endforeach
+    <div class="page">
+        {{-- Header --}}
+        <header class="header">
+            <h1 class="name">{{ $profile->name ?? 'Your Name' }}</h1>
+            <p class="title">{{ $profile->title ?? 'Professional Title' }}</p>
+            <div class="contact-line">
+                @if($profile->email ?? false)
+                    <span><a href="mailto:{{ $profile->email }}">{{ $profile->email }}</a></span>
+                @endif
+                @if($profile->phone ?? false)
+                    <span>{{ $profile->phone }}</span>
+                @endif
+                @if($profile->location ?? false)
+                    <span>{{ $profile->location }}</span>
+                @endif
             </div>
-        </div>
+            @if(isset($profile->social_links) && count($profile->social_links) > 0)
+                <div class="social-links">
+                    @foreach($profile->social_links as $link)
+                        @if(isset($link['platform']) && isset($link['url']))
+                            <span class="social-item">{{ $link['platform'] }}</span>
+                        @endif
+                    @endforeach
+                </div>
+            @endif
+        </header>
+
+        {{-- Main Content --}}
+        <main class="content">
+            {{-- Summary --}}
+            @if($profile->biography ?? false)
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-line"></div>
+                        <h2 class="section-title">Profile</h2>
+                        <div class="section-line"></div>
+                    </div>
+                    <p class="summary">{{ strip_tags($profile->biography) }}</p>
+                </section>
+            @endif
+
+            {{-- Experience --}}
+            @if($experiences->count() > 0)
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-line"></div>
+                        <h2 class="section-title">Experience</h2>
+                        <div class="section-line"></div>
+                    </div>
+                    <div class="experience-list">
+                        @foreach($experiences as $experience)
+                            <article class="experience-item">
+                                <div class="experience-header">
+                                    <h3 class="position">{{ $experience->position }}</h3>
+                                    <span class="date">
+                                        {{ $experience->start_date->format('M Y') }} —
+                                        {{ $experience->end_date ? $experience->end_date->format('M Y') : 'Present' }}
+                                    </span>
+                                </div>
+                                <p class="company-location">
+                                    <span class="company">{{ $experience->company }}</span>
+                                    @if($experience->location)
+                                        , {{ $experience->location }}
+                                    @endif
+                                </p>
+                                @if($experience->description)
+                                    <p class="description">{!! nl2br(e(strip_tags($experience->description))) !!}</p>
+                                @endif
+                                @if($experience->achievements && count($experience->achievements) > 0)
+                                    <ul>
+                                        @foreach($experience->achievements as $achievement)
+                                            <li>{{ $achievement }}</li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </article>
+                        @endforeach
+                    </div>
+                </section>
+            @endif
+
+            {{-- Education --}}
+            @if($educations->count() > 0)
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-line"></div>
+                        <h2 class="section-title">Education</h2>
+                        <div class="section-line"></div>
+                    </div>
+                    <div class="education-list">
+                        @foreach($educations as $education)
+                            <article class="education-item">
+                                <h3 class="degree">{{ $education->degree }}</h3>
+                                <p class="institution">{{ $education->institution }} — {{ $education->field_of_study }}</p>
+                                <p class="year">{{ $education->start_date->format('Y') }} — {{ $education->end_date ? $education->end_date->format('Y') : 'Present' }}</p>
+                                @if($education->grade || $education->activities)
+                                    <p class="meta">
+                                        @if($education->grade)GPA: {{ $education->grade }}@endif
+                                        @if($education->grade && $education->activities) · @endif
+                                        @if($education->activities){{ $education->activities }}@endif
+                                    </p>
+                                @endif
+                            </article>
+                        @endforeach
+                    </div>
+                </section>
+            @endif
+
+            {{-- Skills --}}
+            @if($skills->count() > 0)
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-line"></div>
+                        <h2 class="section-title">Expertise</h2>
+                        <div class="section-line"></div>
+                    </div>
+                    <div class="skills-container">
+                        @php
+                            $groupedSkills = $skills->groupBy(fn($skill) => $skill->category?->name ?? 'General');
+                        @endphp
+                        @foreach($groupedSkills as $categoryName => $categorySkills)
+                            <div class="skill-category">
+                                <h4 class="category-name">{{ $categoryName }}</h4>
+                                <p class="skill-items">
+                                    @foreach($categorySkills as $skill)
+                                        <span class="skill-item">
+                                            {{ $skill->name }}
+                                            @if($skill->years_experience > 0)
+                                                @php
+                                                    $years = floatval($skill->years_experience);
+                                                    $displayYears = fmod($years, 1) > 0 ? number_format($years, 1) : intval($years);
+                                                @endphp
+                                                <span class="skill-years">({{ $displayYears }}y)</span>
+                                            @endif
+                                        </span>
+                                        @if(!$loop->last)<span class="skill-separator">·</span>@endif
+                                    @endforeach
+                                </p>
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+            @endif
+        </main>
     </div>
 </body>
 </html>
