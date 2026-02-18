@@ -10,15 +10,15 @@ class EditProfile extends EditRecord
 {
     protected static string $resource = ProfileResource::class;
 
+    protected static ?string $maxWidth = "full";
+
     protected function getRedirectUrl(): string
     {
-        return $this->getResource()::getUrl('index');
+        return $this->getResource()::getUrl("index");
     }
 
     protected function getHeaderActions(): array
     {
-        return [
-            DeleteAction::make(),
-        ];
+        return [DeleteAction::make()];
     }
 }

@@ -11,8 +11,8 @@ use App\Models\Profile;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Filament\Support\Icons\Heroicon;
 
 class ProfileResource extends Resource
 {
@@ -22,7 +22,7 @@ class ProfileResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'CV Management';
+        return "CV Management";
     }
 
     protected static ?int $navigationSort = 2;
@@ -45,16 +45,16 @@ class ProfileResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
-        ];
+                //
+            ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => ListProfiles::route('/'),
-            'create' => CreateProfile::route('/create'),
-            'edit' => EditProfile::route('/{record}/edit'),
+            "index" => ListProfiles::route("/"),
+            "create" => CreateProfile::route("/create"),
+            "edit" => EditProfile::route("/{record}/edit"),
         ];
     }
 }
