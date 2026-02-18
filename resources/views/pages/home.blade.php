@@ -5,18 +5,13 @@
 
     <!-- Hero Section -->
     <section class="relative min-h-[90vh] flex items-center overflow-hidden bg-bg-primary">
-        <!-- Background Grid Pattern -->
-        <div
-            class="absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20">
-        </div>
+        <!-- Animated Background Grid -->
+        <div class="absolute inset-0 animated-grid opacity-30"></div>
 
-        <!-- Gradient Orbs -->
-        <div
-            class="absolute top-1/4 -left-32 w-96 h-96 bg-[--color-accent-emerald] rounded-full blur-[128px] opacity-20">
-        </div>
-        <div
-            class="absolute bottom-1/4 -right-32 w-96 h-96 bg-[--color-accent-cyan] rounded-full blur-[128px] opacity-20">
-        </div>
+        <!-- Colorful Gradient Orbs -->
+        <div class="bg-orb absolute top-1/4 -left-32 w-96 h-96 bg-gradient-to-br from-emerald-500 via-cyan-500 to-blue-500" style="animation-delay: 0s;"></div>
+        <div class="bg-orb absolute bottom-1/4 -right-32 w-96 h-96 bg-gradient-to-br from-violet-500 via-purple-500 to-pink-500" style="animation-delay: -5s;"></div>
+        <div class="bg-orb absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-pink-500 via-rose-500 to-orange-500 opacity-20" style="animation-delay: -10s;"></div>
 
         <div class="section-container relative z-10">
             <div class="max-w-4xl">
@@ -33,7 +28,7 @@
                 <!-- Main Heading -->
                 <h1 class="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight mb-6">
                     <span class="text-[--color-text-primary]">{{ $homeSettings->hero_greeting }}</span><br>
-                    <span class="gradient-text">{{ $profile->title ?? 'DevOps Engineer' }}</span>
+                    <span class="gradient-text-cosmic">{{ $profile->title ?? 'DevOps Engineer' }}</span>
                 </h1>
 
                 <!-- Terminal Command -->
@@ -89,14 +84,14 @@
 
                 <!-- CTAs -->
                 <div class="flex flex-wrap gap-4">
-                    <a href="{{ route('projects') }}" class="btn-primary">
+                    <a href="{{ route('projects') }}" class="btn-primary-ocean">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
                         </svg>
                         View Projects
                     </a>
-                    <a href="{{ route('cv.download', ['template' => 'modern']) }}" class="btn-primary">
+                    <a href="{{ route('cv.download', ['template' => $profile->cv_template ?? 'modern']) }}" class="btn-primary-sunset">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -131,7 +126,7 @@
                         <!-- Original Items -->
                         @foreach($stacks as $stack)
                             <div
-                                class="glass-card p-4 flex flex-col items-center gap-2 min-w-[120px] hover:border-[--color-accent-emerald]/50 transition-colors">
+                                class="glass-card p-4 flex flex-col items-center gap-2 min-w-[120px] shimmer">
                                 @if($stack->icon)
                                     <img src="{{ $stack->icon }}" alt="{{ $stack->name }}" class="w-8 h-8 object-contain">
                                 @else
@@ -145,7 +140,7 @@
                         <!-- Duplicate Items for Seamless Loop -->
                         @foreach($stacks as $stack)
                             <div
-                                class="glass-card p-4 flex flex-col items-center gap-2 min-w-[120px] hover:border-[--color-accent-emerald]/50 transition-colors">
+                                class="glass-card p-4 flex flex-col items-center gap-2 min-w-[120px] shimmer">
                                 @if($stack->icon)
                                     <img src="{{ $stack->icon }}" alt="{{ $stack->name }}" class="w-8 h-8 object-contain">
                                 @else
@@ -159,7 +154,7 @@
                         <!-- Default Items -->
                         @foreach($defaultStacks as $tech)
                             <div
-                                class="glass-card p-4 flex flex-col items-center gap-2 min-w-[120px] hover:border-[--color-accent-emerald]/50 transition-colors">
+                                class="glass-card p-4 flex flex-col items-center gap-2 min-w-[120px] shimmer">
                                 <span class="text-3xl">🔧</span>
                                 <span class="font-mono text-sm text-[--color-text-primary] whitespace-nowrap">{{ $tech }}</span>
                                 <span class="text-xs text-[--color-text-muted] whitespace-nowrap">DevOps</span>
@@ -169,7 +164,7 @@
                         <!-- Duplicate Default Items -->
                          @foreach($defaultStacks as $tech)
                             <div
-                                class="glass-card p-4 flex flex-col items-center gap-2 min-w-[120px] hover:border-[--color-accent-emerald]/50 transition-colors">
+                                class="glass-card p-4 flex flex-col items-center gap-2 min-w-[120px] shimmer">
                                 <span class="text-3xl">🔧</span>
                                 <span class="font-mono text-sm text-[--color-text-primary] whitespace-nowrap">{{ $tech }}</span>
                                 <span class="text-xs text-[--color-text-muted] whitespace-nowrap">DevOps</span>
