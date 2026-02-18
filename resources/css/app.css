@@ -8,67 +8,71 @@
 @source '../**/*.js';
 
 :root {
-    /* Light Mode Colors - Enhanced Colorful Palette */
+    /* Light Mode Colors - Aurora Breeze Theme */
+    /* Color Harmony: Cool Analogous + Tetradic Scheme */
+    /* Sky Blue → Cyan → Teal + Periwinkle + Lavender accents */
 
-    /* Brand Colors - Aurora Gradient Theme */
-    --c-brand-primary: #088395;
-    /* Teal */
-    --c-brand-secondary: #7AB2B2;
-    /* Soft Teal */
-    --c-brand-accent: #09637E;
-    /* Dark Teal */
+    /* Brand Colors - Unified Cool Palette */
+    --c-brand-primary: #0ea5e9;
+    /* Sky Blue 500 - Primary brand color */
+    --c-brand-secondary: #06b6d4;
+    /* Cyan 500 - Secondary brand */
+    --c-brand-accent: #14b8a6;
+    /* Teal 500 - Accent brand */
 
-    /* New Vibrant Colors */
-    --c-violet: #8b5cf6;
-    /* Violet 500 */
-    --c-purple: #a855f7;
-    /* Purple 500 */
-    --c-pink: #ec4899;
-    /* Pink 500 */
-    --c-coral: #f97316;
-    /* Orange 500 */
-    --c-rose: #f43f5e;
-    /* Rose 500 */
+    /* Accent Colors - Cool Harmony */
+    --c-violet: #818cf8;
+    /* Indigo 400 - Periwinkle */
+    --c-purple: #a78bfa;
+    /* Violet 400 - Lavender */
+    --c-blue-violet: #6366f1;
+    /* Indigo 500 */
+    --c-sky: #38bdf8;
+    /* Sky 400 */
+    --c-mint: #34d399;
+    /* Emerald 400 - Mint accent */
+    --c-coral: #fb923c;
+    /* Orange 400 - Warm accent (minimal use) */
 
-    /* Background Colors */
+    /* Background Colors - Clean & Airy */
     --c-bg-primary: #ffffff;
-    /* White: Main Content Background */
-    --c-bg-body: #f8fafc;
-    /* Light gray-blue tint */
-    --c-bg-navbar: rgba(255, 255, 255, 0.85);
+    /* Pure white */
+    --c-bg-body: #f0f9ff;
+    /* Sky 50 - Very light blue tint */
+    --c-bg-navbar: rgba(255, 255, 255, 0.9);
     /* Glass navbar */
-    --c-bg-hero-start: linear-gradient(135deg, #088395 0%, #06b6d4 25%, #8b5cf6 50%, #ec4899 75%, #f97316 100%);
-    /* Aurora gradient */
-    --c-bg-hero-end: linear-gradient(135deg, #09637E 0%, #088395 50%, #7AB2B2 100%);
-    /* Teal gradient */
-    --c-bg-footer: #0f172a;
-    /* Dark slate footer */
+    --c-bg-hero-start: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 30%, #818cf8 60%, #a78bfa 100%);
+    /* Aurora breeze gradient */
+    --c-bg-hero-end: linear-gradient(135deg, #0284c7 0%, #0891b2 50%, #0d9488 100%);
+    /* Ocean gradient */
+    --c-bg-footer: #0c4a6e;
+    /* Sky 900 - Deep blue footer */
 
-    /* Card Backgrounds with subtle tint */
-    --c-bg-secondary: #f1f5f9;
-    /* Light gray */
-    --c-bg-tertiary: #e2e8f0;
-    /* Lighter gray */
-    --c-bg-card: rgba(255, 255, 255, 0.9);
+    /* Card Backgrounds */
+    --c-bg-secondary: #e0f2fe;
+    /* Sky 100 - Light blue */
+    --c-bg-tertiary: #bae6fd;
+    /* Sky 200 */
+    --c-bg-card: rgba(255, 255, 255, 0.95);
     /* Semi-transparent white */
 
-    /* Text Colors */
-    --c-text-primary: #1e293b;
-    /* Slate 800 */
-    --c-text-secondary: #475569;
-    /* Slate 600 */
-    --c-text-muted: #94a3b8;
-    /* Slate 400 */
-    --c-text-on-dark: #f1f5f9;
-    /* Slate 100 */
+    /* Text Colors - High Contrast */
+    --c-text-primary: #0f172a;
+    /* Slate 900 - Almost black */
+    --c-text-secondary: #334155;
+    /* Slate 700 */
+    --c-text-muted: #64748b;
+    /* Slate 500 */
+    --c-text-on-dark: #f0f9ff;
+    /* Sky 50 - For dark backgrounds */
     --c-text-hero: #ffffff;
-    /* White */
+    /* Pure white */
 
-    /* Border Colors */
-    --c-border: #e2e8f0;
-    /* Slate 200 */
-    --c-border-highlight: #088395;
-    /* Teal */
+    /* Border Colors - Subtle */
+    --c-border: #bae6fd;
+    /* Sky 200 - Light blue border */
+    --c-border-highlight: #0ea5e9;
+    /* Sky 500 - Highlight border */
 
     /* RGB values for opacity support */
     --rgb-bg-primary: 255 255 255;
@@ -148,30 +152,33 @@
     --color-border: var(--c-border);
     --color-border-highlight: var(--c-border-highlight);
 
-    /* Accent Colors */
-    --color-accent-emerald: var(--c-brand-primary);
-    --color-accent-cyan: #06b6d4;
-    --color-accent-blue: #3b82f6;
-    --color-accent-violet: #8b5cf6;
-    --color-accent-purple: #a855f7;
-    --color-accent-pink: #ec4899;
-    --color-accent-coral: #f97316;
-    --color-accent-rose: #f43f5e;
-    --color-accent-amber: #f59e0b;
-    --color-accent-red: #ef4444;
+    /* Accent Colors - Cool Harmony */
+    --color-accent-sky: var(--c-brand-primary);
+    --color-accent-cyan: var(--c-brand-secondary);
+    --color-accent-teal: var(--c-brand-accent);
+    --color-accent-indigo: var(--c-blue-violet);
+    --color-accent-violet: var(--c-violet);
+    --color-accent-lavender: var(--c-purple);
+    --color-accent-mint: var(--c-mint);
+    --color-accent-coral: var(--c-coral);
+    --color-accent-amber: #fbbf24;
+    --color-accent-rose: #fb7185;
 
-    /* Gradient Colors */
-    --color-gradient-aurora: linear-gradient(135deg, #10b981 0%, #06b6d4 25%, #8b5cf6 50%, #ec4899 75%, #f97316 100%);
-    --color-gradient-sunset: linear-gradient(135deg, #fb923c 0%, #f472b6 50%, #c084fc 100%);
-    --color-gradient-ocean: linear-gradient(135deg, #088395 0%, #06b6d4 50%, #3b82f6 100%);
-    --color-gradient-forest: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
-    --color-gradient-cosmic: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #f97316 100%);
+    /* Gradient Colors - Harmonized */
+    --color-gradient-aurora: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 25%, #818cf8 50%, #a78bfa 75%, #14b8a6 100%);
+    --color-gradient-breeze: linear-gradient(135deg, #38bdf8 0%, #06b6d4 50%, #34d399 100%);
+    --color-gradient-ocean: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0891b2 100%);
+    --color-gradient-coastal: linear-gradient(135deg, #818cf8 0%, #a78bfa 50%, #c084fc 100%);
+    --color-gradient-sunset: linear-gradient(135deg, #fb923c 0%, #f472b6 50%, #a78bfa 100%);
+    --color-gradient-forest: linear-gradient(135deg, #34d399 0%, #14b8a6 50%, #0d9488 100%);
 
-    /* Status Colors */
-    --color-status-operational: #10b981;
-    /* Emerald 500 */
-    --color-status-degraded: #eab308;
-    --color-status-down: #ef4444;
+    /* Status Colors - Light Mode Optimized */
+    --color-status-operational: #34d399;
+    /* Emerald 400 - Mint green */
+    --color-status-degraded: #fbbf24;
+    /* Amber 400 - Warm yellow */
+    --color-status-down: #fb7185;
+    /* Rose 400 - Soft red */
 }
 
 /* Base Styles */
@@ -448,7 +455,7 @@ pre,
 
 /* Gradient Text - Enhanced */
 .gradient-text {
-    background: var(--color-gradient-aurora);
+    background: var(--color-gradient-breeze);
     background-size: 200% 200%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -499,19 +506,19 @@ pre,
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: var(--color-gradient-aurora);
+    background: var(--color-gradient-breeze);
     background-size: 200% 200%;
     color: #ffffff;
     font-weight: 600;
     border-radius: 0.75rem;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
     animation: gradient-shift 3s ease infinite;
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+    box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
 }
 
 /* Button Variants */
@@ -632,14 +639,14 @@ pre,
     content: '';
     position: absolute;
     inset: 0;
-    background: var(--color-gradient-aurora);
+    background: var(--color-gradient-breeze);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
 .project-card:hover {
-    border-color: rgba(139, 92, 246, 0.5);
-    box-shadow: 0 20px 40px -15px rgba(139, 92, 246, 0.3);
+    border-color: rgba(14, 165, 233, 0.5);
+    box-shadow: 0 20px 40px -15px rgba(14, 165, 233, 0.3);
     transform: translateY(-4px);
 }
 
@@ -654,16 +661,16 @@ pre,
     padding: 0.375rem 0.75rem;
     font-size: 0.75rem;
     font-weight: 500;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
-    border: 1px solid rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+    border: 1px solid rgba(14, 165, 233, 0.2);
     border-radius: 9999px;
     color: var(--color-text-primary);
     transition: all 0.3s ease;
 }
 
 .tech-badge:hover {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
-    border-color: rgba(139, 92, 246, 0.4);
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+    border-color: rgba(14, 165, 233, 0.4);
     transform: scale(1.05);
 }
 
