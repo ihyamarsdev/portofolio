@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
-@import 'tailwindcss';
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap");
+@import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -41,9 +41,20 @@
     /* Sky 50 - Very light blue tint */
     --c-bg-navbar: rgba(255, 255, 255, 0.9);
     /* Glass navbar */
-    --c-bg-hero-start: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 30%, #818cf8 60%, #a78bfa 100%);
+    --c-bg-hero-start: linear-gradient(
+        135deg,
+        #0ea5e9 0%,
+        #06b6d4 30%,
+        #818cf8 60%,
+        #a78bfa 100%
+    );
     /* Aurora breeze gradient */
-    --c-bg-hero-end: linear-gradient(135deg, #0284c7 0%, #0891b2 50%, #0d9488 100%);
+    --c-bg-hero-end: linear-gradient(
+        135deg,
+        #0284c7 0%,
+        #0891b2 50%,
+        #0d9488 100%
+    );
     /* Ocean gradient */
     --c-bg-footer: #0c4a6e;
     /* Sky 900 - Deep blue footer */
@@ -134,8 +145,8 @@
 
 @theme {
     /* Typography */
-    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
     /* Theme Colors Mapped to CSS Variables */
     /* Theme Colors Mapped to CSS Variables */
@@ -165,12 +176,52 @@
     --color-accent-rose: #fb7185;
 
     /* Gradient Colors - Harmonized */
-    --color-gradient-aurora: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 25%, #818cf8 50%, #a78bfa 75%, #14b8a6 100%);
-    --color-gradient-breeze: linear-gradient(135deg, #38bdf8 0%, #06b6d4 50%, #34d399 100%);
-    --color-gradient-ocean: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0891b2 100%);
-    --color-gradient-coastal: linear-gradient(135deg, #818cf8 0%, #a78bfa 50%, #c084fc 100%);
-    --color-gradient-sunset: linear-gradient(135deg, #fb923c 0%, #f472b6 50%, #a78bfa 100%);
-    --color-gradient-forest: linear-gradient(135deg, #34d399 0%, #14b8a6 50%, #0d9488 100%);
+    --color-gradient-aurora: linear-gradient(
+        135deg,
+        #0ea5e9 0%,
+        #06b6d4 25%,
+        #818cf8 50%,
+        #a78bfa 75%,
+        #14b8a6 100%
+    );
+    --color-gradient-breeze: linear-gradient(
+        135deg,
+        #38bdf8 0%,
+        #06b6d4 50%,
+        #34d399 100%
+    );
+    --color-gradient-ocean: linear-gradient(
+        135deg,
+        #0ea5e9 0%,
+        #0284c7 50%,
+        #0891b2 100%
+    );
+    --color-gradient-coastal: linear-gradient(
+        135deg,
+        #818cf8 0%,
+        #a78bfa 50%,
+        #c084fc 100%
+    );
+    --color-gradient-sunset: linear-gradient(
+        135deg,
+        #fb923c 0%,
+        #f472b6 50%,
+        #a78bfa 100%
+    );
+    --color-gradient-forest: linear-gradient(
+        135deg,
+        #34d399 0%,
+        #14b8a6 50%,
+        #0d9488 100%
+    );
+    --color-gradient-cosmic: linear-gradient(
+        135deg,
+        #f97316 0%,
+        #ec4899 25%,
+        #8b5cf6 50%,
+        #06b6d4 75%,
+        #10b981 100%
+    );
 
     /* Status Colors - Light Mode Optimized */
     --color-status-operational: #34d399;
@@ -182,7 +233,6 @@
 }
 
 /* Base Styles */
-
 
 /* Code/Terminal Text */
 .font-mono,
@@ -199,13 +249,17 @@ pre,
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid var(--color-border);
     border-radius: 1rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 2px 4px -2px rgba(0, 0, 0, 0.03);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
     border-color: rgba(139, 92, 246, 0.3);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(139, 92, 246, 0.1);
+    box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 8px 10px -6px rgba(139, 92, 246, 0.1);
 }
 
 /* Gradient Border Card */
@@ -217,13 +271,15 @@ pre,
 }
 
 .gradient-card::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     padding: 2px;
     background: var(--color-gradient-aurora);
     border-radius: inherit;
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
     mask-composite: exclude;
     -webkit-mask-composite: xor;
     opacity: 0.5;
@@ -245,7 +301,6 @@ pre,
 }
 
 @keyframes blink {
-
     0%,
     50% {
         opacity: 1;
@@ -266,29 +321,28 @@ pre,
 }
 
 @keyframes rotate-commands {
-
     0%,
     20% {
-        content: 'kubectl apply -f infrastructure/';
+        content: "kubectl apply -f infrastructure/";
     }
 
     25%,
     45% {
-        content: 'terraform plan -out=tfplan';
+        content: "terraform plan -out=tfplan";
     }
 
     50%,
     70% {
-        content: 'docker-compose up -d';
+        content: "docker-compose up -d";
     }
 
     75%,
     95% {
-        content: 'ansible-playbook deploy.yml';
+        content: "ansible-playbook deploy.yml";
     }
 
     100% {
-        content: 'kubectl apply -f infrastructure/';
+        content: "kubectl apply -f infrastructure/";
     }
 }
 
@@ -303,7 +357,6 @@ pre,
 }
 
 @keyframes type-delete {
-
     0%,
     5% {
         width: 0;
@@ -370,7 +423,9 @@ pre,
     overflow: hidden;
     border-right: 2px solid var(--color-accent-emerald);
     white-space: nowrap;
-    animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+    animation:
+        typing 3.5s steps(40, end),
+        blink-caret 0.75s step-end infinite;
 }
 
 @keyframes typing {
@@ -384,7 +439,6 @@ pre,
 }
 
 @keyframes blink-caret {
-
     from,
     to {
         border-color: transparent;
@@ -418,7 +472,6 @@ pre,
 }
 
 @keyframes pulse-green {
-
     0%,
     100% {
         box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
@@ -430,7 +483,6 @@ pre,
 }
 
 @keyframes pulse-yellow {
-
     0%,
     100% {
         box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7);
@@ -442,7 +494,6 @@ pre,
 }
 
 @keyframes pulse-red {
-
     0%,
     100% {
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
@@ -464,7 +515,8 @@ pre,
 }
 
 @keyframes gradient-shift {
-    0%, 100% {
+    0%,
+    100% {
         background-position: 0% 50%;
     }
     50% {
@@ -617,7 +669,11 @@ pre,
 
 .skill-bar-fill {
     height: 100%;
-    background: linear-gradient(to right, var(--color-accent-emerald), var(--color-accent-cyan));
+    background: linear-gradient(
+        to right,
+        var(--color-accent-emerald),
+        var(--color-accent-cyan)
+    );
     border-radius: 9999px;
     transition: all 0.5s ease;
 }
@@ -636,7 +692,7 @@ pre,
 }
 
 .project-card::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background: var(--color-gradient-breeze);
@@ -661,7 +717,11 @@ pre,
     padding: 0.375rem 0.75rem;
     font-size: 0.75rem;
     font-weight: 500;
-    background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(14, 165, 233, 0.1) 0%,
+        rgba(6, 182, 212, 0.1) 100%
+    );
     border: 1px solid rgba(14, 165, 233, 0.2);
     border-radius: 9999px;
     color: var(--color-text-primary);
@@ -669,7 +729,11 @@ pre,
 }
 
 .tech-badge:hover {
-    background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(14, 165, 233, 0.2) 0%,
+        rgba(6, 182, 212, 0.2) 100%
+    );
     border-color: rgba(14, 165, 233, 0.4);
     transform: scale(1.05);
 }
@@ -775,7 +839,8 @@ pre,
 }
 
 @keyframes float {
-    0%, 100% {
+    0%,
+    100% {
         transform: translate(0, 0) scale(1);
     }
     25% {
@@ -791,7 +856,7 @@ pre,
 
 /* Grid Pattern Animation */
 .animated-grid {
-    background-image: 
+    background-image:
         linear-gradient(to right, var(--color-border) 1px, transparent 1px),
         linear-gradient(to bottom, var(--color-border) 1px, transparent 1px);
     background-size: 4rem 4rem;
@@ -831,13 +896,18 @@ pre,
 }
 
 .shimmer::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
     animation: shimmer 2s infinite;
 }
 
