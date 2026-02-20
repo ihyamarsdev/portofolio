@@ -62,7 +62,7 @@ class PageController extends Controller
         $post = Post::where('slug', $slug)
             ->published()
             ->firstOrFail();
-        
+
         $homeSettings = \App\Models\HomeSettings::getSettings();
 
         return view('pages.blog.show', compact('post', 'homeSettings'));

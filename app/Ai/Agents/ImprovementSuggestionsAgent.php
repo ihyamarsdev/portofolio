@@ -14,8 +14,7 @@ class ImprovementSuggestionsAgent implements Agent, HasStructuredOutput
 
     public function __construct(
         public array $analysisData
-    ) {
-    }
+    ) {}
 
     /**
      * Get the instructions that the agent should follow.
@@ -25,7 +24,7 @@ class ImprovementSuggestionsAgent implements Agent, HasStructuredOutput
         return 'You are a CV improvement expert. Based on the following CV analysis data, provide specific, actionable improvements categorized by priority.
 
 Analysis Data:
-' . json_encode($this->analysisData, JSON_PRETTY_PRINT);
+'.json_encode($this->analysisData, JSON_PRETTY_PRINT);
     }
 
     /**

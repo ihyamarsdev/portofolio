@@ -32,8 +32,6 @@ class CVGenerator extends Page
 
     public bool $isAnalyzing = false;
 
-
-
     public string $selectedTemplate = 'ats';
 
     public ?string $jobDescription = null;
@@ -44,7 +42,6 @@ class CVGenerator extends Page
 
     public function mount()
     {
-
 
         $profile = Profile::where('is_primary', true)->first();
         if ($profile) {
@@ -70,8 +67,6 @@ class CVGenerator extends Page
         }
     }
 
-
-
     public function analyze()
     {
         $this->isAnalyzing = true;
@@ -79,7 +74,7 @@ class CVGenerator extends Page
         try {
             $profile = Profile::where('is_primary', true)->first();
 
-            if (!$profile) {
+            if (! $profile) {
                 Notification::make()
                     ->title('Profile Not Found')
                     ->body('Please create a primary profile first.')
@@ -132,11 +127,11 @@ class CVGenerator extends Page
         } catch (\Exception $e) {
             Notification::make()
                 ->title('Analysis Failed')
-                ->body('Error: ' . $e->getMessage())
+                ->body('Error: '.$e->getMessage())
                 ->danger()
                 ->send();
 
-            \Log::error('CV Analysis Error: ' . $e->getMessage(), [
+            \Log::error('CV Analysis Error: '.$e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
             ]);
         } finally {
@@ -166,7 +161,7 @@ class CVGenerator extends Page
 
     public function selectTemplate(string $template)
     {
-        if (!array_key_exists($template, config('cv-templates'))) {
+        if (! array_key_exists($template, config('cv-templates'))) {
             Notification::make()
                 ->title('Invalid Template')
                 ->body('Template not found.')
@@ -185,7 +180,7 @@ class CVGenerator extends Page
 
         Notification::make()
             ->title('Template Selected')
-            ->body('Now using: ' . ucfirst($template))
+            ->body('Now using: '.ucfirst($template))
             ->success()
             ->send();
     }
@@ -194,12 +189,13 @@ class CVGenerator extends Page
     {
         $profile = Profile::where('is_primary', true)->first();
 
-        if (!$profile) {
+        if (! $profile) {
             Notification::make()
                 ->title('Profile Not Found')
                 ->body('Please create a primary profile first.')
                 ->danger()
                 ->send();
+
             return;
         }
 
@@ -221,27 +217,27 @@ class CVGenerator extends Page
         $educations = Education::orderBy('start_date', 'desc')->get();
         $skills = Skill::all();
 
-        $cvContent = 'FULL NAME: ' . $profile->name . "\n";
-        $cvContent .= 'TITLE: ' . $profile->title . "\n\n";
+        $cvContent = 'FULL NAME: '.$profile->name."\n";
+        $cvContent .= 'TITLE: '.$profile->title."\n\n";
 
         // Add explicit ABOUT ME section for AI analysis
         $cvContent .= "ABOUT ME / PROFESSIONAL SUMMARY:\n";
-        $cvContent .= strip_tags($profile->biography) . "\n\n";
+        $cvContent .= strip_tags($profile->biography)."\n\n";
 
         $cvContent .= "EXPERIENCE:\n";
         foreach ($experiences as $exp) {
-            $cvContent .= '- ' . $exp->position . ' at ' . $exp->company . ' (' . $exp->start_date->format('Y') . '-' . ($exp->end_date ? $exp->end_date->format('Y') : 'Present') . ")\n";
-            $cvContent .= '  ' . strip_tags($exp->description) . "\n";
+            $cvContent .= '- '.$exp->position.' at '.$exp->company.' ('.$exp->start_date->format('Y').'-'.($exp->end_date ? $exp->end_date->format('Y') : 'Present').")\n";
+            $cvContent .= '  '.strip_tags($exp->description)."\n";
             if ($exp->achievements) {
                 foreach ($exp->achievements as $achievement) {
-                    $cvContent .= '  Achievement: ' . $achievement . "\n";
+                    $cvContent .= '  Achievement: '.$achievement."\n";
                 }
             }
         }
 
         $cvContent .= "\nEDUCATION:\n";
         foreach ($educations as $edu) {
-            $cvContent .= '- ' . $edu->degree . ' in ' . $edu->field_of_study . ' at ' . $edu->institution . "\n";
+            $cvContent .= '- '.$edu->degree.' in '.$edu->field_of_study.' at '.$edu->institution."\n";
         }
 
         $cvContent .= "\nSKILLS:\n";
@@ -252,9 +248,9 @@ class CVGenerator extends Page
                 $yearText = $years == 1 ? 'year' : 'years';
                 $yearsExp = " ({$displayYears} {$yearText})";
             } else {
-                $yearsExp = "";
+                $yearsExp = '';
             }
-            $cvContent .= '- ' . $skill->name . ' (' . $skill->category . ')' . $yearsExp . "\n";
+            $cvContent .= '- '.$skill->name.' ('.$skill->category.')'.$yearsExp."\n";
         }
 
         return $cvContent;

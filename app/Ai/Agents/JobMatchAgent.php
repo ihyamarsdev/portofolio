@@ -15,8 +15,7 @@ class JobMatchAgent implements Agent, HasStructuredOutput
     public function __construct(
         public string $cvContent,
         public string $jobDescription
-    ) {
-    }
+    ) {}
 
     /**
      * Get the instructions that the agent should follow.
@@ -26,10 +25,10 @@ class JobMatchAgent implements Agent, HasStructuredOutput
         return 'You are a job matching expert. Compare this CV against the job description and provide a detailed match score and analysis.
 
 CV Content:
-' . $this->cvContent . '
+'.$this->cvContent.'
 
 Job Description:
-' . $this->jobDescription;
+'.$this->jobDescription;
     }
 
     /**

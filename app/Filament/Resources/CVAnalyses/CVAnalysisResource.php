@@ -16,8 +16,8 @@ class CVAnalysisResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
 
     protected static ?int $navigationSort = 1;
-    protected static ?string $slug = 'cv-analyses';
 
+    protected static ?string $slug = 'cv-analyses';
 
     public static function getModelLabel(): string
     {
@@ -43,16 +43,16 @@ class CVAnalysisResource extends Resource
                 Tables\Columns\TextColumn::make('ats_score')
                     ->label('ATS Score')
                     ->badge()
-                    ->color(fn(int $state): string => $state >= 80 ? 'success' : ($state >= 50 ? 'warning' : 'danger')),
+                    ->color(fn (int $state): string => $state >= 80 ? 'success' : ($state >= 50 ? 'warning' : 'danger')),
                 Tables\Columns\TextColumn::make('format_score')
                     ->label('Format Score')
                     ->badge()
-                    ->color(fn(int $state): string => $state >= 80 ? 'success' : ($state >= 50 ? 'warning' : 'danger')),
+                    ->color(fn (int $state): string => $state >= 80 ? 'success' : ($state >= 50 ? 'warning' : 'danger')),
                 Tables\Columns\TextColumn::make('job_match_score')
                     ->label('Job Match')
                     ->badge()
                     ->placeholder('-')
-                    ->color(fn(?int $state): string => match (true) {
+                    ->color(fn (?int $state): string => match (true) {
                         $state >= 80 => 'success',
                         $state >= 50 => 'warning',
                         default => 'danger',

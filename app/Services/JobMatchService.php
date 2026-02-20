@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Log;
-
 class JobMatchService
 {
     /**
@@ -90,7 +88,7 @@ class JobMatchService
                 }
             }
 
-            if (!$found) {
+            if (! $found) {
                 $missingSkills[] = $requiredSkill;
             } elseif ($matchType === 'partial') {
                 $partialMatches[] = [

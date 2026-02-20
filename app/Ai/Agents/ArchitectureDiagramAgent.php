@@ -14,8 +14,7 @@ class ArchitectureDiagramAgent implements Agent, HasStructuredOutput
 
     public function __construct(
         public string $projectDescription
-    ) {
-    }
+    ) {}
 
     /**
      * Get the instructions that the agent should follow.
@@ -44,7 +43,7 @@ class ArchitectureDiagramAgent implements Agent, HasStructuredOutput
             C -->|No| E[Alternative Action]
 
         Project Description:
-' . $this->projectDescription;
+'.$this->projectDescription;
     }
 
     /**

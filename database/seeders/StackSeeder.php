@@ -11,44 +11,56 @@ class StackSeeder extends Seeder
     {
         $stacks = [
             // Cloud Platforms
-            ['name' => 'AWS', 'slug' => 'aws', 'category' => 'cloud', 'icon' => '☁️', 'color' => '#FF9900'],
-            ['name' => 'GCP', 'slug' => 'gcp', 'category' => 'cloud', 'icon' => '🌐', 'color' => '#4285F4'],
-            ['name' => 'Azure', 'slug' => 'azure', 'category' => 'cloud', 'icon' => '☁️', 'color' => '#0089D6'],
-            ['name' => 'DigitalOcean', 'slug' => 'digitalocean', 'category' => 'cloud', 'icon' => '🌊', 'color' => '#0080FF'],
+            ['name' => 'AWS', 'category' => 'Cloud Platforms', 'icon' => '☁️'],
+            ['name' => 'GCP', 'category' => 'Cloud Platforms', 'icon' => '🌐'],
+            ['name' => 'Azure', 'category' => 'Cloud Platforms', 'icon' => '☁️'],
+            ['name' => 'DigitalOcean', 'category' => 'Cloud Platforms', 'icon' => '🌊'],
 
             // Containerization
-            ['name' => 'Docker', 'slug' => 'docker', 'category' => 'containerization', 'icon' => '🐳', 'color' => '#2496ED'],
-            ['name' => 'Kubernetes', 'slug' => 'kubernetes', 'category' => 'containerization', 'icon' => '⎈', 'color' => '#326CE5'],
-            ['name' => 'Podman', 'slug' => 'podman', 'category' => 'containerization', 'icon' => '🦭', 'color' => '#892CA0'],
+            ['name' => 'Docker', 'category' => 'Containerization', 'icon' => '🐳'],
+            ['name' => 'Kubernetes', 'category' => 'Containerization', 'icon' => '⎈'],
+            ['name' => 'Podman', 'category' => 'Containerization', 'icon' => '🦭'],
 
             // CI/CD
-            ['name' => 'GitHub Actions', 'slug' => 'github-actions', 'category' => 'ci-cd', 'icon' => '⚙️', 'color' => '#2088FF'],
-            ['name' => 'GitLab CI', 'slug' => 'gitlab-ci', 'category' => 'ci-cd', 'icon' => '🦊', 'color' => '#FC6D26'],
-            ['name' => 'Jenkins', 'slug' => 'jenkins', 'category' => 'ci-cd', 'icon' => '🔧', 'color' => '#D24939'],
-            ['name' => 'ArgoCD', 'slug' => 'argocd', 'category' => 'ci-cd', 'icon' => '🚀', 'color' => '#EF7B4D'],
+            ['name' => 'GitHub Actions', 'category' => 'CI/CD', 'icon' => '⚙️'],
+            ['name' => 'GitLab CI', 'category' => 'CI/CD', 'icon' => '🦊'],
+            ['name' => 'Jenkins', 'category' => 'CI/CD', 'icon' => '🔧'],
+            ['name' => 'ArgoCD', 'category' => 'CI/CD', 'icon' => '🚀'],
 
             // Infrastructure as Code
-            ['name' => 'Terraform', 'slug' => 'terraform', 'category' => 'iac', 'icon' => '🏗️', 'color' => '#7B42BC'],
-            ['name' => 'Ansible', 'slug' => 'ansible', 'category' => 'iac', 'icon' => '📜', 'color' => '#EE0000'],
-            ['name' => 'Pulumi', 'slug' => 'pulumi', 'category' => 'iac', 'icon' => '🎯', 'color' => '#8A3391'],
-            ['name' => 'Helm', 'slug' => 'helm', 'category' => 'iac', 'icon' => '⛵', 'color' => '#0F1689'],
+            ['name' => 'Terraform', 'category' => 'Infrastructure as Code', 'icon' => '🏗️'],
+            ['name' => 'Ansible', 'category' => 'Infrastructure as Code', 'icon' => '📜'],
+            ['name' => 'Pulumi', 'category' => 'Infrastructure as Code', 'icon' => '🎯'],
+            ['name' => 'Helm', 'category' => 'Infrastructure as Code', 'icon' => '⛵'],
 
             // Monitoring
-            ['name' => 'Prometheus', 'slug' => 'prometheus', 'category' => 'monitoring', 'icon' => '🔥', 'color' => '#E6522C'],
-            ['name' => 'Grafana', 'slug' => 'grafana', 'category' => 'monitoring', 'icon' => '📊', 'color' => '#F46800'],
-            ['name' => 'Datadog', 'slug' => 'datadog', 'category' => 'monitoring', 'icon' => '🐕', 'color' => '#632CA6'],
-            ['name' => 'Uptime Kuma', 'slug' => 'uptime-kuma', 'category' => 'monitoring', 'icon' => '📈', 'color' => '#5CDD8B'],
+            ['name' => 'Prometheus', 'category' => 'Monitoring', 'icon' => '🔥'],
+            ['name' => 'Grafana', 'category' => 'Monitoring', 'icon' => '📊'],
+            ['name' => 'Datadog', 'category' => 'Monitoring', 'icon' => '🐕'],
+            ['name' => 'Uptime Kuma', 'category' => 'Monitoring', 'icon' => '📈'],
 
             // Networking
-            ['name' => 'Nginx', 'slug' => 'nginx', 'category' => 'networking', 'icon' => '🌐', 'color' => '#009639'],
-            ['name' => 'Traefik', 'slug' => 'traefik', 'category' => 'networking', 'icon' => '🔀', 'color' => '#24A1C1'],
-            ['name' => 'Cloudflare', 'slug' => 'cloudflare', 'category' => 'networking', 'icon' => '☁️', 'color' => '#F38020'],
+            ['name' => 'Nginx', 'category' => 'Networking', 'icon' => '🌐'],
+            ['name' => 'Traefik', 'category' => 'Networking', 'icon' => '🔀'],
+            ['name' => 'Cloudflare', 'category' => 'Networking', 'icon' => '☁️'],
         ];
 
-        foreach ($stacks as $stack) {
+        foreach ($stacks as $stackData) {
+            $categoryName = $stackData['category'];
+            unset($stackData['category']);
+
+            // Find or create category for stacks
+            $category = \App\Models\Category::firstOrCreate(
+                ['name' => $categoryName],
+                [
+                    'slug' => \Illuminate\Support\Str::slug($categoryName),
+                    'color' => '#6366f1',
+                ]
+            );
+
             Stack::updateOrCreate(
-                ['slug' => $stack['slug']],
-                $stack
+                ['name' => $stackData['name']],
+                array_merge($stackData, ['category_id' => $category->id])
             );
         }
     }

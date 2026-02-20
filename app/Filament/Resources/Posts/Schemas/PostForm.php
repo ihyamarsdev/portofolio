@@ -2,17 +2,15 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
-use App\Models\Category;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Flex;
-use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Flex;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
@@ -35,23 +33,23 @@ class PostForm
                                         ->minLength(10)
                                         ->live(onBlur: true)
                                         ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
-                                    
+
                                     TextInput::make('slug')
                                         ->required()
                                         ->unique(ignoreRecord: true)
                                         ->readOnly(),
-                                    
+
                                     RichEditor::make('content')
                                         ->required()
                                         ->columnSpanFull()
                                         ->fileAttachmentsDisk('public')
                                         ->fileAttachmentsDirectory('posts'),
-                                    
+
                                     Textarea::make('excerpt')
                                         ->rows(3)
                                         ->columnSpanFull(),
                                 ]),
-                            
+
                             Section::make('SEO')
                                 ->icon('heroicon-o-magnifying-glass')
                                 ->collapsed()
@@ -59,14 +57,14 @@ class PostForm
                                     TextInput::make('meta_title')
                                         ->label('Meta Title')
                                         ->maxLength(60),
-                                    
+
                                     Textarea::make('meta_description')
                                         ->label('Meta Description')
                                         ->rows(3)
                                         ->maxLength(160),
                                 ]),
                         ])->grow(true), // Allow to grow
-                    
+
                     // Right Column - Sidebar
                     Grid::make(1)
                         ->schema([
@@ -83,12 +81,12 @@ class PostForm
                                         ->default('draft')
                                         ->required()
                                         ->native(false),
-                                    
+
                                     DateTimePicker::make('published_at')
                                         ->label('Publish Date')
                                         ->native(false),
                                 ]),
-                            
+
                             Section::make('Details')
                                 ->icon('heroicon-o-cog-6-tooth')
                                 ->schema([
@@ -108,7 +106,7 @@ class PostForm
                                                 ->default('#6366f1'),
                                         ])
                                         ->native(false),
-                                    
+
                                     SpatieMediaLibraryFileUpload::make('featured_image')
                                         ->collection('featured_image')
                                         ->image()
@@ -120,8 +118,8 @@ class PostForm
                                 ]),
                         ])->grow(false), // Prevent growing too much
                 ])
-                ->from('md') // Apply split on medium screens and up
-                ->columnSpanFull(),
+                    ->from('md') // Apply split on medium screens and up
+                    ->columnSpanFull(),
             ]);
     }
 }

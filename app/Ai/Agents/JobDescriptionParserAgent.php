@@ -14,8 +14,7 @@ class JobDescriptionParserAgent implements Agent, HasStructuredOutput
 
     public function __construct(
         public string $jobDescription
-    ) {
-    }
+    ) {}
 
     /**
      * Get the instructions that the agent should follow.
@@ -25,7 +24,7 @@ class JobDescriptionParserAgent implements Agent, HasStructuredOutput
         return 'You are a job description parser expert. Parse and extract key information from this job description in a structured format.
 
 Job Description:
-' . $this->jobDescription;
+'.$this->jobDescription;
     }
 
     /**

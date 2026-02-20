@@ -14,8 +14,7 @@ class ATSFormatValidationAgent implements Agent, HasStructuredOutput
 
     public function __construct(
         public string $cvContent
-    ) {
-    }
+    ) {}
 
     /**
      * Get the instructions that the agent should follow.
@@ -25,7 +24,7 @@ class ATSFormatValidationAgent implements Agent, HasStructuredOutput
         return 'You are an ATS format validation expert. Validate this CV for ATS compatibility, checking format, structure, and readability.
 
     CV Content:
-' . $this->cvContent;
+'.$this->cvContent;
     }
 
     /**

@@ -14,8 +14,7 @@ class SkillExtractionAgent implements Agent, HasStructuredOutput
 
     public function __construct(
         public string $text
-    ) {
-    }
+    ) {}
 
     /**
      * Get the instructions that the agent should follow.
@@ -25,7 +24,7 @@ class SkillExtractionAgent implements Agent, HasStructuredOutput
         return 'You are a skills extraction expert. Extract and categorize technical skills from this text.
 
 Text:
-' . $this->text;
+'.$this->text;
     }
 
     /**

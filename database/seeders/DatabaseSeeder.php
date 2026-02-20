@@ -23,15 +23,46 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Admin',
                 'email' => 'admin@ihyamars.my.id',
                 'password' => Hash::make('password'),
+                'is_admin' => true,
             ]
         );
 
-        // Run other seeders
+        // Run other seeders in correct order
         $this->call([
+            // Stack first (independent)
             StackSeeder::class,
+
+            // Skill depends on Stack
             SkillSeeder::class,
-            ServiceStatusSeeder::class,
+
+            // Category (independent)
+            CategorySeeder::class,
+
+            // Core content
             ProfileSeeder::class,
+            HomeSettingsSeeder::class,
+
+            // Education & Experience (independent, use skills)
+            EducationSeeder::class,
+            ExperienceSeeder::class,
+
+            // Projects (use skills)
+            ProjectSeeder::class,
+
+            // Posts (use categories)
+            PostSeeder::class,
+
+            // Certificates (independent)
+            CertificateSeeder::class,
+
+            // Service status (independent)
+            ServiceStatusSeeder::class,
+
+            // Inbox messages (independent)
+            InboxSeeder::class,
+
+            // CV Analyses (depends on Profile)
+            CVAnalysisSeeder::class,
         ]);
     }
 }

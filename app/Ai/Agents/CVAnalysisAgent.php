@@ -14,8 +14,7 @@ class CVAnalysisAgent implements Agent, HasStructuredOutput
 
     public function __construct(
         public string $cvContent
-    ) {
-    }
+    ) {}
 
     /**
      * Get the instructions that the agent should follow.
@@ -25,7 +24,7 @@ class CVAnalysisAgent implements Agent, HasStructuredOutput
         return 'You are an ATS (Applicant Tracking System) expert. Analyze this CV/Resume for ATS compatibility.
 
 CV Content:
-' . $this->cvContent;
+'.$this->cvContent;
     }
 
     /**

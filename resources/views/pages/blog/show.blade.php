@@ -34,7 +34,7 @@
 
                 <!-- Content -->
                 <div class="prose prose-invert prose-emerald max-w-none">
-                    {!! $post->content !!}
+                    {!! Illuminate\Support\Str::markdown($post->content ?? '') !!}
                 </div>
 
                 <!-- Footer -->

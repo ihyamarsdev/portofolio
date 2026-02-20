@@ -14,8 +14,7 @@ class KeywordExtractionAgent implements Agent, HasStructuredOutput
 
     public function __construct(
         public string $text
-    ) {
-    }
+    ) {}
 
     /**
      * Get the instructions that the agent should follow.
@@ -25,7 +24,7 @@ class KeywordExtractionAgent implements Agent, HasStructuredOutput
         return 'You are a keyword extraction expert for ATS matching. Extract and categorize key keywords from this text.
 
 Text:
-' . $this->text;
+'.$this->text;
     }
 
     /**

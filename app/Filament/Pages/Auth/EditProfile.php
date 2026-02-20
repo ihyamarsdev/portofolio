@@ -30,7 +30,7 @@ class EditProfile extends BaseEditProfile
         return parent::getPasswordFormComponent()
             ->label('New Password')
             ->helperText('Leave blank to keep your current password')
-            ->dehydrated(fn($state) => filled($state))
+            ->dehydrated(fn ($state) => filled($state))
             ->required(false);
     }
 
@@ -41,7 +41,7 @@ class EditProfile extends BaseEditProfile
     {
         return parent::getPasswordConfirmationFormComponent()
             ->label('Confirm New Password')
-            ->dehydrated(fn($state) => filled($state))
+            ->dehydrated(fn ($state) => filled($state))
             ->required(false);
     }
 }

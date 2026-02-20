@@ -14,8 +14,7 @@ class ActionVerbAnalysisAgent implements Agent, HasStructuredOutput
 
     public function __construct(
         public string $cvContent
-    ) {
-    }
+    ) {}
 
     /**
      * Get the instructions that the agent should follow.
@@ -25,7 +24,7 @@ class ActionVerbAnalysisAgent implements Agent, HasStructuredOutput
         return 'You are an action verb analysis expert. Analyze the action verbs used in this CV and categorize them as strong or weak, with suggestions for improvement.
 
 CV Content:
-' . $this->cvContent;
+'.$this->cvContent;
     }
 
     /**

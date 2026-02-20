@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class DiagramRenderer
@@ -18,8 +17,8 @@ class DiagramRenderer
 
     /**
      * Render Mermaid code to SVG
-     * 
-     * @param string $mermaidCode The Mermaid diagram code
+     *
+     * @param  string  $mermaidCode  The Mermaid diagram code
      * @return string|null The SVG content or null on failure
      */
     public function renderToSvg(string $mermaidCode): ?string
@@ -29,12 +28,12 @@ class DiagramRenderer
         }
 
         // Create temp files for input and output
-        $inputFile = storage_path('app/temp/' . Str::uuid() . '.mmd');
-        $outputFile = storage_path('app/temp/' . Str::uuid() . '.svg');
+        $inputFile = storage_path('app/temp/'.Str::uuid().'.mmd');
+        $outputFile = storage_path('app/temp/'.Str::uuid().'.svg');
 
         try {
             // Ensure temp directory exists
-            if (!is_dir(storage_path('app/temp'))) {
+            if (! is_dir(storage_path('app/temp'))) {
                 mkdir(storage_path('app/temp'), 0755, true);
             }
 
@@ -47,7 +46,7 @@ class DiagramRenderer
 
             // Run mmdc command with proper PATH
             $result = Process::env([
-                'PATH' => $nodePath . ':' . $currentPath,
+                'PATH' => $nodePath.':'.$currentPath,
             ])->run([
                 $this->mmdc,
                 '-i', $inputFile,
@@ -57,20 +56,23 @@ class DiagramRenderer
             ]);
 
             if ($result->failed()) {
-                Log::error('Mermaid CLI Error: ' . $result->errorOutput());
+                Log::error('Mermaid CLI Error: '.$result->errorOutput());
+
                 return null;
             }
 
             // Read SVG content
             if (file_exists($outputFile)) {
                 $svgContent = file_get_contents($outputFile);
+
                 return $svgContent;
             }
 
             return null;
 
         } catch (\Exception $e) {
-            Log::error('DiagramRenderer Exception: ' . $e->getMessage());
+            Log::error('DiagramRenderer Exception: '.$e->getMessage());
+
             return null;
         } finally {
             // Cleanup temp files
@@ -85,28 +87,28 @@ class DiagramRenderer
 
     /**
      * Render Mermaid code and save as a media file on a model
-     * 
-     * @param \Illuminate\Database\Eloquent\Model $model The model with HasMedia trait
-     * @param string $mermaidCode The Mermaid diagram code
-     * @param string $collection The media collection name
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model  The model with HasMedia trait
+     * @param  string  $mermaidCode  The Mermaid diagram code
+     * @param  string  $collection  The media collection name
      * @return bool Whether the operation succeeded
      */
     public function renderAndSaveToMedia($model, string $mermaidCode, string $collection = 'diagrams'): bool
     {
         $svgContent = $this->renderToSvg($mermaidCode);
 
-        if (!$svgContent) {
+        if (! $svgContent) {
             return false;
         }
 
         try {
             // Create temp file with SVG content
-            $tempPath = storage_path('app/temp/' . Str::uuid() . '.svg');
-            
-            if (!is_dir(storage_path('app/temp'))) {
+            $tempPath = storage_path('app/temp/'.Str::uuid().'.svg');
+
+            if (! is_dir(storage_path('app/temp'))) {
                 mkdir(storage_path('app/temp'), 0755, true);
             }
-            
+
             file_put_contents($tempPath, $svgContent);
 
             // Clear existing diagrams and add new one
@@ -118,7 +120,8 @@ class DiagramRenderer
             return true;
 
         } catch (\Exception $e) {
-            Log::error('DiagramRenderer Save Exception: ' . $e->getMessage());
+            Log::error('DiagramRenderer Save Exception: '.$e->getMessage());
+
             return false;
         }
     }

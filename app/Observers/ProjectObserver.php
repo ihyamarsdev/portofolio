@@ -34,6 +34,7 @@ class ProjectObserver
         if (empty($project->architecture_diagram)) {
             // Clear existing diagrams if no diagram code
             $project->clearMediaCollection('diagrams');
+
             return;
         }
 
@@ -50,7 +51,7 @@ class ProjectObserver
                 Log::warning("Failed to render architecture diagram for project: {$project->title}");
             }
         } catch (\Exception $e) {
-            Log::error("Error rendering diagram for project {$project->id}: " . $e->getMessage());
+            Log::error("Error rendering diagram for project {$project->id}: ".$e->getMessage());
         }
     }
 }

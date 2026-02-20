@@ -14,8 +14,7 @@ class SkillGapSuggestionsAgent implements Agent, HasStructuredOutput
 
     public function __construct(
         public array $missingSkills
-    ) {
-    }
+    ) {}
 
     /**
      * Get the instructions that the agent should follow.
@@ -25,7 +24,7 @@ class SkillGapSuggestionsAgent implements Agent, HasStructuredOutput
         return 'You are a career development expert. Provide suggestions for how to gain experience or highlight these missing skills in a CV.
 
 Missing Skills:
-' . implode(', ', $this->missingSkills);
+'.implode(', ', $this->missingSkills);
     }
 
     /**

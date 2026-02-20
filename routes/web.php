@@ -19,4 +19,6 @@ Route::get('/certificates', [PageController::class, 'certificates'])->name('cert
 Route::get('/blog', [PageController::class, 'blog'])->name('blog');
 Route::get('/blog/{slug}', [PageController::class, 'blogShow'])->name('blog.show');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])
+    ->middleware('throttle:5,1') // Limit to 5 requests per minute per IP
+    ->name('contact.store');

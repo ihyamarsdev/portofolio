@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Posts\Tables;
 
-use App\Models\Category;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -21,17 +20,17 @@ class PostsTable
                     ->collection('featured_image')
                     ->circular()
                     ->size(40),
-                
+
                 TextColumn::make('title')
                     ->searchable()
                     ->sortable()
                     ->limit(50),
-                
+
                 TextColumn::make('category.name')
                     ->badge()
                     ->color(fn ($record) => $record->category?->color ?? 'gray')
                     ->sortable(),
-                
+
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -48,7 +47,7 @@ class PostsTable
                         'archived' => 'heroicon-o-archive-box',
                         default => 'heroicon-o-question-mark-circle',
                     }),
-                
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -62,7 +61,7 @@ class PostsTable
                         'published' => 'Published',
                         'archived' => 'Archived',
                     ]),
-                
+
                 SelectFilter::make('category')
                     ->relationship('category', 'name')
                     ->searchable()

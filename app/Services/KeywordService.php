@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 
 class KeywordService
 {
@@ -15,11 +14,12 @@ class KeywordService
         return Cache::remember("keywords_{$category}", 3600, function () use ($category) {
             $path = storage_path("app/keywords/{$category}.json");
 
-            if (!file_exists($path)) {
+            if (! file_exists($path)) {
                 return [];
             }
 
             $data = json_decode(file_get_contents($path), true);
+
             return $data['keywords'] ?? [];
         });
     }
@@ -104,6 +104,7 @@ class KeywordService
     public function getKeywordsByCategory(string $category, string $subcategory): array
     {
         $keywords = $this->getKeywords($category);
+
         return $keywords[$subcategory] ?? [];
     }
 

@@ -66,7 +66,7 @@ Analysis criteria:
 - Suggestions: Provide actionable improvements prioritized by impact
 - Industry Match: Score compatibility with DevOps, Cloud, and SRE roles
 
-' . $keywordReference;
+'.$keywordReference;
 
         if ($this->jobDescription) {
             $instructions .= "\n- Job Match Score: Analyze fit against the job description (0-100)\n- Job Title: Extract target role from job description";
@@ -74,10 +74,10 @@ Analysis criteria:
             $instructions .= "\n- Job Match Score: Set to 0 (no job description provided)\n- Job Title: Set to 'Not Specified'";
         }
 
-        $instructions .= "\n\nCV Content:\n" . $this->cvContent;
+        $instructions .= "\n\nCV Content:\n".$this->cvContent;
 
         if ($this->jobDescription) {
-            $instructions .= "\n\nJob Description:\n" . $this->jobDescription;
+            $instructions .= "\n\nJob Description:\n".$this->jobDescription;
         }
 
         return $instructions;
@@ -91,19 +91,19 @@ Analysis criteria:
         $reference = "REFERENCE KEYWORDS TO CHECK:\n\n";
 
         $reference .= "DevOps Core Concepts:\n";
-        $reference .= "- " . implode(", ", $this->referenceKeywords['devops_core']) . "\n\n";
+        $reference .= '- '.implode(', ', $this->referenceKeywords['devops_core'])."\n\n";
 
         $reference .= "DevOps Tools & Technologies:\n";
-        $reference .= "- " . implode(", ", $this->referenceKeywords['devops_tools']) . "\n\n";
+        $reference .= '- '.implode(', ', $this->referenceKeywords['devops_tools'])."\n\n";
 
         $reference .= "Cloud Platforms & Services:\n";
-        $reference .= "- " . implode(", ", $this->referenceKeywords['cloud_platforms']) . "\n\n";
+        $reference .= '- '.implode(', ', $this->referenceKeywords['cloud_platforms'])."\n\n";
 
         $reference .= "Monitoring & Observability:\n";
-        $reference .= "- " . implode(", ", $this->referenceKeywords['monitoring']) . "\n\n";
+        $reference .= '- '.implode(', ', $this->referenceKeywords['monitoring'])."\n\n";
 
         $reference .= "Security & Compliance:\n";
-        $reference .= "- " . implode(", ", $this->referenceKeywords['security']) . "\n\n";
+        $reference .= '- '.implode(', ', $this->referenceKeywords['security'])."\n\n";
 
         $reference .= "NOTE: When analyzing keywords:\n";
         $reference .= "- 'found': List keywords from above that ARE present in the CV\n";
