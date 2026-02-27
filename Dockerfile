@@ -1,168 +1,98 @@
 # =============================================================================
-# Speed-Optimized Multi-Stage Dockerfile for Laravel + Octane (FrankenPHP)
-# Optimized for FAST rebuilds with BuildKit cache mounts
-# Runs as root for maximum performance and simplicity
-# =============================================================================
+# Multi-Stage Dockerfile for Laravel + FrankenPHP (Production)
+# Official FrankenPHP image — no Octane
 #
-# Build with: DOCKER_BUILDKIT=1 docker build -t portofolio-app .
-#
-# Performance:
-# - First build: ~3-5 min (downloads all dependencies)
-# - Subsequent (no deps change): ~30-60 sec (uses layer cache)
-# - Subsequent (deps changed): ~1-2 min (uses package cache)
+# Build: DOCKER_BUILDKIT=1 docker compose build
 # =============================================================================
 
 # -----------------------------------------------------------------------------
-# Stage 1: Builder
-# Contains all build tools - creates artifacts for runtime stage
+# Stage 1: Composer — install PHP dependencies
+# (harus pertama karena node-builder butuh vendor/)
 # -----------------------------------------------------------------------------
-FROM alpine:3.21 AS builder
+FROM composer:2 AS composer-builder
 
 WORKDIR /app
 
-# Install all system dependencies needed for building
-RUN apk add --no-cache \
-    curl \
-    nodejs \
-    npm \
-    php84 \
-    php84-cli \
-    php84-pdo \
-    php84-pdo_pgsql \
-    php84-mbstring \
-    php84-tokenizer \
-    php84-xml \
-    php84-xmlreader \
-    php84-dom \
-    php84-openssl \
-    php84-fileinfo \
-    php84-ctype \
-    php84-session \
-    php84-simplexml \
-    php84-phar \
-    php84-zip \
-    php84-intl \
-    php84-gd \
-    php84-iconv \
-    php84-exif \
-    php84-bcmath \
-    php84-pcntl \
-    php84-sockets \
-    php84-opcache && \
-    ln -sf /usr/bin/php84 /usr/bin/php
-
-# Install Composer once
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-
-# Install FrankenPHP static binary for Alpine (musl)
-RUN FRANKENPHP_VERSION=$(curl -s https://api.github.com/repos/php/frankenphp/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/') && \
-    mkdir -p /tmp/frankenphp && \
-    cd /tmp/frankenphp && \
-    curl -L "https://github.com/php/frankenphp/releases/download/${FRANKENPHP_VERSION}/frankenphp-linux-x86_64" -o frankenphp && \
-    chmod +x frankenphp && \
-    ./frankenphp version && \
-    mv frankenphp /usr/local/bin/frankenphp && \
-    rm -rf /tmp/frankenphp
-
-# Copy PHP dependencies FIRST (before source code) for optimal layer caching
 COPY composer.json composer.lock ./
-# Use BuildKit cache mount for Composer - persists across builds!
 RUN --mount=type=cache,target=/tmp/composer-cache,sharing=locked \
     composer install \
     --no-dev \
-    --no-autoloader \
     --no-scripts \
+    --no-autoloader \
     --prefer-dist \
-    --optimize-autoloader \
-    --no-interaction
+    --no-interaction \
+    --ignore-platform-reqs
 
-# Copy npm dependencies SECOND (before source code) for optimal layer caching
-COPY package.json package-lock.json ./
-# Use BuildKit cache mount for npm - persists across builds!
-RUN --mount=type=cache,target=/root/.npm,sharing=locked \
-    npm ci
-
-# Now copy source code (changes frequently, so comes last)
 COPY . .
-
-# Copy entrypoint to /usr/local/bin
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-# Build everything in one layer
-RUN composer dump-autoload --classmap-authoritative && \
-    npm run build && \
-    php artisan storage:link && \
-    php artisan config:clear && \
-    php artisan route:clear && \
-    php artisan view:clear
+RUN composer dump-autoload --classmap-authoritative --no-dev
 
 # -----------------------------------------------------------------------------
-# Stage 2: Runtime
-# Minimal production image with only runtime essentials
+# Stage 2: Node — build frontend assets
+# Butuh vendor/ dari composer-builder agar Vite bisa resolve Filament CSS
 # -----------------------------------------------------------------------------
-FROM alpine:3.21 AS runtime
-
-# Install runtime dependencies (no build tools)
-RUN apk add --no-cache \
-    libpq \
-    libstdc++ \
-    libzip \
-    libjpeg-turbo \
-    libpng \
-    freetype \
-    icu-libs \
-    wget \
-    netcat-openbsd \
-    php84 \
-    php84-cli \
-    php84-fpm \
-    php84-pdo \
-    php84-pdo_pgsql \
-    php84-mbstring \
-    php84-tokenizer \
-    php84-xml \
-    php84-xmlwriter \
-    php84-xmlreader \
-    php84-dom \
-    php84-openssl \
-    php84-fileinfo \
-    php84-ctype \
-    php84-session \
-    php84-simplexml \
-    php84-zip \
-    php84-intl \
-    php84-gd \
-    php84-iconv \
-    php84-exif \
-    php84-bcmath \
-    php84-pcntl \
-    php84-sockets \
-    php84-opcache \
-    php84-curl && \
-    ln -sf /usr/bin/php84 /usr/bin/php
+FROM node:22-alpine AS node-builder
 
 WORKDIR /app
 
-# Copy ONLY what's needed from builder (no node_modules, no composer)
-COPY --from=builder /app /app
-COPY --from=builder /usr/local/bin/frankenphp /usr/local/bin/frankenphp
-COPY --from=builder /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY package.json package-lock.json ./
+RUN --mount=type=cache,target=/root/.npm,sharing=locked \
+    npm ci
 
-# Create storage directories
+COPY . .
+# Copy vendor dari composer-builder agar Vite resolve Filament CSS
+COPY --from=composer-builder /app/vendor /app/vendor
+RUN npm run build
+
+# -----------------------------------------------------------------------------
+# Stage 3: Runtime — official FrankenPHP Alpine image
+# -----------------------------------------------------------------------------
+FROM dunglas/frankenphp:php8.4-alpine
+
+# Install PHP extensions required by Laravel
+RUN install-php-extensions \
+    pdo_pgsql \
+    mbstring \
+    opcache \
+    intl \
+    zip \
+    gd \
+    bcmath \
+    pcntl \
+    sockets \
+    redis \
+    exif \
+    ctype
+
+# Enable PHP production settings
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+# Install netcat for service wait in entrypoint
+RUN apk add --no-cache netcat-openbsd
+
+WORKDIR /app
+
+# Copy app dari composer-builder (sudah ada vendor/, autoload, dll)
+COPY --from=composer-builder /app /app
+# Timpa dengan built assets dari node-builder
+COPY --from=node-builder /app/public/build /app/public/build
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Create required Laravel storage directories
 RUN mkdir -p storage/framework/cache \
-    storage/framework/sessions \
-    storage/framework/views \
-    storage/logs \
-    bootstrap/cache
+             storage/framework/sessions \
+             storage/framework/views \
+             storage/logs \
+             bootstrap/cache
 
-# No USER directive - runs as root for simplicity and speed
-
-EXPOSE 8888
-
-ENV OCTANE_SERVER=frankenphp \
+# SERVER_NAME=":8888" → FrankenPHP listen HTTP saja, Traefik handle TLS
+ENV SERVER_NAME=":8888" \
     PHP_OPCACHE_ENABLE=1 \
     PHP_OPCACHE_MEMORY_CONSUMPTION=128
+
+EXPOSE 8888
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:8888/ || exit 1

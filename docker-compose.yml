@@ -8,29 +8,29 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    environment:
-      - FRANKENPHP_WORKER=1
-      - OCTANE_SERVER=frankenphp
-      - APP_ENV=production
-      - APP_DEBUG=false
-      - DB_HOST=db
-      - REDIS_HOST=redis
     networks:
       - backend
     volumes:
       - storage:/app/storage
     labels:
       - "traefik.enable=true"
+      # HTTP → redirect permanent ke HTTPS
       - "traefik.http.routers.portofolio.entrypoints=web"
       - "traefik.http.routers.portofolio.rule=Host(`ihyamars.my.id`)"
       - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.ssl-header.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
       - "traefik.http.routers.portofolio.middlewares=https-redirect"
+      # HTTPS router
       - "traefik.http.routers.portofolio-secure.entrypoints=websecure"
       - "traefik.http.routers.portofolio-secure.rule=Host(`ihyamars.my.id`)"
-      - "traefik.http.services.portofolio.loadbalancer.server.port=8888"
-      - "traefik.http.routers.portofolio-secure.service=portofolio"
       - "traefik.http.routers.portofolio-secure.tls=true"
+      - "traefik.http.routers.portofolio-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.portofolio-secure.service=portofolio"
+      - "traefik.http.routers.portofolio-secure.middlewares=ssl-header"
+      # Forward header agar Laravel tahu request datang via HTTPS
+      - "traefik.http.middlewares.ssl-header.headers.customrequestheaders.X-Forwarded-Proto=https"
+      # Backend port FrankenPHP
+      - "traefik.http.services.portofolio.loadbalancer.server.port=8888"
     depends_on:
       db:
         condition: service_healthy
