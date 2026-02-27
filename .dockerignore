@@ -1,25 +1,92 @@
+# Git and version control
 .git
 .gitignore
+.gitattributes
+
+# Environment files (never commit secrets)
 .env
-.env.backup
-.env.production
+.env.*
+!.env.example
+
+# Testing and development
 .phpunit.result.cache
+phpunit.xml
+.phpunit.cache
+tests/
+tests.php
+Pest.php
+pest.php
+
+# Docker development files
 docker-compose.yml
+docker-compose.*.yml
+docker-compose.*.yaml
+docker-compose.override.yml
 Dockerfile
+*.dockerfile
+.dockerignore
+
+# Documentation
 README.md
+README.*
+CHANGELOG.md
+LICENSE
+docs/
+*.md
+
+# IDE and editor files
+.idea
+.vscode
+.editorconfig
+*.swp
+*.swo
+*~
+
+# Dependencies (installed in container)
 /vendor
 /node_modules
+/bower_components
+
+# Build artifacts (generated in container)
 /public/build
 /public/hot
 /public/storage
 /storage/*.key
+/public/hot
+
+# Laravel specific
 /storage/framework/cache/data/*
 /storage/framework/sessions/*
 /storage/framework/testing/*
 /storage/framework/views/*
 /storage/logs/*
-.idea
-.vscode
+/bootstrap/cache/*.php
+
+# Database dumps and backups
 *.sql
+*.sqlite
+*.sqlite3
 *.tar
 *.zip
+*.gz
+*.bak
+
+# CI/CD files
+.github
+.gitlab-ci.yml
+.gitlab
+.travis.yml
+azure-pipelines.yml
+
+# Deployment files
+deploy/
+kubernetes/
+helm/
+
+# Package manager locks (keep source files)
+# package-lock.json and composer.lock are needed for reproducible builds
+
+# OS files
+.DS_Store
+Thumbs.db
+*.log
