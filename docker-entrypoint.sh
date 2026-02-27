@@ -23,4 +23,4 @@ fi
 
 # Start Octane
 echo "Starting FrankenPHP Octane server..."
-exec php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8888 --workers=4
+exec php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8888
