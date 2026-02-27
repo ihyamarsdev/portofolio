@@ -23,4 +23,4 @@ fi
 
 # Start Octane with FrankenPHP without workers
 echo "Starting FrankenPHP Octane server (no worker mode)..."
-exec php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8888
+exec frankenphp php-server --listen :8888 --root public/

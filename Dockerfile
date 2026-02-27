@@ -97,10 +97,6 @@ RUN composer dump-autoload --classmap-authoritative && \
     php artisan route:clear && \
     php artisan view:clear
 
-# Remove FrankenPHP worker file to prevent Octane from using worker mode
-# This forces FrankenPHP to run in "execution mode" without persistent workers
-RUN rm -f public/frankenphp-worker.php
-
 # -----------------------------------------------------------------------------
 # Stage 2: Runtime
 # Minimal production image with only runtime essentials
