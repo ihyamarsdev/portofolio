@@ -51,12 +51,18 @@ RUN apk add --no-cache \
     php84-opcache && \
     ln -sf /usr/bin/php84 /usr/bin/php
 
-# Install Composer and FrankenPHP once
+# Install Composer once
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+# Install FrankenPHP static binary for Alpine (musl)
 RUN FRANKENPHP_VERSION=$(curl -s https://api.github.com/repos/php/frankenphp/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/') && \
-    curl -L "https://github.com/php/frankenphp/releases/download/${FRANKENPHP_VERSION}/frankenphp-linux-x86_64" \
-    -o /usr/local/bin/frankenphp && \
-    chmod +x /usr/local/bin/frankenphp
+    mkdir -p /tmp/frankenphp && \
+    cd /tmp/frankenphp && \
+    curl -L "https://github.com/php/frankenphp/releases/download/${FRANKENPHP_VERSION}/frankenphp-linux-x86_64" -o frankenphp && \
+    chmod +x frankenphp && \
+    ./frankenphp version && \
+    mv frankenphp /usr/local/bin/frankenphp && \
+    rm -rf /tmp/frankenphp
 
 # Copy PHP dependencies FIRST (before source code) for optimal layer caching
 COPY composer.json composer.lock ./
