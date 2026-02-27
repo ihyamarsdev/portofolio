@@ -43,6 +43,17 @@
             display: grid;
             grid-template-rows: auto 1fr;
             background: var(--bg);
+            margin: 0 auto;
+        }
+
+        @media screen {
+            body {
+                background: #f1f5f9;
+                padding: 2rem 0 6rem 0;
+            }
+            .page {
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
         }
 
         /* ═══════════════════════════════════════════════
@@ -513,5 +524,6 @@
             @endif
         </main>
     </div>
+    @include('cv.partials._toolbar')
 </body>
 </html>

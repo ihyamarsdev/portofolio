@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>{{ $profile->name ?? 'Candidate' }} | CV</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <style>
         @page {
             size: A4;
@@ -34,6 +37,18 @@
             background: #0f172a;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+            margin: 0 auto;
+        }
+
+        @media screen {
+            body {
+                background: #020617;
+                padding: 2rem 0 6rem 0;
+            }
+
+            .page {
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+            }
         }
 
         /* ═══════════════════════════════════════════════
@@ -380,17 +395,21 @@
                 break-after: page;
             }
 
-            .section, .item, .education-item, .skill-category {
+            .section,
+            .item,
+            .education-item,
+            .skill-category {
                 break-inside: avoid;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="page">
         {{-- ═══════════════════════════════════════════════
-             SIDEBAR
-             ═══════════════════════════════════════════════ --}}
+        SIDEBAR
+        ═══════════════════════════════════════════════ --}}
         <div class="sidebar">
             {{-- Identity --}}
             <div class="identity">
@@ -459,8 +478,8 @@
         </div>
 
         {{-- ═══════════════════════════════════════════════
-             MAIN CONTENT
-             ═══════════════════════════════════════════════ --}}
+        MAIN CONTENT
+        ═══════════════════════════════════════════════ --}}
         <div class="main-content">
             {{-- Professional Summary --}}
             @if($profile->biography ?? false)
@@ -480,7 +499,8 @@
                         <div class="item">
                             <div class="item-header">
                                 <span class="position">{{ $experience->position }}</span>
-                                <span class="date">{{ $experience->start_date->format('Y.m') }} — {{ $experience->end_date ? $experience->end_date->format('Y.m') : 'Present' }}</span>
+                                <span class="date">{{ $experience->start_date->format('Y.m') }} —
+                                    {{ $experience->end_date ? $experience->end_date->format('Y.m') : 'Present' }}</span>
                             </div>
                             <div class="company-location">
                                 <span class="company">{{ $experience->company }}</span>
@@ -513,7 +533,8 @@
                         <div class="education-item">
                             <div class="item-header">
                                 <span class="institution">{{ $education->institution }}</span>
-                                <span class="date">{{ $education->start_date->format('Y') }} — {{ $education->end_date ? $education->end_date->format('Y') : 'Present' }}</span>
+                                <span class="date">{{ $education->start_date->format('Y') }} —
+                                    {{ $education->end_date ? $education->end_date->format('Y') : 'Present' }}</span>
                             </div>
                             <div class="degree">{{ $education->degree }} in {{ $education->field_of_study }}</div>
                             @if($education->grade || $education->activities)
@@ -535,5 +556,7 @@
             @endif
         </div>
     </div>
+    @include('cv.partials._toolbar')
 </body>
+
 </html>

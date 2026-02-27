@@ -25,7 +25,8 @@ class CategoryForm
                         TextInput::make('slug')
                             ->required()
                             ->unique(ignoreRecord: true),
-                    ]),
+                    ])
+                    ->columns(2),
             ]);
     }
 }

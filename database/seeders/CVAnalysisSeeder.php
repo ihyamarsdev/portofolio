@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\CVAnalysis;
 use App\Models\Profile;
 use Illuminate\Database\Seeder;
 
@@ -12,7 +11,7 @@ class CVAnalysisSeeder extends Seeder
     {
         $profile = Profile::where('is_primary', true)->first();
 
-        if (!$profile) {
+        if (! $profile) {
             return;
         }
 

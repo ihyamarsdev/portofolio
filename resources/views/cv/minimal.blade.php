@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $profile->name ?? 'Candidate' }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
         @page {
             size: A4;
@@ -43,6 +46,17 @@
             background: var(--paper);
             display: grid;
             grid-template-columns: 1fr;
+            margin: 0 auto;
+        }
+
+        @media screen {
+            body {
+                background: #f1f5f9;
+                padding: 2rem 0 6rem 0;
+            }
+            .page {
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
         }
 
         /* ═══════════════════════════════════════════════
@@ -340,6 +354,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="page">
         {{-- Header --}}
@@ -428,7 +443,8 @@
                             <article class="education-item">
                                 <h3 class="degree">{{ $education->degree }}</h3>
                                 <p class="institution">{{ $education->institution }} · {{ $education->field_of_study }}</p>
-                                <p class="year">{{ $education->start_date->format('Y') }} — {{ $education->end_date ? $education->end_date->format('Y') : 'Present' }}</p>
+                                <p class="year">{{ $education->start_date->format('Y') }} —
+                                    {{ $education->end_date ? $education->end_date->format('Y') : 'Present' }}</p>
                             </article>
                         @endforeach
                     </div>
@@ -467,5 +483,7 @@
             @endif
         </main>
     </div>
+    @include('cv.partials._toolbar')
 </body>
+
 </html>
