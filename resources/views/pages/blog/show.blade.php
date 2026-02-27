@@ -44,7 +44,7 @@
                             Thanks for reading! Have questions? <a href="{{ route('contact') }}"
                                 class="text-[--color-accent-emerald] hover:underline">Get in touch</a>.
                         </div>
-                        {!! ShareButtons::page(request()->url(), $post->title, [
+                        {!! \Kudashevs\ShareButtons\Facades\ShareButtonsFacade::page(request()->url(), $post->title, [
     'block_prefix' => '<div class="flex gap-3 share-buttons">',
     'block_suffix' => '</div>',
 ])
