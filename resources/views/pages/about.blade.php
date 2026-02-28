@@ -81,7 +81,7 @@
                         <h2 class="text-2xl font-bold text-[--color-text-primary] mb-6">Skills Matrix</h2>
 
                         @php
-                            $skillsByCategory = \App\Models\Skill::with('category')
+                            $skillsByCategory = \App\Models\Skill::with(['category', 'stacks'])
                                 ->orderBy('years_experience', 'desc')
                                 ->orderBy('name')
                                 ->get()
@@ -101,12 +101,25 @@
                                         <div class="space-y-3">
                                             @foreach($skills as $skill)
                                                 <div class="group">
-                                                    <div class="flex items-center justify-between py-2.5 px-3 rounded-lg hover:bg-[--color-bg-secondary] transition-all duration-200">
-                                                        <div class="flex items-center gap-3 flex-1">
-                                                            <div class="w-1.5 h-1.5 rounded-full bg-[--color-accent-emerald] group-hover:scale-150 transition-transform"></div>
-                                                            <span class="text-sm text-[--color-text-primary] group-hover:text-[--color-accent-emerald] font-medium transition-colors">
-                                                                {{ $skill->name }}
-                                                            </span>
+                                                    <div class="flex items-start justify-between py-2.5 px-3 rounded-lg hover:bg-[--color-bg-secondary] transition-all duration-200 gap-3">
+                                                        <div class="flex items-center gap-3 flex-1 min-w-0">
+                                                            <div class="w-1.5 h-1.5 rounded-full bg-[--color-accent-emerald] group-hover:scale-150 transition-transform flex-shrink-0 mt-1.5"></div>
+                                                            <div class="flex-1 min-w-0">
+                                                                <span class="text-sm text-[--color-text-primary] group-hover:text-[--color-accent-emerald] font-medium transition-colors">
+                                                                    {{ $skill->name }}
+                                                                </span>
+                                                                {{-- Tech Stack Badges --}}
+                                                                @if($skill->stacks && $skill->stacks->isNotEmpty())
+                                                                    <div class="flex flex-wrap gap-1.5 mt-1.5">
+                                                                        @foreach($skill->stacks as $stack)
+                                                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-medium border bg-opacity-10"
+                                                                                style="background-color: {{ $stack->color ?? '#6366f1' }}20; border-color: {{ $stack->color ?? '#6366f1' }}40; color: {{ $stack->color ?? '#6366f1' }};">
+                                                                                {{ $stack->name }}
+                                                                            </span>
+                                                                        @endforeach
+                                                                    </div>
+                                                                @endif
+                                                            </div>
                                                         </div>
                                                         @if($skill->years_experience > 0)
                                                             @php
@@ -114,7 +127,7 @@
                                                                 $isHalfYear = fmod($years, 1) > 0;
                                                                 $displayYears = $isHalfYear ? number_format($years, 1) : intval($years);
                                                             @endphp
-                                                            <div class="flex items-center gap-1.5">
+                                                            <div class="flex items-center gap-1.5 flex-shrink-0">
                                                                 <svg class="w-3.5 h-3.5 text-[--color-accent-cyan]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                                 </svg>
