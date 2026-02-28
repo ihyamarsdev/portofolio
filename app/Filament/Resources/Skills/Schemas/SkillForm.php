@@ -29,9 +29,12 @@ class SkillForm
                             ->default(0)
                             ->label('Years of Experience')
                             ->helperText('Demonstrate proficiency through your project details and experience descriptions'),
-                        Select::make('stack_id')
-                            ->relationship('stack', 'name')
-                            ->label('Tech Stack'),
+                        Select::make('stacks')
+                            ->relationship('stacks', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->label('Tech Stacks')
+                            ->helperText('Select relevant tech stacks for this skill'),
                     ])
                     ->columns(2),
             ]);

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Stack extends Model
 {
@@ -19,8 +19,8 @@ class Stack extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function skills(): HasMany
+    public function skills(): BelongsToMany
     {
-        return $this->hasMany(Skill::class);
+        return $this->belongsToMany(Skill::class);
     }
 }

@@ -25,10 +25,14 @@ class SkillsTable
                     ->label('Years of Experience')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('stack.name')
-                    ->label('Tech Stack')
+                TextColumn::make('stacks.name')
+                    ->label('Tech Stacks')
+                    ->badge()
+                    ->color('primary')
+                    ->separator(', ')
                     ->searchable(),
             ])
+            ->modifyQueryUsing(fn ($query) => $query->with(['stacks', 'category']))
             ->filters([
                 //
             ])
