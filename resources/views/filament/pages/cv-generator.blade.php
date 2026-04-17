@@ -113,6 +113,18 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    @if(!empty($analysisResult['job_title_targeted']))
+                        <div class="analysis-focus-banner">
+                            <div class="analysis-focus-icon">
+                                <x-heroicon-o-briefcase class="h-5 w-5" />
+                            </div>
+                            <div>
+                                <p class="analysis-focus-label">Target Role Analysis</p>
+                                <p class="analysis-focus-title">{{ $analysisResult['job_title_targeted'] }}</p>
+                            </div>
+                        </div>
+                    @endif
+
                     {{-- Circular Score Indicators --}}
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
                         {{-- ATS Score --}}
@@ -196,7 +208,7 @@
                                             <span class="industry-score">{{ $score }}%</span>
                                         </div>
                                         <div class="progress-bar-wrapper">
-                                            <div class="progress-bar-fill" style="width: {{ $score }}%"></div>
+                                            <div class="progress-bar-fill" @style(['width: '.$score.'%'])></div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -241,7 +253,7 @@
                         <h4 class="section-subtitle">Suggestions for Improvement</h4>
                         <div class="suggestions-list">
                             @foreach(($analysisResult['suggestions'] ?? []) as $index => $suggestion)
-                                <div class="suggestion-item" style="animation-delay: {{ $index * 0.1 }}s">
+                                <div class="suggestion-item" @style(['animation-delay: '.($index * 0.1).'s'])>
                                     <div class="suggestion-icon">
                                         <x-heroicon-o-light-bulb class="w-5 h-5" />
                                     </div>
@@ -278,10 +290,46 @@
                 </div>
                 <span class="template-badge">{{ ucfirst($selectedTemplate) }} Template</span>
             </div>
+
+            <div class="preview-toolbar">
+                <div class="preview-toolbar-meta">
+                    <span class="preview-meta-item">
+                        <x-heroicon-o-bolt class="h-4 w-4" />
+                        Live Sync
+                    </span>
+                    <span class="preview-meta-item">
+                        <x-heroicon-o-document-text class="h-4 w-4" />
+                        A4 Canvas
+                    </span>
+                </div>
+
+                <div class="preview-toolbar-actions">
+                    <a href="{{ route('cv.preview') }}?template={{ $selectedTemplate }}" target="_blank" rel="noopener"
+                        class="preview-link-action">
+                        Open Full Preview
+                    </a>
+
+                    <button type="button" wire:click="downloadCv" class="preview-download-action">
+                        Download PDF
+                    </button>
+                </div>
+            </div>
+
             <div class="card-body p-0">
                 <div class="preview-iframe-wrapper">
-                    <iframe src="{{ route('cv.preview') }}?template={{ $selectedTemplate }}"
-                        class="preview-iframe"></iframe>
+                    <div class="preview-paper-shell">
+                        <div class="preview-paper-header">
+                            <div class="preview-window-controls">
+                                <span class="preview-dot red"></span>
+                                <span class="preview-dot amber"></span>
+                                <span class="preview-dot green"></span>
+                            </div>
+                            <span class="preview-canvas-label">Professional CV Preview</span>
+                        </div>
+
+                        <iframe src="{{ route('cv.preview') }}?template={{ $selectedTemplate }}" class="preview-iframe"
+                            title="Live CV Preview" loading="lazy"></iframe>
+                    </div>
                 </div>
             </div>
         </div>
@@ -471,15 +519,17 @@
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
-            background: linear-gradient(135deg, #ddd6fe 0%, #c7d2fe 100%);
-            color: #5b21b6;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            color: #1e3a8a;
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         .dark .optional-badge,
         .dark .template-badge,
         .dark .history-count {
-            background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
-            color: #ddd6fe;
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.6) 0%, rgba(30, 58, 138, 0.55) 100%);
+            color: #dbeafe;
+            border: 1px solid rgba(147, 197, 253, 0.2);
         }
 
         /* Input Elements */
@@ -567,12 +617,77 @@
             color: #9ca3af;
         }
 
+        .analysis-focus-banner {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.875rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #bfdbfe;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        }
+
+        .dark .analysis-focus-banner {
+            border-color: rgba(59, 130, 246, 0.35);
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.45) 0%, rgba(30, 64, 175, 0.35) 100%);
+        }
+
+        .analysis-focus-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            flex-shrink: 0;
+        }
+
+        .analysis-focus-label {
+            margin: 0;
+            font-size: 0.75rem;
+            line-height: 1.2;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #1d4ed8;
+        }
+
+        .analysis-focus-title {
+            margin: 0.125rem 0 0;
+            font-size: 1rem;
+            line-height: 1.4;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .dark .analysis-focus-label {
+            color: #93c5fd;
+        }
+
+        .dark .analysis-focus-title {
+            color: #dbeafe;
+        }
+
         /* Circular Score Indicators */
         .score-circle-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 0.75rem;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+            box-shadow: 0 8px 24px -20px rgba(15, 23, 42, 0.45);
+        }
+
+        .dark .score-circle-wrapper {
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.8) 100%);
+            box-shadow: 0 8px 24px -18px rgba(2, 6, 23, 0.7);
         }
 
         .score-circle {
@@ -923,19 +1038,183 @@
             color: #bfdbfe;
         }
 
+        .preview-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.5rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+            background: linear-gradient(180deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.75) 100%);
+        }
+
+        .dark .preview-toolbar {
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.75) 100%);
+        }
+
+        .preview-toolbar-meta,
+        .preview-toolbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .preview-meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.35rem 0.65rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            background: rgba(191, 219, 254, 0.55);
+            border: 1px solid rgba(147, 197, 253, 0.7);
+        }
+
+        .dark .preview-meta-item {
+            color: #dbeafe;
+            background: rgba(30, 58, 138, 0.45);
+            border: 1px solid rgba(96, 165, 250, 0.35);
+        }
+
+        .preview-link-action,
+        .preview-download-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.45rem 0.8rem;
+            border-radius: 10px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--cv-transition);
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .preview-link-action {
+            color: #1e3a8a;
+            background: rgba(224, 242, 254, 0.8);
+            border-color: rgba(147, 197, 253, 0.8);
+        }
+
+        .preview-link-action:hover {
+            background: rgba(191, 219, 254, 0.95);
+            color: #1e40af;
+        }
+
+        .preview-download-action {
+            color: #ffffff;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-color: rgba(37, 99, 235, 0.8);
+            box-shadow: 0 8px 18px -14px rgba(30, 64, 175, 0.75);
+        }
+
+        .preview-download-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -12px rgba(30, 64, 175, 0.85);
+        }
+
+        .dark .preview-link-action {
+            color: #bfdbfe;
+            background: rgba(30, 58, 138, 0.4);
+            border-color: rgba(96, 165, 250, 0.4);
+        }
+
+        .dark .preview-link-action:hover {
+            background: rgba(30, 64, 175, 0.5);
+            color: #dbeafe;
+        }
+
+        .dark .preview-download-action {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            border-color: rgba(96, 165, 250, 0.4);
+        }
+
+        .preview-paper-shell {
+            width: min(100%, 930px);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 25px 50px -24px rgba(15, 23, 42, 0.45);
+        }
+
+        .dark .preview-paper-shell {
+            border: 1px solid rgba(100, 116, 139, 0.4);
+            background: rgba(15, 23, 42, 0.85);
+            box-shadow: 0 25px 50px -24px rgba(2, 6, 23, 0.85);
+        }
+
+        .preview-paper-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.6rem 0.9rem;
+            background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+        }
+
+        .dark .preview-paper-header {
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.92) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border-bottom: 1px solid rgba(100, 116, 139, 0.35);
+        }
+
+        .preview-window-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .preview-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            display: inline-block;
+            opacity: 0.9;
+        }
+
+        .preview-dot.red {
+            background: #ef4444;
+        }
+
+        .preview-dot.amber {
+            background: #f59e0b;
+        }
+
+        .preview-dot.green {
+            background: #10b981;
+        }
+
+        .preview-canvas-label {
+            font-size: 0.74rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #475569;
+        }
+
+        .dark .preview-canvas-label {
+            color: #cbd5e1;
+        }
+
         /* Preview Section - A4 Size Centered */
         .preview-iframe-wrapper {
             display: flex;
             justify-content: center;
             align-items: flex-start;
             padding: 2rem;
-            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-            min-height: 900px;
+            background: radial-gradient(circle at top, #e2e8f0 0%, #cbd5e1 55%, #94a3b8 100%);
+            min-height: 840px;
             overflow: auto;
         }
 
         .dark .preview-iframe-wrapper {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: radial-gradient(circle at top, #1e293b 0%, #0f172a 60%, #020617 100%);
         }
 
         .preview-iframe {
@@ -944,13 +1223,13 @@
             max-width: 210mm;
             min-height: 297mm;
             border: none;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 20px 48px -18px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(15, 23, 42, 0.08);
             background: #ffffff;
             transform-origin: top center;
         }
 
         .dark .preview-iframe {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(6, 182, 212, 0.2);
+            box-shadow: 0 20px 48px -18px rgba(2, 6, 23, 0.75), 0 0 0 1px rgba(100, 116, 139, 0.35);
         }
 
         /* History Table */
@@ -1070,6 +1349,20 @@
                 align-items: flex-start;
             }
 
+            .preview-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .preview-toolbar-actions {
+                width: 100%;
+            }
+
+            .preview-link-action,
+            .preview-download-action {
+                flex: 1;
+            }
+
             .score-circle {
                 width: 100px;
                 height: 100px;
@@ -1081,6 +1374,10 @@
 
             .preview-iframe-wrapper {
                 padding: 1rem;
+            }
+
+            .preview-paper-shell {
+                width: 100%;
             }
 
             .preview-iframe {
