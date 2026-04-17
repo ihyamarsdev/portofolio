@@ -23,19 +23,20 @@ class PostForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->columns(3)
+            ->columns(12)
             ->components([
                 Group::make()
-                    ->columnSpan(['lg' => 2])
+                    ->columnSpan(['default' => 12, 'lg' => 8])
                     ->schema([
                         Section::make('Content')
+                            ->description('Write and structure the post content.')
                             ->icon('heroicon-o-document-text')
                             ->schema([
                                 TextInput::make('title')
                                     ->required()
                                     ->minLength(10)
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
 
                                 TextInput::make('slug')
                                     ->required()
@@ -45,17 +46,46 @@ class PostForm
                                 RichEditor::make('content')
                                     ->required()
                                     ->columnSpanFull()
+                                    ->plugins([
+                                        app('Awcodes\\RicherEditor\\Plugins\\EmbedPlugin'),
+                                        app('Awcodes\\RicherEditor\\Plugins\\SourceCodePlugin'),
+                                        app('Awcodes\\RicherEditor\\Plugins\\FullScreenPlugin'),
+                                        app('Awcodes\\RicherEditor\\Plugins\\IdPlugin'),
+                                        app('Awcodes\\RicherEditor\\Plugins\\LinkPlugin'),
+                                        app('Awcodes\\RicherEditor\\Plugins\\EmojiPlugin'),
+                                    ])
+                                    ->toolbarButtons([
+                                        ['bold', 'italic', 'underline', 'strike', 'code', 'link'],
+                                        ['h2', 'h3', 'blockquote', 'lead', 'small'],
+                                        ['bulletList', 'orderedList', 'table', 'attachFiles'],
+                                        ['embed', 'sourceCode', 'fullscreen'],
+                                        ['undo', 'redo'],
+                                    ])
+                                    ->floatingToolbars([
+                                        'paragraph' => ['bold', 'italic', 'underline', 'code', 'link'],
+                                        'heading' => ['h2', 'h3'],
+                                        'table' => [
+                                            'tableAddColumnBefore',
+                                            'tableAddColumnAfter',
+                                            'tableDeleteColumn',
+                                            'tableAddRowBefore',
+                                            'tableAddRowAfter',
+                                            'tableDeleteRow',
+                                            'tableMergeCells',
+                                            'tableSplitCell',
+                                            'tableToggleHeaderRow',
+                                            'tableToggleHeaderCell',
+                                            'tableDelete',
+                                        ],
+                                    ])
                                     ->fileAttachmentsDisk('public')
                                     ->fileAttachmentsDirectory('posts'),
 
-                                Textarea::make('excerpt')
-                                    ->rows(3)
-                                    ->columnSpanFull()
-                                    ->hint(fn($state) => strlen($state ?? '') . ' / 160 chars')
-                                    ->hintIcon('heroicon-o-information-circle'),
-                            ]),
+                            ])
+                            ->columns(2),
 
-                        Section::make('SEO')
+                        Section::make('Excerpt & SEO')
+                            ->description('Post summary and search engine metadata.')
                             ->icon('heroicon-o-magnifying-glass')
                             ->headerActions([
                                 Action::make('generate_seo')
@@ -105,25 +135,33 @@ class PostForm
                                     }),
                             ])
                             ->schema([
+                                Textarea::make('excerpt')
+                                    ->rows(3)
+                                    ->maxLength(160)
+                                    ->columnSpanFull()
+                                    ->hint(fn ($state) => strlen($state ?? '').' / 160 chars')
+                                    ->hintIcon('heroicon-o-information-circle'),
+
                                 TextInput::make('meta_title')
                                     ->label('Meta Title')
                                     ->maxLength(60)
-                                    ->hint(fn($state) => strlen($state ?? '') . ' / 60 chars')
+                                    ->hint(fn ($state) => strlen($state ?? '').' / 60 chars')
                                     ->hintIcon('heroicon-o-information-circle'),
 
                                 Textarea::make('meta_description')
                                     ->label('Meta Description')
                                     ->rows(3)
                                     ->maxLength(160)
-                                    ->hint(fn($state) => strlen($state ?? '') . ' / 160 chars')
+                                    ->hint(fn ($state) => strlen($state ?? '').' / 160 chars')
                                     ->hintIcon('heroicon-o-information-circle'),
-                            ]),
+                            ])
+                            ->columns(2),
                     ]),
 
                 Group::make()
-                    ->columnSpan(['lg' => 1])
+                    ->columnSpan(['default' => 12, 'lg' => 4])
                     ->schema([
-                        Section::make('Status')
+                        Section::make('Publishing')
                             ->icon('heroicon-o-signal')
                             ->schema([
                                 Select::make('status')
@@ -140,9 +178,10 @@ class PostForm
                                 DateTimePicker::make('published_at')
                                     ->label('Publish Date')
                                     ->native(false),
-                            ]),
+                            ])
+                            ->collapsible(),
 
-                        Section::make('Details')
+                        Section::make('Category & Media')
                             ->icon('heroicon-o-cog-6-tooth')
                             ->schema([
                                 Select::make('category_id')
@@ -154,7 +193,7 @@ class PostForm
                                         TextInput::make('name')
                                             ->required()
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                                            ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
                                         TextInput::make('slug')
                                             ->required(),
                                         TextInput::make('color')
@@ -170,7 +209,9 @@ class PostForm
                                     ->imageCropAspectRatio('16:9')
                                     ->imageResizeTargetWidth('1200')
                                     ->imageResizeTargetHeight('675'),
-                            ]),
+                            ])
+                            ->collapsible()
+                            ->collapsed(),
                     ]),
             ]);
     }

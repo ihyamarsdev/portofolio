@@ -10,6 +10,7 @@ use App\Services\CVGeneratorService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Spatie\Browsershot\Browsershot;
 
@@ -39,14 +40,20 @@ class CVController extends Controller
         $filename = 'cv-'.str()->slug($profile->name ?? 'candidate').'.pdf';
 
         if ($this->isBrowsershotAvailable()) {
-            return $this->downloadWithBrowsershot(
-                $template,
-                $profile,
-                $experiences,
-                $educations,
-                $skills,
-                $filename
-            );
+            try {
+                return $this->downloadWithBrowsershot(
+                    $template,
+                    $profile,
+                    $experiences,
+                    $educations,
+                    $skills,
+                    $filename
+                );
+            } catch (\Throwable $exception) {
+                Log::warning('Browsershot PDF generation failed, falling back to DomPDF.', [
+                    'error' => $exception->getMessage(),
+                ]);
+            }
         }
 
         return Pdf::loadView(

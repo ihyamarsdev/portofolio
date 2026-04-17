@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Project::observe(ProjectObserver::class);
 
-        if (env('APP_ENV') !== 'local') {
+        if (! $this->app->environment('local')) {
             URL::forceScheme('https');
         }
     }

@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'mermaid' => [
+        'node_path' => env('MERMAID_NODE_PATH'),
+    ],
+
 ];

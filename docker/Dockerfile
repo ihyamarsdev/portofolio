@@ -2,7 +2,7 @@
 # Multi-Stage Dockerfile for Laravel + FrankenPHP (Production)
 # Official FrankenPHP image — no Octane
 #
-# Build: DOCKER_BUILDKIT=1 docker compose build
+# Build: DOCKER_BUILDKIT=1 docker compose -f docker/docker-compose.yml build
 # =============================================================================
 
 # -----------------------------------------------------------------------------
@@ -77,7 +77,7 @@ COPY --from=composer-builder /app /app
 COPY --from=node-builder /app/public/build /app/public/build
 
 # Copy entrypoint script
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Create required Laravel storage directories

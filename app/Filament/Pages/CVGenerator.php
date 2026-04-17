@@ -12,6 +12,7 @@ use BackedEnum;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Log;
 
 class CVGenerator extends Page
 {
@@ -40,7 +41,7 @@ class CVGenerator extends Page
 
     public $history = [];
 
-    public function mount()
+    public function mount(): void
     {
 
         $profile = Profile::where('is_primary', true)->first();
@@ -67,7 +68,7 @@ class CVGenerator extends Page
         }
     }
 
-    public function analyze()
+    public function analyze(): void
     {
         $this->isAnalyzing = true;
 
@@ -94,30 +95,32 @@ class CVGenerator extends Page
             )->text, true);
 
             $this->analysisResult = [
-                'ats_score' => $result['ats_score'],
-                'format_score' => $result['format_score'],
+                'ats_score' => $result['ats_score'] ?? 0,
+                'format_score' => $result['format_score'] ?? 0,
                 'about_me_score' => $result['about_me_score'] ?? 0,
-                'keywords' => $result['keywords'],
-                'suggestions' => $result['suggestions'],
-                'industry_match' => $result['industry_match'],
-                'summary' => $result['summary'],
+                'keywords' => $result['keywords'] ?? ['found' => [], 'missing' => []],
+                'suggestions' => $result['suggestions'] ?? [],
+                'industry_match' => $result['industry_match'] ?? [],
+                'summary' => $result['summary'] ?? null,
                 'job_match_score' => $result['job_match_score'] ?? null,
+                'job_title_targeted' => $result['job_title_targeted'] ?? null,
             ];
 
-            // Save to database
-            $profile->cvAnalyses()->create([
-                'content' => $cvContent,
-                'ats_score' => $result['ats_score'],
-                'format_score' => $result['format_score'],
+            $analysis = $profile->cvAnalyses()->create([
+                'ats_score' => $result['ats_score'] ?? 0,
+                'format_score' => $result['format_score'] ?? 0,
                 'about_me_score' => $result['about_me_score'] ?? 0,
                 'keywords_found' => $result['keywords']['found'] ?? [],
                 'keywords_missing' => $result['keywords']['missing'] ?? [],
                 'suggestions' => $result['suggestions'] ?? [],
-                'industry_compatibility' => $result['industry_match'] ?? [],
+                'industry_match' => $result['industry_match'] ?? [],
                 'job_match_score' => $result['job_match_score'] ?? null,
                 'summary' => $result['summary'] ?? null,
-                'job_description' => $this->jobDescription,
+                'job_title_targeted' => $result['job_title_targeted'] ?? null,
             ]);
+
+            $this->currentAnalysis = $analysis;
+            $this->history = $profile->cvAnalyses()->latest()->take(10)->get();
 
             Notification::make()
                 ->title('Analysis Complete')
@@ -131,7 +134,7 @@ class CVGenerator extends Page
                 ->danger()
                 ->send();
 
-            \Log::error('CV Analysis Error: '.$e->getMessage(), [
+            Log::error('CV Analysis Error: '.$e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
             ]);
         } finally {
@@ -139,7 +142,7 @@ class CVGenerator extends Page
         }
     }
 
-    public function analyzeJobMatch()
+    public function analyzeJobMatch(): void
     {
         if (empty($this->jobDescription)) {
             Notification::make()
@@ -154,12 +157,12 @@ class CVGenerator extends Page
         $this->analyze();
     }
 
-    public function updatedSelectedTemplate($state)
+    public function updatedSelectedTemplate($state): void
     {
         $this->selectTemplate($state);
     }
 
-    public function selectTemplate(string $template)
+    public function selectTemplate(string $template): void
     {
         if (! array_key_exists($template, config('cv-templates'))) {
             Notification::make()
@@ -202,7 +205,7 @@ class CVGenerator extends Page
         return redirect()->route('cv.download', ['template' => $this->selectedTemplate]);
     }
 
-    public function downloadExport()
+    public function downloadExport(): void
     {
         Notification::make()
             ->title('Export Options')

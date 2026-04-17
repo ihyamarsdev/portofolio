@@ -2,11 +2,16 @@
 
 namespace App\Filament\Resources\CVAnalyses;
 
+use App\Filament\Resources\CVAnalyses\Pages\CreateCVAnalysis;
+use App\Filament\Resources\CVAnalyses\Pages\EditCVAnalysis;
+use App\Filament\Resources\CVAnalyses\Pages\ListCVAnalyses;
+use App\Filament\Resources\CVAnalyses\Schemas\CVAnalysisForm;
+use App\Filament\Resources\CVAnalyses\Tables\CVAnalysesTable;
 use App\Models\CVAnalysis;
 use BackedEnum;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables;
 use Filament\Tables\Table;
 
 class CVAnalysisResource extends Resource
@@ -29,42 +34,22 @@ class CVAnalysisResource extends Resource
         return 'CV Analyses';
     }
 
+    public static function form(Schema $schema): Schema
+    {
+        return CVAnalysisForm::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Date')
-                    ->dateTime('M j, Y H:i')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('profile.name')
-                    ->label('Profile')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('ats_score')
-                    ->label('ATS Score')
-                    ->badge()
-                    ->color(fn (int $state): string => $state >= 80 ? 'success' : ($state >= 50 ? 'warning' : 'danger')),
-                Tables\Columns\TextColumn::make('format_score')
-                    ->label('Format Score')
-                    ->badge()
-                    ->color(fn (int $state): string => $state >= 80 ? 'success' : ($state >= 50 ? 'warning' : 'danger')),
-                Tables\Columns\TextColumn::make('job_match_score')
-                    ->label('Job Match')
-                    ->badge()
-                    ->placeholder('-')
-                    ->color(fn (?int $state): string => match (true) {
-                        $state >= 80 => 'success',
-                        $state >= 50 => 'warning',
-                        default => 'danger',
-                    }),
-            ])
-            ->defaultSort('created_at', 'desc');
+        return CVAnalysesTable::configure($table);
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCVAnalyses::route('/'),
+            'index' => ListCVAnalyses::route('/'),
+            'create' => CreateCVAnalysis::route('/create'),
+            'edit' => EditCVAnalysis::route('/{record}/edit'),
         ];
     }
 }

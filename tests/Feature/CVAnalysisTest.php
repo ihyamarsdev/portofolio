@@ -81,7 +81,7 @@ class CVAnalysisTest extends TestCase
     public function test_cv_can_be_downloaded_as_pdf()
     {
         $profile = Profile::factory()->create(['is_primary' => true]);
-        Experience::factory()->create(['profile_id' => $profile->id]);
+        Experience::factory()->create();
         Education::factory()->create();
         Skill::factory()->create();
 
@@ -94,7 +94,7 @@ class CVAnalysisTest extends TestCase
     public function test_cv_can_be_downloaded_with_template()
     {
         $profile = Profile::factory()->create(['is_primary' => true, 'cv_template' => 'modern']);
-        Experience::factory()->create(['profile_id' => $profile->id]);
+        Experience::factory()->create();
         Education::factory()->create();
         Skill::factory()->create();
 
@@ -107,33 +107,33 @@ class CVAnalysisTest extends TestCase
     public function test_text_export_works()
     {
         $profile = Profile::factory()->create(['is_primary' => true]);
-        Experience::factory()->create(['profile_id' => $profile->id]);
+        Experience::factory()->create();
         Education::factory()->create();
         Skill::factory()->create();
 
         $response = $this->get(route('cv.download.text'));
 
         $response->assertStatus(200);
-        $response->assertHeader('content-type', 'text/plain');
+        $this->assertStringStartsWith('text/plain', (string) $response->headers->get('content-type'));
     }
 
     public function test_markdown_export_works()
     {
         $profile = Profile::factory()->create(['is_primary' => true]);
-        Experience::factory()->create(['profile_id' => $profile->id]);
+        Experience::factory()->create();
         Education::factory()->create();
         Skill::factory()->create();
 
         $response = $this->get(route('cv.download.markdown'));
 
         $response->assertStatus(200);
-        $response->assertHeader('content-type', 'text/markdown');
+        $this->assertStringStartsWith('text/markdown', (string) $response->headers->get('content-type'));
     }
 
     public function test_docx_export_works()
     {
         $profile = Profile::factory()->create(['is_primary' => true]);
-        Experience::factory()->create(['profile_id' => $profile->id]);
+        Experience::factory()->create();
         Education::factory()->create();
         Skill::factory()->create();
 
@@ -146,7 +146,7 @@ class CVAnalysisTest extends TestCase
     public function test_preview_route_works()
     {
         $profile = Profile::factory()->create(['is_primary' => true]);
-        Experience::factory()->create(['profile_id' => $profile->id]);
+        Experience::factory()->create();
         Education::factory()->create();
         Skill::factory()->create();
 
@@ -192,5 +192,35 @@ class CVAnalysisTest extends TestCase
         $this->assertIsInt($analysis->format_score);
         $this->assertEquals(85, $analysis->ats_score);
         $this->assertEquals(90, $analysis->format_score);
+    }
+
+    public function test_cv_analysis_stores_targeted_job_fields()
+    {
+        $profile = Profile::factory()->create(['is_primary' => true]);
+
+        $analysis = CVAnalysis::create([
+            'profile_id' => $profile->id,
+            'ats_score' => 81,
+            'format_score' => 84,
+            'about_me_score' => 78,
+            'industry_match' => [
+                'devops' => 90,
+                'cloud' => 88,
+                'sre' => 72,
+            ],
+            'job_match_score' => 86,
+            'job_title_targeted' => 'Senior DevOps Engineer',
+            'summary' => 'Strong alignment with DevOps and cloud requirements.',
+        ]);
+
+        $this->assertSame('Senior DevOps Engineer', $analysis->job_title_targeted);
+        $this->assertSame(86, $analysis->job_match_score);
+        $this->assertSame(90, $analysis->industry_match['devops']);
+
+        $this->assertDatabaseHas('cv_analyses', [
+            'id' => $analysis->id,
+            'job_title_targeted' => 'Senior DevOps Engineer',
+            'job_match_score' => 86,
+        ]);
     }
 }

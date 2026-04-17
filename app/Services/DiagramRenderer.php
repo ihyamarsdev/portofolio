@@ -40,13 +40,13 @@ class DiagramRenderer
             // Write mermaid code to input file
             file_put_contents($inputFile, $mermaidCode);
 
-            // Get NODE_PATH - check common locations
-            $nodePath = env('NODE_PATH', '/home/ihya/.nvm/versions/node/v22.22.0/bin');
+            $nodePath = config('services.mermaid.node_path');
             $currentPath = getenv('PATH') ?: '/usr/local/bin:/usr/bin:/bin';
+            $processPath = implode(':', array_filter([$nodePath, $currentPath]));
 
             // Run mmdc command with proper PATH
             $result = Process::env([
-                'PATH' => $nodePath.':'.$currentPath,
+                'PATH' => $processPath,
             ])->run([
                 $this->mmdc,
                 '-i', $inputFile,

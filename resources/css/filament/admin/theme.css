@@ -6,6 +6,7 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
+@import '../../../../vendor/awcodes/richer-editor/resources/css/index.css';
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
@@ -13,6 +14,7 @@
 @source '../../../../resources/views/livewire/**/*';
 @source '../../../../app/Livewire/**/*';
 @source '../../../../vendor/guava/filament-icon-picker/resources/**/*';
+@source '../../../../vendor/awcodes/richer-editor/resources/views/**/*.blade.php';
 
 /* CSS Variables for Neon Glass Theme */
 :root {
@@ -580,6 +582,19 @@
 
 .fi-rich-editor-content {
     color: rgb(var(--text-primary));
+}
+
+.fi-fo-rich-editor .fi-fo-rich-editor-main {
+    overflow: visible;
+}
+
+.fi-fo-rich-editor .fi-fo-rich-editor-panels {
+    position: relative;
+    z-index: 30;
+}
+
+.fi-fo-rich-editor .fi-dropdown-panel {
+    z-index: 60;
 }
 
 /* Dropdown Menu */
