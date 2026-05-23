@@ -1,5 +1,7 @@
 <?php
 
+use Kudashevs\ShareButtons\Templaters\LaravelTemplater;
+
 return [
 
     /*
@@ -164,8 +166,8 @@ return [
     |
     */
 
-    'templater' => \Kudashevs\ShareButtons\Templaters\LaravelTemplater::class,
+    'templater' => LaravelTemplater::class,
 
-    'url_templater' => \Kudashevs\ShareButtons\Templaters\LaravelTemplater::class,
+    'url_templater' => LaravelTemplater::class,
 
 ];

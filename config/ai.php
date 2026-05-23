@@ -15,8 +15,8 @@ return [
     |
     */
 
-    'default' => 'gemini',
-    'default_for_images' => 'gemini',
+    'default' => 'cv',
+    'default_for_images' => 'cv',
     'default_for_audio' => 'openai',
     'default_for_transcription' => 'openai',
     'default_for_embeddings' => 'openai',
@@ -99,9 +99,15 @@ return [
             'url' => env('OLLAMA_BASE_URL', 'http://localhost:11434'),
         ],
 
-        'openai' => [
-            'driver' => 'openai',
-            'key' => env('OPENAI_API_KEY'),
+        'cv' => [
+            'driver' => 'cv-openai-compatible',
+            'key' => env('CV_API_KEY'),
+            'url' => env('CV_BASE_URL'),
+            'models' => [
+                'text' => [
+                    'default' => env('CV_MODEL', 'cv'),
+                ],
+            ],
         ],
 
         'openrouter' => [

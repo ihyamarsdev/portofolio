@@ -7,12 +7,14 @@ use App\Models\Experience;
 use App\Models\Profile;
 use App\Models\Skill;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
+use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 
 class CVGeneratorService
 {
-    public function generateHTML(string $template, Profile $profile, \Illuminate\Support\Collection|array|null $experiences = null, \Illuminate\Support\Collection|array|null $educations = null, \Illuminate\Support\Collection|array|null $skills = null): string
+    public function generateHTML(string $template, Profile $profile, Collection|array|null $experiences = null, Collection|array|null $educations = null, Collection|array|null $skills = null): string
     {
         $experiences = $experiences ?? Experience::where('profile_id', $profile->id)->orderBy('start_date', 'desc')->get();
         $educations = $educations ?? Education::where('profile_id', $profile->id)->orderBy('start_date', 'desc')->get();
@@ -21,7 +23,7 @@ class CVGeneratorService
         return View::make("cv.{$template}", compact('profile', 'experiences', 'educations', 'skills'))->render();
     }
 
-    public function generatePDF(string $template, Profile $profile, \Illuminate\Support\Collection|array|null $experiences = null, \Illuminate\Support\Collection|array|null $educations = null, \Illuminate\Support\Collection|array|null $skills = null)
+    public function generatePDF(string $template, Profile $profile, Collection|array|null $experiences = null, Collection|array|null $educations = null, Collection|array|null $skills = null)
     {
         $experiences = $experiences ?? Experience::orderBy('start_date', 'desc')->get();
         $educations = $educations ?? Education::orderBy('start_date', 'desc')->get();
@@ -30,7 +32,7 @@ class CVGeneratorService
         return Pdf::loadView("cv.{$template}", compact('profile', 'experiences', 'educations', 'skills'));
     }
 
-    public function generateDOCX(string $template, Profile $profile, \Illuminate\Support\Collection|array|null $experiences = null, \Illuminate\Support\Collection|array|null $educations = null, \Illuminate\Support\Collection|array|null $skills = null): string
+    public function generateDOCX(string $template, Profile $profile, Collection|array|null $experiences = null, Collection|array|null $educations = null, Collection|array|null $skills = null): string
     {
         $phpWord = new PhpWord;
 
@@ -44,7 +46,7 @@ class CVGeneratorService
         $this->addEducationToDocx($section, $educations ?? Education::orderBy('start_date', 'desc')->get());
         $this->addSkillsToDocx($section, $skills ?? Skill::all());
 
-        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $writer = IOFactory::createWriter($phpWord, 'Word2007');
 
         ob_start();
         $writer->save('php://output');
@@ -138,7 +140,7 @@ class CVGeneratorService
         }
     }
 
-    protected function addSkillsToDocx($section, \Illuminate\Support\Collection|array $skills)
+    protected function addSkillsToDocx($section, Collection|array $skills)
     {
         $section->addText('Skills', ['bold' => true, 'size' => 14]);
         $section->addTextBreak(1);
@@ -152,7 +154,7 @@ class CVGeneratorService
         }
     }
 
-    public function generateText(Profile $profile, \Illuminate\Support\Collection|array|null $experiences = null, \Illuminate\Support\Collection|array|null $educations = null, \Illuminate\Support\Collection|array|null $skills = null): string
+    public function generateText(Profile $profile, Collection|array|null $experiences = null, Collection|array|null $educations = null, Collection|array|null $skills = null): string
     {
         $experiences = $experiences ?? Experience::orderBy('start_date', 'desc')->get();
         $educations = $educations ?? Education::orderBy('start_date', 'desc')->get();
@@ -234,7 +236,7 @@ class CVGeneratorService
         return $text;
     }
 
-    public function generateMarkdown(Profile $profile, \Illuminate\Support\Collection|array|null $experiences = null, \Illuminate\Support\Collection|array|null $educations = null, \Illuminate\Support\Collection|array|null $skills = null): string
+    public function generateMarkdown(Profile $profile, Collection|array|null $experiences = null, Collection|array|null $educations = null, Collection|array|null $skills = null): string
     {
         $experiences = $experiences ?? Experience::orderBy('start_date', 'desc')->get();
         $educations = $educations ?? Education::orderBy('start_date', 'desc')->get();

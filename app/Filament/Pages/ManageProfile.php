@@ -10,7 +10,6 @@ use Filament\Schemas\Schema;
 
 class ManageProfile extends Page
 {
-
     public static function getNavigationIcon(): string|\BackedEnum|null
     {
         return 'heroicon-o-user-circle';

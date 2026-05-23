@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\Stack;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class StackSeeder extends Seeder
 {
@@ -50,10 +52,10 @@ class StackSeeder extends Seeder
             unset($stackData['category']);
 
             // Find or create category for stacks
-            $category = \App\Models\Category::firstOrCreate(
+            $category = Category::firstOrCreate(
                 ['name' => $categoryName],
                 [
-                    'slug' => \Illuminate\Support\Str::slug($categoryName),
+                    'slug' => Str::slug($categoryName),
                     'color' => '#6366f1',
                 ]
             );

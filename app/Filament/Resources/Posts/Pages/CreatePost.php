@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Posts\Pages;
 
 use App\Filament\Resources\Posts\PostResource;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Support\Enums\Width;
 
 class CreatePost extends CreateRecord
 {
@@ -14,7 +15,7 @@ class CreatePost extends CreateRecord
         return $this->getResource()::getUrl('index');
     }
 
-    public function getMaxContentWidth(): string|\Filament\Support\Enums\Width|null
+    public function getMaxContentWidth(): string|Width|null
     {
         return 'full';
     }

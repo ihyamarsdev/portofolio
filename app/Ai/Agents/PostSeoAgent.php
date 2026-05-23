@@ -15,8 +15,7 @@ class PostSeoAgent implements Agent, HasStructuredOutput
     public function __construct(
         public string $title,
         public string $content
-    ) {
-    }
+    ) {}
 
     /**
      * Get the instructions that the agent should follow.
@@ -33,10 +32,10 @@ Guidelines:
 - Meta Title: Include primary keyword, be descriptive, avoid keyword stuffing
 - Meta Description: Include a call-to-action, mention key benefits, use active voice
 
-Post Title: ' . $this->title . '
+Post Title: '.$this->title.'
 
 Post Content:
-' . strip_tags($this->content);
+'.strip_tags($this->content);
     }
 
     /**

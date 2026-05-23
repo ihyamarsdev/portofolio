@@ -9,6 +9,7 @@ use App\Models\Skill;
 use App\Services\CVGeneratorService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
@@ -95,7 +96,7 @@ class CVController extends Controller
         $educations,
         $skills,
         string $filename
-    ): \Illuminate\Http\Response {
+    ): Response {
         $html = View::make(
             "cv.{$template}",
             compact('profile', 'experiences', 'educations', 'skills')

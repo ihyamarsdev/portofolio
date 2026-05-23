@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources\HomeSettings;
 
+use App\Filament\Resources\HomeSettings\Pages\EditHomeSettings;
 use App\Filament\Resources\HomeSettings\Schemas\HomeSettingsForm;
 use App\Models\HomeSettings;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Database\Eloquent\Model;
 
 class HomeSettingsResource extends Resource
 {
@@ -32,7 +34,7 @@ class HomeSettingsResource extends Resource
         return false;
     }
 
-    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    public static function canDelete(Model $record): bool
     {
         return false;
     }
@@ -45,7 +47,7 @@ class HomeSettingsResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Resources\HomeSettings\Pages\EditHomeSettings::route('/'),
+            'index' => EditHomeSettings::route('/'),
         ];
     }
 }

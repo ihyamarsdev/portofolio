@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Posts\Pages;
 use App\Filament\Resources\Posts\PostResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Enums\Width;
 
 class ListPosts extends ListRecords
 {
@@ -17,7 +18,7 @@ class ListPosts extends ListRecords
         ];
     }
 
-    public function getMaxContentWidth(): string|\Filament\Support\Enums\Width|null
+    public function getMaxContentWidth(): string|Width|null
     {
         return 'full';
     }

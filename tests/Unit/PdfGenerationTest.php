@@ -34,6 +34,6 @@ class PdfGenerationTest extends TestCase
 
     public function test_dompdf_facade_is_available()
     {
-        $this->assertTrue(class_exists(\Dompdf\Dompdf::class));
+        $this->assertTrue(class_exists(Dompdf::class));
     }
 }

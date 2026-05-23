@@ -13,6 +13,7 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Log;
+use Laravel\Ai\Responses\StructuredAgentResponse;
 
 class CVGenerator extends Page
 {
@@ -89,10 +90,7 @@ class CVGenerator extends Page
             $cvContent = $this->buildCVContent($profile);
 
             $agent = new ComprehensiveCVAnalysisAgent($cvContent, $this->jobDescription);
-            $result = json_decode($agent->prompt(
-                prompt: 'Please analyze the CV content and provide comprehensive feedback following the instructions.',
-                model: 'gemini-2.5-flash'
-            )->text, true);
+            $result = $this->analyzeWithLaravelAi($agent);
 
             $this->analysisResult = [
                 'ats_score' => $result['ats_score'] ?? 0,
@@ -212,6 +210,22 @@ class CVGenerator extends Page
             ->body('PDF, DOCX, Text, Markdown exports coming soon!')
             ->info()
             ->send();
+    }
+
+    protected function analyzeWithLaravelAi(ComprehensiveCVAnalysisAgent $agent): array
+    {
+        $response = $agent->prompt(
+            'Analyze the CV content and return structured output matching the schema.',
+            provider: config('cv.provider', 'cv'),
+            model: config('cv.model'),
+            timeout: 120,
+        );
+
+        if ($response instanceof StructuredAgentResponse) {
+            return $response->toArray();
+        }
+
+        return json_decode($response->text, true, flags: JSON_THROW_ON_ERROR);
     }
 
     protected function buildCVContent(Profile $profile): string

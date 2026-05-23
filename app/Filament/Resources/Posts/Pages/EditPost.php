@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Posts\Pages;
 use App\Filament\Resources\Posts\PostResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Enums\Width;
 
 class EditPost extends EditRecord
 {
@@ -22,7 +23,7 @@ class EditPost extends EditRecord
         ];
     }
 
-    public function getMaxContentWidth(): string|\Filament\Support\Enums\Width|null
+    public function getMaxContentWidth(): string|Width|null
     {
         return 'full';
     }

@@ -2,34 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HomeSettings;
 use App\Models\Post;
+use App\Models\Profile;
+use App\Models\Project;
 
 class PageController extends Controller
 {
     private function getProfile()
     {
-        return \App\Models\Profile::where('is_primary', true)->first();
+        return Profile::where('is_primary', true)->first();
     }
 
     public function home()
     {
         $profile = $this->getProfile();
-        $homeSettings = \App\Models\HomeSettings::getSettings();
+        $homeSettings = HomeSettings::getSettings();
 
         return view('pages.home', compact('profile', 'homeSettings'));
     }
 
     public function projects()
     {
-        $homeSettings = \App\Models\HomeSettings::getSettings();
+        $homeSettings = HomeSettings::getSettings();
 
         return view('pages.projects', compact('homeSettings'));
     }
 
     public function projectShow(string $slug)
     {
-        $project = \App\Models\Project::where('slug', $slug)->firstOrFail();
-        $homeSettings = \App\Models\HomeSettings::getSettings();
+        $project = Project::where('slug', $slug)->firstOrFail();
+        $homeSettings = HomeSettings::getSettings();
 
         return view('pages.projects.show', compact('project', 'homeSettings'));
     }
@@ -37,21 +40,21 @@ class PageController extends Controller
     public function about()
     {
         $profile = $this->getProfile();
-        $homeSettings = \App\Models\HomeSettings::getSettings();
+        $homeSettings = HomeSettings::getSettings();
 
         return view('pages.about', compact('profile', 'homeSettings'));
     }
 
     public function certificates()
     {
-        $homeSettings = \App\Models\HomeSettings::getSettings();
+        $homeSettings = HomeSettings::getSettings();
 
         return view('pages.certificates', compact('homeSettings'));
     }
 
     public function blog()
     {
-        $homeSettings = \App\Models\HomeSettings::getSettings();
+        $homeSettings = HomeSettings::getSettings();
         $posts = Post::published()->latest('published_at')->paginate(9);
 
         return view('pages.blog.index', compact('homeSettings', 'posts'));
@@ -63,7 +66,7 @@ class PageController extends Controller
             ->published()
             ->firstOrFail();
 
-        $homeSettings = \App\Models\HomeSettings::getSettings();
+        $homeSettings = HomeSettings::getSettings();
 
         return view('pages.blog.show', compact('post', 'homeSettings'));
     }
@@ -71,7 +74,7 @@ class PageController extends Controller
     public function contact()
     {
         $profile = $this->getProfile();
-        $homeSettings = \App\Models\HomeSettings::getSettings();
+        $homeSettings = HomeSettings::getSettings();
 
         return view('pages.contact', compact('profile', 'homeSettings'));
     }

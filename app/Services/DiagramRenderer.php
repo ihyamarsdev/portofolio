@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Str;
@@ -88,7 +89,7 @@ class DiagramRenderer
     /**
      * Render Mermaid code and save as a media file on a model
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model  The model with HasMedia trait
+     * @param  Model  $model  The model with HasMedia trait
      * @param  string  $mermaidCode  The Mermaid diagram code
      * @param  string  $collection  The media collection name
      * @return bool Whether the operation succeeded

@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\Skill;
 use App\Models\Stack;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class SkillSeeder extends Seeder
 {
@@ -42,10 +44,10 @@ class SkillSeeder extends Seeder
             $stack = Stack::where('name', $skillData['stack_name'])->first();
 
             // Find or create category for skill
-            $category = \App\Models\Category::firstOrCreate(
+            $category = Category::firstOrCreate(
                 ['name' => $skillData['category']],
                 [
-                    'slug' => \Illuminate\Support\Str::slug($skillData['category']),
+                    'slug' => Str::slug($skillData['category']),
                     'color' => '#6366f1',
                 ]
             );
