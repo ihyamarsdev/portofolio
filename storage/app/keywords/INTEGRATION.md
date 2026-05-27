@@ -52,7 +52,8 @@ use App\Ai\Agents\ComprehensiveCVAnalysisAgent;
 $agent = new ComprehensiveCVAnalysisAgent($cvContent, $jobDescription);
 $result = $agent->prompt(
     prompt: 'Please analyze the CV...',
-    model: 'gemini-2.5-flash'
+    provider: config('cv.provider', 'cv'),
+    model: config('cv.model')
 );
 
 // AI akan otomatis reference keywords dari database
@@ -164,7 +165,7 @@ AI akan menghasilkan:
 - **First Load**: ~10-20ms untuk load JSON
 - **Cached Load**: <1ms
 - **Agent Init**: +50ms untuk load reference keywords
-- **AI Analysis**: Tergantung model Gemini (biasanya 3-10 detik)
+- **AI Analysis**: Tergantung provider/model CV AI yang dikonfigurasi (biasanya 3-10 detik)
 
 ## 🔄 Update Keywords
 
@@ -246,4 +247,4 @@ Potential enhancements:
 
 **Created**: 2026-02-11  
 **Status**: ✅ Production Ready  
-**Model**: Gemini 2.5 Flash
+**Model**: Configured via `CV_MODEL`

@@ -157,6 +157,7 @@ class ProfileForm
                                             ->avatar()
                                             ->imageEditor()
                                             ->circleCropper()
+                                            ->disk('public')
                                             ->directory('avatars')
                                             ->acceptedFileTypes([
                                                 'image/png',

@@ -110,7 +110,8 @@ class PostForm
                                         $result = json_decode(
                                             $agent->prompt(
                                                 prompt: 'Generate SEO-optimized excerpt, meta title, and meta description based on the post title and content provided in the instructions.',
-                                                model: 'gemini-2.5-flash',
+                                                provider: config('cv.provider', 'cv'),
+                                                model: config('cv.model'),
                                             )->text,
                                             true,
                                         );

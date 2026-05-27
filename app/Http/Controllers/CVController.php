@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Education;
-use App\Models\Experience;
 use App\Models\Profile;
-use App\Models\Skill;
 use App\Services\CVGeneratorService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -29,14 +26,14 @@ class CVController extends Controller
     public function download(Request $request)
     {
         $template = $request->query('template', 'ats');
-        $profile = Profile::where('is_primary', true)->first();
-        $experiences = Experience::orderBy('start_date', 'desc')->get();
-        $educations = Education::orderBy('start_date', 'desc')->get();
-        $skills = Skill::all();
+        $profile = $this->getPrimaryProfile();
 
         if (! $profile) {
             return back()->with('error', 'Please create a profile first.');
         }
+
+        $cvData = $this->cvService->buildCvData($profile);
+        extract($cvData);
 
         $filename = 'cv-'.str()->slug($profile->name ?? 'candidate').'.pdf';
 
@@ -57,12 +54,72 @@ class CVController extends Controller
             }
         }
 
-        return Pdf::loadView(
-            "cv.{$template}",
-            compact('profile', 'experiences', 'educations', 'skills'),
-        )
+        return Pdf::loadView("cv.{$template}", compact('profile', 'experiences', 'educations', 'skills'))
             ->setPaper('a4')
             ->download($filename);
+    }
+
+    public function downloadDOCX(Request $request)
+    {
+        $template = $request->query('template', 'ats');
+        $profile = $this->getPrimaryProfile();
+
+        if (! $profile) {
+            return back()->with('error', 'Please create a profile first.');
+        }
+
+        $docxContent = $this->cvService->generateDOCX($template, $profile);
+
+        return response($docxContent)
+            ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+            ->header('Content-Disposition', 'attachment; filename="cv-'.($profile->name ?? 'ats').'.docx"');
+    }
+
+    public function downloadText()
+    {
+        $profile = $this->getPrimaryProfile();
+
+        if (! $profile) {
+            return back()->with('error', 'Please create a profile first.');
+        }
+
+        $text = $this->cvService->generateText($profile);
+
+        return response($text)
+            ->header('Content-Type', 'text/plain')
+            ->header('Content-Disposition', 'attachment; filename="cv-'.($profile->name ?? 'ats').'.txt"');
+    }
+
+    public function downloadMarkdown()
+    {
+        $profile = $this->getPrimaryProfile();
+
+        if (! $profile) {
+            return back()->with('error', 'Please create a profile first.');
+        }
+
+        $markdown = $this->cvService->generateMarkdown($profile);
+
+        return response($markdown)
+            ->header('Content-Type', 'text/markdown')
+            ->header('Content-Disposition', 'attachment; filename="cv-'.($profile->name ?? 'ats').'.md"');
+    }
+
+    public function preview(Request $request)
+    {
+        $template = $request->query('template', 'ats');
+        $profile = $this->getPrimaryProfile();
+
+        if (! $profile) {
+            return back()->with('error', 'Please create a profile first.');
+        }
+
+        return view("cv.{$template}", $this->cvService->buildCvData($profile));
+    }
+
+    protected function getPrimaryProfile(): ?Profile
+    {
+        return Profile::where('is_primary', true)->first();
     }
 
     protected function isBrowsershotAvailable(): bool
@@ -97,10 +154,7 @@ class CVController extends Controller
         $skills,
         string $filename
     ): Response {
-        $html = View::make(
-            "cv.{$template}",
-            compact('profile', 'experiences', 'educations', 'skills')
-        )->render();
+        $html = View::make("cv.{$template}", compact('profile', 'experiences', 'educations', 'skills'))->render();
 
         $pdf = Browsershot::html($html)
             ->format('A4')
@@ -113,96 +167,5 @@ class CVController extends Controller
         return response($pdf)
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
-    }
-
-    public function downloadDOCX(Request $request)
-    {
-        $template = $request->query('template', 'ats');
-        $profile = Profile::where('is_primary', true)->first();
-        $experiences = Experience::orderBy('start_date', 'desc')->get();
-        $educations = Education::orderBy('start_date', 'desc')->get();
-        $skills = Skill::all();
-
-        $docxContent = $this->cvService->generateDOCX(
-            $template,
-            $profile,
-            $experiences,
-            $educations,
-            $skills,
-        );
-
-        return response($docxContent)
-            ->header(
-                'Content-Type',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            )
-            ->header(
-                'Content-Disposition',
-                'attachment; filename="cv-'.
-                    ($profile->name ?? 'ats').
-                    '.docx"',
-            );
-    }
-
-    public function downloadText()
-    {
-        $profile = Profile::where('is_primary', true)->first();
-        $experiences = Experience::orderBy('start_date', 'desc')->get();
-        $educations = Education::orderBy('start_date', 'desc')->get();
-        $skills = Skill::all();
-
-        $text = $this->cvService->generateText(
-            $profile,
-            $experiences,
-            $educations,
-            $skills,
-        );
-
-        return response($text)
-            ->header('Content-Type', 'text/plain')
-            ->header(
-                'Content-Disposition',
-                'attachment; filename="cv-'.
-                    ($profile->name ?? 'ats').
-                    '.txt"',
-            );
-    }
-
-    public function downloadMarkdown()
-    {
-        $profile = Profile::where('is_primary', true)->first();
-        $experiences = Experience::orderBy('start_date', 'desc')->get();
-        $educations = Education::orderBy('start_date', 'desc')->get();
-        $skills = Skill::all();
-
-        $markdown = $this->cvService->generateMarkdown(
-            $profile,
-            $experiences,
-            $educations,
-            $skills,
-        );
-
-        return response($markdown)
-            ->header('Content-Type', 'text/markdown')
-            ->header(
-                'Content-Disposition',
-                'attachment; filename="cv-'.
-                    ($profile->name ?? 'ats').
-                    '.md"',
-            );
-    }
-
-    public function preview(Request $request)
-    {
-        $template = $request->query('template', 'ats');
-        $profile = Profile::where('is_primary', true)->first();
-        $experiences = Experience::orderBy('start_date', 'desc')->get();
-        $educations = Education::orderBy('start_date', 'desc')->get();
-        $skills = Skill::all();
-
-        return view(
-            "cv.{$template}",
-            compact('profile', 'experiences', 'educations', 'skills'),
-        );
     }
 }

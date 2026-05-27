@@ -4,10 +4,8 @@ namespace App\Filament\Pages;
 
 use App\Ai\Agents\ComprehensiveCVAnalysisAgent;
 use App\Models\CVAnalysis;
-use App\Models\Education;
-use App\Models\Experience;
 use App\Models\Profile;
-use App\Models\Skill;
+use App\Services\CVGeneratorService;
 use BackedEnum;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -18,6 +16,13 @@ use Laravel\Ai\Responses\StructuredAgentResponse;
 class CVGenerator extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
+
+    public function __construct()
+    {
+        $this->cvService = app(CVGeneratorService::class);
+    }
+
+    protected CVGeneratorService $cvService;
 
     protected static ?string $title = 'CV Generator & Analysis';
 
@@ -230,46 +235,6 @@ class CVGenerator extends Page
 
     protected function buildCVContent(Profile $profile): string
     {
-        $experiences = Experience::orderBy('start_date', 'desc')->get();
-        $educations = Education::orderBy('start_date', 'desc')->get();
-        $skills = Skill::all();
-
-        $cvContent = 'FULL NAME: '.$profile->name."\n";
-        $cvContent .= 'TITLE: '.$profile->title."\n\n";
-
-        // Add explicit ABOUT ME section for AI analysis
-        $cvContent .= "ABOUT ME / PROFESSIONAL SUMMARY:\n";
-        $cvContent .= strip_tags($profile->biography)."\n\n";
-
-        $cvContent .= "EXPERIENCE:\n";
-        foreach ($experiences as $exp) {
-            $cvContent .= '- '.$exp->position.' at '.$exp->company.' ('.$exp->start_date->format('Y').'-'.($exp->end_date ? $exp->end_date->format('Y') : 'Present').")\n";
-            $cvContent .= '  '.strip_tags($exp->description)."\n";
-            if ($exp->achievements) {
-                foreach ($exp->achievements as $achievement) {
-                    $cvContent .= '  Achievement: '.$achievement."\n";
-                }
-            }
-        }
-
-        $cvContent .= "\nEDUCATION:\n";
-        foreach ($educations as $edu) {
-            $cvContent .= '- '.$edu->degree.' in '.$edu->field_of_study.' at '.$edu->institution."\n";
-        }
-
-        $cvContent .= "\nSKILLS:\n";
-        foreach ($skills as $skill) {
-            if ($skill->years_experience > 0) {
-                $years = floatval($skill->years_experience);
-                $displayYears = fmod($years, 1) > 0 ? number_format($years, 1) : intval($years);
-                $yearText = $years == 1 ? 'year' : 'years';
-                $yearsExp = " ({$displayYears} {$yearText})";
-            } else {
-                $yearsExp = '';
-            }
-            $cvContent .= '- '.$skill->name.' ('.$skill->category.')'.$yearsExp."\n";
-        }
-
-        return $cvContent;
+        return $this->cvService->buildCVContent($profile);
     }
 }

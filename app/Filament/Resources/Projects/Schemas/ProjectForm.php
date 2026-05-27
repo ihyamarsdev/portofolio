@@ -100,7 +100,8 @@ class ProjectForm
                                                 $result = json_decode(
                                                     $agent->prompt(
                                                         prompt: 'Please generate a Mermaid architecture diagram based on the project description provided in the instructions.',
-                                                        model: 'gemini-2.5-flash',
+                                                        provider: config('cv.provider', 'cv'),
+                                                        model: config('cv.model'),
                                                     )->text,
                                                     true,
                                                 );

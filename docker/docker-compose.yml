@@ -6,12 +6,31 @@ services:
     image: portofolio-app
     container_name: portofolio-app
     restart: unless-stopped
+    stop_grace_period: 30s
     env_file:
       - ../.env
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      APP_URL: ${APP_URL:-https://ihyamars.my.id}
+      LOG_CHANNEL: ${LOG_CHANNEL:-stderr}
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-false}
+      WAIT_FOR_DB: ${WAIT_FOR_DB:-true}
+      WAIT_FOR_REDIS: ${WAIT_FOR_REDIS:-true}
+      DB_WAIT_TIMEOUT: ${DB_WAIT_TIMEOUT:-60}
+      REDIS_WAIT_TIMEOUT: ${REDIS_WAIT_TIMEOUT:-60}
     networks:
       - backend
     volumes:
       - storage:/app/storage
+    ports:
+      - "100.104.67.88:8888:8888"
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:size=64m,noexec,nosuid,nodev
+    mem_limit: 768m
+    cpus: 1.50
     labels:
       - "traefik.enable=true"
       # HTTP → redirect permanent ke HTTPS
@@ -40,7 +59,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget --no-verbose --tries=1 --spider http://localhost:8888/ || exit 1",
+          "node -e \"fetch('http://127.0.0.1:8888/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"",
         ]
       interval: 30s
       timeout: 10s
@@ -51,6 +70,8 @@ services:
     image: postgres:16-alpine
     container_name: portofolio-db
     restart: unless-stopped
+    env_file:
+      - ../.env
     networks:
       - backend
     environment:
@@ -70,6 +91,7 @@ services:
   redis:
     image: docker.dragonflydb.io/dragonflydb/dragonfly
     container_name: portofolio-redis
+    command: ["--cache_mode=true"]
     networks:
       - backend
     restart: unless-stopped
@@ -77,6 +99,8 @@ services:
       - "127.0.0.1:6379:6379"
     volumes:
       - dragondata:/data
+    tmpfs:
+      - /tmp:size=16m,noexec,nosuid,nodev
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s

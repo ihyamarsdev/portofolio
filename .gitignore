@@ -62,11 +62,8 @@ coverage/
 
 # AI & MCP Tools
 .agents/
-.claude/
-.gemini/
 .mcp.json
 AGENTS.md
-GEMINI.md
 boost.json
 opencode.json
 # CocoIndex Code (ccc)

@@ -73,11 +73,6 @@ return [
             'key' => env('ELEVENLABS_API_KEY'),
         ],
 
-        'gemini' => [
-            'driver' => 'gemini',
-            'key' => env('GEMINI_API_KEY'),
-        ],
-
         'groq' => [
             'driver' => 'groq',
             'key' => env('GROQ_API_KEY'),

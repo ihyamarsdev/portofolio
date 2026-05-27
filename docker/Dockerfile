@@ -1,100 +1,142 @@
+# syntax=docker/dockerfile:1.7
+
 # =============================================================================
-# Multi-Stage Dockerfile for Laravel + FrankenPHP (Production)
-# Official FrankenPHP image — no Octane
-#
-# Build: DOCKER_BUILDKIT=1 docker compose -f docker/docker-compose.yml build
+# Production Dockerfile for Laravel 13 + FrankenPHP
+# Goals:
+# - leaner runtime image
+# - predictable caches
+# - keep required runtime features: Browsershot/Puppeteer + Mermaid CLI
+# - avoid dev/test/docs payload in final image
 # =============================================================================
 
-# -----------------------------------------------------------------------------
-# Stage 1: Composer — install PHP dependencies
-# (harus pertama karena node-builder butuh vendor/)
-# -----------------------------------------------------------------------------
-FROM composer:2 AS composer-builder
+FROM composer:2 AS vendor
 
 WORKDIR /app
 
 COPY composer.json composer.lock ./
+
 RUN --mount=type=cache,target=/tmp/composer-cache,sharing=locked \
     composer install \
     --no-dev \
-    --no-scripts \
-    --no-autoloader \
     --prefer-dist \
     --no-interaction \
-    --ignore-platform-reqs
+    --no-progress \
+    --optimize-autoloader \
+    --classmap-authoritative \
+    --ignore-platform-reqs \
+    --no-scripts
 
 COPY . .
-RUN composer dump-autoload --classmap-authoritative --no-dev
 
-# -----------------------------------------------------------------------------
-# Stage 2: Node — build frontend assets
-# Butuh vendor/ dari composer-builder agar Vite bisa resolve Filament CSS
-# -----------------------------------------------------------------------------
-FROM node:22-alpine AS node-builder
+RUN composer dump-autoload --no-dev --optimize --classmap-authoritative
+
+
+FROM node:22-alpine AS frontend
 
 WORKDIR /app
+
+ENV NODE_ENV=development \
+    PUPPETEER_SKIP_DOWNLOAD=true
 
 COPY package.json package-lock.json ./
+
 RUN --mount=type=cache,target=/root/.npm,sharing=locked \
-    npm ci
+    npm ci --fetch-retries=5 --fetch-retry-factor=2 --fetch-retry-mintimeout=10000 --fetch-retry-maxtimeout=120000
 
-COPY . .
-# Copy vendor dari composer-builder agar Vite resolve Filament CSS
-COPY --from=composer-builder /app/vendor /app/vendor
-RUN npm run build
+COPY resources ./resources
+COPY public ./public
+COPY vite.config.js ./vite.config.js
+COPY package.json ./package.json
+COPY artisan ./artisan
+COPY bootstrap ./bootstrap
+COPY config ./config
+COPY app ./app
+COPY routes ./routes
+COPY --from=vendor /app/vendor /app/vendor
 
-# -----------------------------------------------------------------------------
-# Stage 3: Runtime — official FrankenPHP Alpine image
-# -----------------------------------------------------------------------------
-FROM dunglas/frankenphp:php8.4-alpine
+RUN npm run build \
+    && rm -rf /tmp/*
 
-# Install PHP extensions required by Laravel
-RUN install-php-extensions \
-    pdo_pgsql \
-    mbstring \
-    opcache \
-    intl \
-    zip \
-    gd \
-    bcmath \
-    pcntl \
-    sockets \
-    redis \
-    exif \
-    ctype
 
-# Enable PHP production settings
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-
-# Install netcat for service wait in entrypoint
-RUN apk add --no-cache netcat-openbsd
+FROM node:22-alpine AS runtime-node
 
 WORKDIR /app
 
-# Copy app dari composer-builder (sudah ada vendor/, autoload, dll)
-COPY --from=composer-builder /app /app
-# Timpa dengan built assets dari node-builder
-COPY --from=node-builder /app/public/build /app/public/build
+ENV NODE_ENV=production \
+    PUPPETEER_SKIP_DOWNLOAD=true
 
-# Copy entrypoint script
-COPY docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+COPY package.json package-lock.json ./
 
-# Create required Laravel storage directories
-RUN mkdir -p storage/framework/cache \
-             storage/framework/sessions \
-             storage/framework/views \
-             storage/logs \
-             bootstrap/cache
+RUN --mount=type=cache,target=/root/.npm,sharing=locked \
+    npm ci --omit=dev --fetch-retries=5 --fetch-retry-factor=2 --fetch-retry-mintimeout=10000 --fetch-retry-maxtimeout=120000 \
+    && npm cache clean --force
 
-# SERVER_NAME=":8888" → FrankenPHP listen HTTP saja, Traefik handle TLS
-ENV SERVER_NAME=":8888" \
+
+FROM dunglas/frankenphp:php8.4-alpine AS runtime
+
+WORKDIR /app
+
+ENV APP_ENV=production \
+    SERVER_NAME=":8888" \
     PHP_OPCACHE_ENABLE=1 \
-    PHP_OPCACHE_MEMORY_CONSUMPTION=128
+    PHP_OPCACHE_MEMORY_CONSUMPTION=128 \
+    PHP_OPCACHE_INTERNED_STRINGS_BUFFER=16 \
+    PHP_OPCACHE_MAX_ACCELERATED_FILES=20000 \
+    PHP_OPCACHE_VALIDATE_TIMESTAMPS=0 \
+    PHP_MEMORY_LIMIT=256M \
+    LOG_CHANNEL=stderr \
+    PUPPETEER_SKIP_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser \
+    BROWSERSHOT_CHROME_PATH=/usr/bin/chromium-browser
 
-EXPOSE 8888
+RUN install-php-extensions \
+    bcmath \
+    ctype \
+    exif \
+    gd \
+    intl \
+    mbstring \
+    opcache \
+    pcntl \
+    pdo_pgsql \
+    redis \
+    sockets \
+    zip
+
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+RUN apk add --no-cache \
+    chromium \
+    freetype \
+    harfbuzz \
+    nss \
+    netcat-openbsd \
+    nodejs \
+    ttf-freefont
+
+COPY --from=vendor /app /app
+COPY --from=frontend /app/public/build /app/public/build
+COPY --from=runtime-node /app/node_modules /app/node_modules
+COPY docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
+    && mkdir -p \
+        bootstrap/cache \
+        storage/app/temp \
+        storage/framework/cache \
+        storage/framework/sessions \
+        storage/framework/views \
+        storage/logs \
+    && chown -R www-data:www-data /app/storage /app/bootstrap/cache \
+    && find /app/storage -type d -exec chmod 775 {} \; \
+    && find /app/bootstrap/cache -type d -exec chmod 775 {} \; \
+    && rm -rf \
+        /root/.composer \
+        /tmp/*
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8888/ || exit 1
+    CMD node -e "fetch('http://127.0.0.1:8888/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+
+EXPOSE 8888
 
 ENTRYPOINT ["docker-entrypoint.sh"]
