@@ -55,6 +55,9 @@ class CreatePost extends CreateRecord
                 ->action(function (array $data, $livewire) {
                     $title = $livewire->data['title'] ?? '';
                     $currentContent = $livewire->data['content'] ?? '';
+                    if (is_array($currentContent)) {
+                        $currentContent = json_encode($currentContent);
+                    }
                     $target = $data['generate_target'] ?? 'both';
                     $tone = $data['tone'] ?? 'cyberpunk';
                     $keywords = $data['keywords'] ?? null;

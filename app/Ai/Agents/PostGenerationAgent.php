@@ -12,13 +12,17 @@ class PostGenerationAgent implements Agent, HasStructuredOutput
 {
     use Promptable;
 
+    public ?string $currentContent = null;
+
     public function __construct(
         public string $title,
         public string $generateType, // 'content', 'seo', 'both'
         public ?string $tone = null,
         public ?string $keywords = null,
-        public ?string $currentContent = null
-    ) {}
+        mixed $currentContent = null
+    ) {
+        $this->currentContent = is_array($currentContent) ? json_encode($currentContent) : (string) $currentContent;
+    }
 
     public function instructions(): Stringable|string
     {
