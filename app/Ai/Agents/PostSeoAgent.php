@@ -14,28 +14,34 @@ class PostSeoAgent implements Agent, HasStructuredOutput
 
     public function __construct(
         public string $title,
-        public string $content
+        public string $content,
+        public ?string $tone = null,
+        public ?string $keywords = null
     ) {}
 
-    /**
-     * Get the instructions that the agent should follow.
-     */
     public function instructions(): Stringable|string
     {
-        return 'You are an SEO expert and content writer. Based on the blog post title and content provided, generate:
-1. A concise and engaging excerpt (max 160 characters) that summarizes the post
-2. An SEO-optimized meta title (max 60 characters) that includes the main keyword
-3. A compelling meta description (max 160 characters) that encourages clicks from search results
+        $toneInstruction = $this->tone ? "Write in the following tone/style: {$this->tone}." : "Write in a professional, engaging and clean SEO copywriter tone.";
+        $keywordsInstruction = $this->keywords ? "Make sure to integrate the following target keywords naturally in the meta title and description: {$this->keywords}." : "";
 
-Guidelines:
-- Excerpt: Plain text summary, engaging, captures the essence of the post
-- Meta Title: Include primary keyword, be descriptive, avoid keyword stuffing
-- Meta Description: Include a call-to-action, mention key benefits, use active voice
+        return 'You are an SEO expert and content copywriter. Based on the blog post title and content provided, you must generate a structured SEO payload.
 
-Post Title: '.$this->title.'
+        You must return ONLY valid JSON with this EXACT structure:
+        {
+            "excerpt": "<concise summary of the post, max 160 characters>",
+            "meta_title": "<SEO-optimized meta title, max 60 characters>",
+            "meta_description": "<compelling search engine description, max 160 characters>"
+        }
 
-Post Content:
-'.strip_tags($this->content);
+        Guidelines:
+        - Excerpt: Plain text summary, engaging, captures the essence of the post. ' . $toneInstruction . '
+        - Meta Title: Include primary keyword, be descriptive, avoid keyword stuffing.
+        - Meta Description: Include a call-to-action, mention key benefits, use active voice. ' . $keywordsInstruction . '
+
+        Post Title: '.$this->title.'
+
+        Post Content:
+        '.strip_tags($this->content);
     }
 
     /**

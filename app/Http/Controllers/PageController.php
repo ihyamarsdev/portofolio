@@ -62,9 +62,13 @@ class PageController extends Controller
 
     public function blogShow(string $slug)
     {
-        $post = Post::where('slug', $slug)
-            ->published()
-            ->firstOrFail();
+        $query = Post::where('slug', $slug);
+
+        if (! auth()->check()) {
+            $query->published();
+        }
+
+        $post = $query->firstOrFail();
 
         $homeSettings = HomeSettings::getSettings();
 

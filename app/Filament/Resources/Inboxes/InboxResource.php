@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Inboxes;
 use App\Filament\Resources\Inboxes\Pages\CreateInbox;
 use App\Filament\Resources\Inboxes\Pages\EditInbox;
 use App\Filament\Resources\Inboxes\Pages\ListInboxes;
+use App\Filament\Resources\Inboxes\Pages\ViewInbox;
 use App\Filament\Resources\Inboxes\Schemas\InboxForm;
 use App\Filament\Resources\Inboxes\Tables\InboxesTable;
 use App\Models\Inbox;
@@ -48,6 +49,7 @@ class InboxResource extends Resource
         return [
             'index' => ListInboxes::route('/'),
             'create' => CreateInbox::route('/create'),
+            'view' => ViewInbox::route('/{record}'),
             'edit' => EditInbox::route('/{record}/edit'),
         ];
     }

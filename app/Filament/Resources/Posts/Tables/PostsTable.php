@@ -9,6 +9,7 @@ use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class PostsTable
 {
@@ -16,20 +17,38 @@ class PostsTable
     {
         return $table
             ->columns([
-                SpatieMediaLibraryImageColumn::make('featured_image')
+                 SpatieMediaLibraryImageColumn::make('featured_image')
                     ->collection('featured_image')
-                    ->circular()
-                    ->size(40),
+                    ->height(45)
+                    ->width(80)
+                    ->extraAttributes(['class' => 'rounded border border-slate-700 shadow-sm shrink-0']),
 
                 TextColumn::make('title')
                     ->searchable()
                     ->sortable()
-                    ->limit(50),
+                    ->limit(45)
+                    ->description(fn ($record) => Str::limit($record->excerpt, 60)),
 
                 TextColumn::make('category.name')
+                    ->label('Category')
+                    ->sortable()
+                    ->formatStateUsing(fn ($record) => $record->category ? new \Illuminate\Support\HtmlString(
+                        '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border bg-slate-900/50 shrink-0" style="color: ' . e($record->category->color) . '; border-color: ' . e($record->category->color) . '60; box-shadow: 0 0 6px ' . e($record->category->color) . '30">
+                            ' . e($record->category->name) . '
+                         </span>'
+                    ) : new \Illuminate\Support\HtmlString('<span class="text-slate-500">-</span>')),
+
+                TextColumn::make('reading_specs')
+                    ->label('Specs')
+                    ->state(function ($record) {
+                        $wordCount = str_word_count(strip_tags($record->content ?? ''));
+                        $readTime = max(1, (int) ceil($wordCount / 200));
+                        return "{$wordCount} w • {$readTime}m read";
+                    })
                     ->badge()
-                    ->color(fn ($record) => $record->category?->color ?? 'gray')
-                    ->sortable(),
+                    ->color('gray')
+                    ->fontFamily('mono')
+                    ->alignCenter(),
 
                 TextColumn::make('status')
                     ->badge()

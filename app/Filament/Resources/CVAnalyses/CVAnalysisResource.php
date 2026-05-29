@@ -18,6 +18,8 @@ class CVAnalysisResource extends Resource
 {
     protected static ?string $model = CVAnalysis::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
 
     protected static ?int $navigationSort = 1;

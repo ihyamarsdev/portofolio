@@ -10,11 +10,6 @@ class CreatePost extends CreateRecord
 {
     protected static string $resource = PostResource::class;
 
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('index');
-    }
-
     public function getMaxContentWidth(): string|Width|null
     {
         return 'full';

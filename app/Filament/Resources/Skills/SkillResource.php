@@ -18,6 +18,8 @@ class SkillResource extends Resource
 {
     protected static ?string $model = Skill::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
 
     public static function getNavigationGroup(): ?string
