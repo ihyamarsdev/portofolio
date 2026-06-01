@@ -29,23 +29,31 @@ class ComprehensiveCVAnalysisAgent implements Agent, HasStructuredOutput
      */
     protected function loadReferenceKeywords(): void
     {
-        $devopsKeywords = $this->keywordService->getKeywords('devops');
-        $cloudKeywords = $this->keywordService->getKeywords('cloud');
-
-        // Get top priority keywords for AI reference
         $this->referenceKeywords = [
-            'devops_core' => array_slice($devopsKeywords['core_concepts'] ?? [], 0, 15),
-            'devops_tools' => array_merge(
-                array_slice($devopsKeywords['containerization_orchestration'] ?? [], 0, 8),
-                array_slice($devopsKeywords['ci_cd_tools'] ?? [], 0, 10)
-            ),
-            'cloud_platforms' => array_merge(
-                array_slice($cloudKeywords['aws_services'] ?? [], 0, 15),
-                array_slice($cloudKeywords['azure_services'] ?? [], 0, 10),
-                array_slice($cloudKeywords['gcp_services'] ?? [], 0, 10)
-            ),
-            'monitoring' => array_slice($devopsKeywords['monitoring_logging'] ?? [], 0, 10),
-            'security' => array_slice($devopsKeywords['security'] ?? [], 0, 10),
+            'devops' => [
+                'core' => array_slice($this->keywordService->getKeywordsByCategory('devops', 'core_concepts'), 0, 12),
+                'tools' => array_merge(
+                    array_slice($this->keywordService->getKeywordsByCategory('devops', 'containerization_orchestration'), 0, 8),
+                    array_slice($this->keywordService->getKeywordsByCategory('devops', 'ci_cd_tools'), 0, 8)
+                ),
+            ],
+            'devsecops' => [
+                'core' => array_slice($this->keywordService->getKeywordsByCategory('devsecops', 'core_concepts'), 0, 10),
+                'security_tooling' => array_slice($this->keywordService->getKeywordsByCategory('devsecops', 'security_tooling'), 0, 12),
+            ],
+            'sre' => [
+                'core' => array_slice($this->keywordService->getKeywordsByCategory('sre', 'core_concepts'), 0, 10),
+                'reliability' => array_slice($this->keywordService->getKeywordsByCategory('sre', 'reliability_engineering'), 0, 10),
+                'observability' => array_slice($this->keywordService->getKeywordsByCategory('sre', 'observability'), 0, 10),
+            ],
+            'cloud' => [
+                'platforms' => array_merge(
+                    array_slice($this->keywordService->getKeywordsByCategory('cloud', 'aws_services'), 0, 10),
+                    array_slice($this->keywordService->getKeywordsByCategory('cloud', 'azure_services'), 0, 8),
+                    array_slice($this->keywordService->getKeywordsByCategory('cloud', 'gcp_services'), 0, 8)
+                ),
+                'security' => array_slice($this->keywordService->getKeywordsByCategory('cloud', 'security'), 0, 10),
+            ],
         ];
     }
 
@@ -56,22 +64,59 @@ class ComprehensiveCVAnalysisAgent implements Agent, HasStructuredOutput
     {
         $keywordReference = $this->buildKeywordReference();
 
-        $instructions = 'You are an ATS (Applicant Tracking System) expert that analyzes CVs/Resumes for compatibility and provides comprehensive feedback.
+        $instructions = <<<'PROMPT'
+You are a professional CV reviewer specializing in DevOps, DevSecOps, SRE, and Cloud Engineer roles.
+Your analysis must reflect recruiter-level, hiring-manager-level, and ATS-level standards for infrastructure/platform candidates.
 
-Analysis criteria:
-- ATS Score: Evaluate keyword presence, formatting, quantifiable achievements
-- Format Score: Check for ATS-friendly format (no tables, headers/footers, images)
-- About Me Score: Evaluate the quality, clarity, and impact of the About Me/Summary section (0-100). Consider: clarity of value proposition, alignment with target role, specificity, professional tone, and absence of clichés
-- Keywords: Identify relevant technical and soft skills present and missing
-- Suggestions: Provide actionable improvements prioritized by impact
-- Industry Match: Score compatibility with DevOps, Cloud, and SRE roles
+Return structured output only and follow this rubric exactly.
 
-'.$keywordReference;
+SCORING RUBRIC (0-100 each):
+- ATS Score: formatting safety, standard sections, keyword discoverability, parseability.
+- Format Score: clarity, scannability, section ordering, date consistency, concise bullet structure, ATS-safe formatting.
+- About Me Score: strength of value proposition, specificity, professional tone, seniority alignment, avoidance of clichés.
+- Impact Score: quantified outcomes, ownership, scope, scale, business/reliability/security impact.
+- Role Alignment Score: fit for the target role and seniority based on demonstrated work, not keyword stuffing.
+- Security Score: DevSecOps/security maturity, secure SDLC, IAM, secrets handling, vulnerability management, container/cloud security.
+- Reliability Score: SRE maturity, SLI/SLO awareness, incident response, observability, MTTR/availability, resilience engineering.
+- Cloud Score: cloud architecture depth, provider-native services, networking, HA/DR, scalability, cost-awareness.
+- Job Match Score: explicit fit against the provided job description. If no job description exists, set to 0.
+
+TARGET ROLES TO EVALUATE:
+- DevOps
+- DevSecOps
+- SRE
+- Cloud Engineer
+
+ANALYSIS RULES:
+1. Do not reward keyword stuffing without evidence.
+2. Prefer achievements with scale, metrics, ownership, and outcomes.
+3. Penalize vague claims like “experienced with Kubernetes” if no evidence, scope, or impact is shown.
+4. Look for missing metrics such as uptime, MTTR, deployment frequency, cost savings, incident reduction, latency, cluster size, workload scale, compliance outcomes, or security remediation outcomes.
+5. Assess whether experience bullets prove the claimed seniority.
+6. If a skill appears but the proof is weak, include it in weak_evidence.
+7. Suggestions must be practical, specific, and high-impact.
+8. experience_review must review the most important experience sections individually.
+
+OUTPUT EXPECTATIONS:
+- keywords.found: relevant matched keywords strongly supported by the CV.
+- keywords.missing: important missing keywords for the likely target roles.
+- keywords.weak_evidence: keywords/claims mentioned with weak or no proof.
+- strengths: 3-6 concise strengths.
+- critical_gaps: major blockers preventing a strong professional profile.
+- missing_metrics: metrics or evidence absent but expected.
+- rewrite_priorities: highest-value rewrite tasks.
+- experience_review: array of objects with section, strength, gap, rewrite_hint.
+- industry_match: integer scores for devops, devsecops, sre, cloud_engineer.
+- target_seniority: infer likely level such as Junior, Mid, Mid-Senior, Senior, Staff, Lead, or Not Clear.
+- summary: executive-level evaluation of professional readiness.
+PROMPT;
+
+        $instructions .= "\n\n".$keywordReference;
 
         if ($this->jobDescription) {
-            $instructions .= "\n- Job Match Score: Analyze fit against the job description (0-100)\n- Job Title: Extract target role from job description";
+            $instructions .= "\nJOB DESCRIPTION PROVIDED: infer target role and seniority, then compute Job Match Score against the JD.";
         } else {
-            $instructions .= "\n- Job Match Score: Set to 0 (no job description provided)\n- Job Title: Set to 'Not Specified'";
+            $instructions .= "\nNO JOB DESCRIPTION PROVIDED: set job_match_score to 0 and infer the most likely target role from the CV itself.";
         }
 
         $instructions .= "\n\nCV Content:\n".$this->cvContent;
@@ -90,26 +135,23 @@ Analysis criteria:
     {
         $reference = "REFERENCE KEYWORDS TO CHECK:\n\n";
 
-        $reference .= "DevOps Core Concepts:\n";
-        $reference .= '- '.implode(', ', $this->referenceKeywords['devops_core'])."\n\n";
+        $reference .= "DevOps Core:\n- ".implode(', ', $this->referenceKeywords['devops']['core'])."\n\n";
+        $reference .= "DevOps Tooling:\n- ".implode(', ', $this->referenceKeywords['devops']['tools'])."\n\n";
 
-        $reference .= "DevOps Tools & Technologies:\n";
-        $reference .= '- '.implode(', ', $this->referenceKeywords['devops_tools'])."\n\n";
+        $reference .= "DevSecOps Core:\n- ".implode(', ', $this->referenceKeywords['devsecops']['core'])."\n\n";
+        $reference .= "DevSecOps Security Tooling:\n- ".implode(', ', $this->referenceKeywords['devsecops']['security_tooling'])."\n\n";
 
-        $reference .= "Cloud Platforms & Services:\n";
-        $reference .= '- '.implode(', ', $this->referenceKeywords['cloud_platforms'])."\n\n";
+        $reference .= "SRE Core:\n- ".implode(', ', $this->referenceKeywords['sre']['core'])."\n\n";
+        $reference .= "SRE Reliability:\n- ".implode(', ', $this->referenceKeywords['sre']['reliability'])."\n\n";
+        $reference .= "SRE Observability:\n- ".implode(', ', $this->referenceKeywords['sre']['observability'])."\n\n";
 
-        $reference .= "Monitoring & Observability:\n";
-        $reference .= '- '.implode(', ', $this->referenceKeywords['monitoring'])."\n\n";
+        $reference .= "Cloud Engineer Platforms:\n- ".implode(', ', $this->referenceKeywords['cloud']['platforms'])."\n\n";
+        $reference .= "Cloud Security:\n- ".implode(', ', $this->referenceKeywords['cloud']['security'])."\n\n";
 
-        $reference .= "Security & Compliance:\n";
-        $reference .= '- '.implode(', ', $this->referenceKeywords['security'])."\n\n";
-
-        $reference .= "NOTE: When analyzing keywords:\n";
-        $reference .= "- 'found': List keywords from above that ARE present in the CV\n";
-        $reference .= "- 'missing': List the most important keywords from above that are NOT in the CV (max 15-20)\n";
-        $reference .= "- Focus on technical keywords relevant to DevOps/Cloud roles\n";
-        $reference .= "- Include variations (e.g., 'K8s' and 'Kubernetes' are the same)\n\n";
+        $reference .= "NOTES:\n";
+        $reference .= "- Treat aliases as equivalent when appropriate (e.g. K8s = Kubernetes).\n";
+        $reference .= "- Prioritize proof, scale, and outcomes over mere mention.\n";
+        $reference .= "- Do not inflate scores without evidence.\n";
 
         return $reference;
     }
@@ -123,19 +165,39 @@ Analysis criteria:
             'ats_score' => $schema->integer()->min(0)->max(100)->required(),
             'format_score' => $schema->integer()->min(0)->max(100)->required(),
             'about_me_score' => $schema->integer()->min(0)->max(100)->required(),
+            'impact_score' => $schema->integer()->min(0)->max(100)->required(),
+            'role_alignment_score' => $schema->integer()->min(0)->max(100)->required(),
+            'security_score' => $schema->integer()->min(0)->max(100)->required(),
+            'reliability_score' => $schema->integer()->min(0)->max(100)->required(),
+            'cloud_score' => $schema->integer()->min(0)->max(100)->required(),
             'keywords' => $schema->object([
                 'found' => $schema->array()->items($schema->string())->required(),
                 'missing' => $schema->array()->items($schema->string())->required(),
+                'weak_evidence' => $schema->array()->items($schema->string())->required(),
             ])->required(),
             'suggestions' => $schema->array()->items($schema->string())->required(),
+            'strengths' => $schema->array()->items($schema->string())->required(),
+            'critical_gaps' => $schema->array()->items($schema->string())->required(),
+            'missing_metrics' => $schema->array()->items($schema->string())->required(),
+            'rewrite_priorities' => $schema->array()->items($schema->string())->required(),
+            'experience_review' => $schema->array()->items(
+                $schema->object([
+                    'section' => $schema->string()->required(),
+                    'strength' => $schema->string()->required(),
+                    'gap' => $schema->string()->required(),
+                    'rewrite_hint' => $schema->string()->required(),
+                ])
+            )->required(),
             'industry_match' => $schema->object([
                 'devops' => $schema->integer()->min(0)->max(100)->required(),
-                'cloud' => $schema->integer()->min(0)->max(100)->required(),
+                'devsecops' => $schema->integer()->min(0)->max(100)->required(),
                 'sre' => $schema->integer()->min(0)->max(100)->required(),
+                'cloud_engineer' => $schema->integer()->min(0)->max(100)->required(),
             ])->required(),
             'summary' => $schema->string()->required(),
             'job_match_score' => $schema->integer()->min(0)->max(100)->required(),
             'job_title_targeted' => $schema->string()->required(),
+            'target_seniority' => $schema->string()->required(),
         ];
     }
 }

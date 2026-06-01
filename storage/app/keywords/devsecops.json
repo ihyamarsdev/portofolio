@@ -1,0 +1,73 @@
+{
+  "category": "DevSecOps",
+  "keywords": {
+    "core_concepts": [
+      "DevSecOps",
+      "Shift-Left Security",
+      "Secure SDLC",
+      "Threat Modeling",
+      "Risk Assessment",
+      "Security by Design",
+      "Compliance Automation",
+      "Least Privilege",
+      "Zero Trust",
+      "Governance"
+    ],
+    "security_tooling": [
+      "SAST",
+      "DAST",
+      "SCA",
+      "SBOM",
+      "Trivy",
+      "SonarQube",
+      "Semgrep",
+      "Dependabot",
+      "Container Scanning",
+      "Image Scanning",
+      "Secrets Scanning",
+      "Policy as Code",
+      "OPA",
+      "Falco",
+      "WAF"
+    ],
+    "identity_secrets": [
+      "IAM",
+      "RBAC",
+      "HashiCorp Vault",
+      "Vault",
+      "AWS KMS",
+      "Azure Key Vault",
+      "Secrets Manager",
+      "Workload Identity",
+      "Federated Identity",
+      "Key Rotation"
+    ],
+    "cloud_container_security": [
+      "Kubernetes Security",
+      "Admission Controller",
+      "Pod Security",
+      "Network Policies",
+      "Runtime Security",
+      "EKS",
+      "AKS",
+      "GKE",
+      "Cloud Security Posture Management",
+      "CSPM",
+      "Container Hardening",
+      "Image Signing",
+      "Supply Chain Security"
+    ],
+    "compliance_governance": [
+      "SOC 2",
+      "ISO 27001",
+      "PCI DSS",
+      "GDPR",
+      "HIPAA",
+      "Audit Readiness",
+      "Control Mapping",
+      "Security Baselines",
+      "Remediation",
+      "Vulnerability Management"
+    ]
+  }
+}

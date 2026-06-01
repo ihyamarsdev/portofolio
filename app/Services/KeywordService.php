@@ -36,18 +36,22 @@ class KeywordService
             $flat = array_merge($flat, $items);
         }
 
-        return array_unique($flat);
+        return array_values(array_unique($flat));
     }
 
     /**
-     * Get combined DevOps and Cloud keywords
+     * Get combined DevOps, Cloud, SRE, and DevSecOps keywords
      */
     public function getCombinedKeywords(): array
     {
-        $devops = $this->getAllKeywordsFlat('devops');
-        $cloud = $this->getAllKeywordsFlat('cloud');
+        $categories = ['devops', 'cloud', 'sre', 'devsecops'];
+        $combined = [];
 
-        return array_unique(array_merge($devops, $cloud));
+        foreach ($categories as $category) {
+            $combined = array_merge($combined, $this->getAllKeywordsFlat($category));
+        }
+
+        return array_values(array_unique($combined));
     }
 
     /**
@@ -59,7 +63,6 @@ class KeywordService
         $missing = [];
 
         foreach ($keywords as $keyword) {
-            // Case-insensitive search
             if (stripos($content, $keyword) !== false) {
                 $found[] = $keyword;
             } else {
@@ -78,12 +81,16 @@ class KeywordService
      */
     public function getKeywordSuggestions(string $content, string $targetRole = 'devops'): array
     {
-        $category = strtolower($targetRole) === 'cloud' ? 'cloud' : 'devops';
+        $normalizedTarget = strtolower($targetRole);
+        $category = match (true) {
+            str_contains($normalizedTarget, 'devsecops') => 'devsecops',
+            str_contains($normalizedTarget, 'sre') => 'sre',
+            str_contains($normalizedTarget, 'cloud') => 'cloud',
+            default => 'devops',
+        };
+
         $keywords = $this->getAllKeywordsFlat($category);
-
         $result = $this->matchKeywords($content, $keywords);
-
-        // Prioritize missing keywords
         $priorityMissing = array_slice($result['missing'], 0, 20);
 
         return [
@@ -113,20 +120,24 @@ class KeywordService
      */
     public function getTopMissingKeywords(string $content, int $limit = 15): array
     {
-        $devopsKeywords = $this->getKeywords('devops');
-        $cloudKeywords = $this->getKeywords('cloud');
+        $priorities = [
+            'devops' => ['core_concepts', 'containerization_orchestration', 'ci_cd_tools', 'monitoring_logging'],
+            'cloud' => ['aws_services', 'azure_services', 'gcp_services', 'security'],
+            'sre' => ['core_concepts', 'reliability_engineering', 'incident_response', 'observability'],
+            'devsecops' => ['core_concepts', 'security_tooling', 'compliance_governance', 'cloud_container_security'],
+        ];
 
         $topMissing = [];
 
-        // Priority categories (most important for ATS)
-        $priorities = [
-            'devops' => ['core_concepts', 'containerization_orchestration', 'ci_cd_tools', 'monitoring_logging'],
-            'cloud' => ['aws_services', 'azure_services', 'core_concepts', 'security'],
-        ];
+        foreach ($priorities as $category => $subcategories) {
+            $categoryKeywords = $this->getKeywords($category);
 
-        foreach ($priorities['devops'] as $subcategory) {
-            if (isset($devopsKeywords[$subcategory])) {
-                foreach ($devopsKeywords[$subcategory] as $keyword) {
+            foreach ($subcategories as $subcategory) {
+                if (! isset($categoryKeywords[$subcategory])) {
+                    continue;
+                }
+
+                foreach ($categoryKeywords[$subcategory] as $keyword) {
                     if (stripos($content, $keyword) === false) {
                         $topMissing[] = $keyword;
                     }
@@ -134,17 +145,7 @@ class KeywordService
             }
         }
 
-        foreach ($priorities['cloud'] as $subcategory) {
-            if (isset($cloudKeywords[$subcategory])) {
-                foreach ($cloudKeywords[$subcategory] as $keyword) {
-                    if (stripos($content, $keyword) === false) {
-                        $topMissing[] = $keyword;
-                    }
-                }
-            }
-        }
-
-        return array_slice(array_unique($topMissing), 0, $limit);
+        return array_slice(array_values(array_unique($topMissing)), 0, $limit);
     }
 
     /**
@@ -152,7 +153,8 @@ class KeywordService
      */
     public function clearCache(): void
     {
-        Cache::forget('keywords_devops');
-        Cache::forget('keywords_cloud');
+        foreach (['devops', 'cloud', 'sre', 'devsecops'] as $category) {
+            Cache::forget("keywords_{$category}");
+        }
     }
 }

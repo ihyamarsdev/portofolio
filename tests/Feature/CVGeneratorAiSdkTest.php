@@ -24,19 +24,37 @@ class CVGeneratorAiSdkTest extends TestCase
             'ats_score' => 88,
             'format_score' => 91,
             'about_me_score' => 84,
+            'impact_score' => 83,
+            'role_alignment_score' => 87,
+            'security_score' => 79,
+            'reliability_score' => 85,
+            'cloud_score' => 82,
             'keywords' => [
                 'found' => ['Laravel', 'Docker'],
                 'missing' => ['Kubernetes'],
+                'weak_evidence' => ['AWS'],
             ],
             'suggestions' => ['Add Kubernetes experience'],
+            'strengths' => ['Strong CI/CD ownership'],
+            'critical_gaps' => ['Missing reliability metrics'],
+            'missing_metrics' => ['MTTR', 'deployment frequency'],
+            'rewrite_priorities' => ['Rewrite summary for target role alignment'],
+            'experience_review' => [[
+                'section' => 'Senior DevOps Engineer at Example',
+                'strength' => 'Strong automation ownership',
+                'gap' => 'Missing quantified reliability outcomes',
+                'rewrite_hint' => 'Add uptime, MTTR, and deployment metrics',
+            ]],
             'industry_match' => [
                 'devops' => 86,
-                'cloud' => 82,
+                'devsecops' => 76,
+                'cloud_engineer' => 82,
                 'sre' => 78,
             ],
-            'summary' => 'Strong CV for backend and DevOps roles.',
+            'summary' => 'Strong CV for DevOps and cloud roles with moderate security depth.',
             'job_match_score' => 80,
             'job_title_targeted' => 'DevOps Engineer',
+            'target_seniority' => 'Mid-Senior',
         ]]);
 
         $agent = new ComprehensiveCVAnalysisAgent('CV content');
@@ -46,7 +64,13 @@ class CVGeneratorAiSdkTest extends TestCase
         $result = $method->invoke(new CVGenerator, $agent);
 
         $this->assertSame(88, $result['ats_score']);
+        $this->assertSame(83, $result['impact_score']);
+        $this->assertSame(79, $result['security_score']);
+        $this->assertSame(82, $result['cloud_score']);
         $this->assertSame(['Laravel', 'Docker'], $result['keywords']['found']);
+        $this->assertSame(['AWS'], $result['keywords']['weak_evidence']);
+        $this->assertSame('Mid-Senior', $result['target_seniority']);
+        $this->assertSame(76, $result['industry_match']['devsecops']);
 
         Ai::assertAgentWasPrompted(
             ComprehensiveCVAnalysisAgent::class,
@@ -54,5 +78,27 @@ class CVGeneratorAiSdkTest extends TestCase
                 && $prompt->model === 'cv-test-model'
                 && $prompt->timeout === 120
         );
+    }
+
+    public function test_comprehensive_cv_analysis_agent_instructions_use_professional_role_specific_rubric(): void
+    {
+        $agent = new ComprehensiveCVAnalysisAgent(
+            'Built CI/CD pipelines, managed Kubernetes clusters, improved uptime.',
+            'We are hiring a Senior DevSecOps Engineer with cloud security and SRE experience.'
+        );
+
+        $instructions = (string) $agent->instructions();
+
+        $this->assertStringContainsString('DevOps', $instructions);
+        $this->assertStringContainsString('DevSecOps', $instructions);
+        $this->assertStringContainsString('SRE', $instructions);
+        $this->assertStringContainsString('Cloud Engineer', $instructions);
+        $this->assertStringContainsString('Impact Score', $instructions);
+        $this->assertStringContainsString('Security Score', $instructions);
+        $this->assertStringContainsString('Reliability Score', $instructions);
+        $this->assertStringContainsString('Cloud Score', $instructions);
+        $this->assertStringContainsString('weak_evidence', $instructions);
+        $this->assertStringContainsString('experience_review', $instructions);
+        $this->assertStringContainsString('target_seniority', $instructions);
     }
 }

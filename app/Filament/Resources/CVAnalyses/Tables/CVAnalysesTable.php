@@ -24,15 +24,45 @@ class CVAnalysesTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('ats_score')
-                    ->label('ATS Score')
+                    ->label('ATS')
                     ->badge()
                     ->color(fn (int $state): string => $state >= 80 ? 'success' : ($state >= 50 ? 'warning' : 'danger')),
                 TextColumn::make('format_score')
-                    ->label('Format Score')
+                    ->label('Format')
                     ->badge()
                     ->color(fn (int $state): string => $state >= 80 ? 'success' : ($state >= 50 ? 'warning' : 'danger')),
-                TextColumn::make('about_me_score')
-                    ->label('About Me')
+                TextColumn::make('impact_score')
+                    ->label('Impact')
+                    ->badge()
+                    ->placeholder('-')
+                    ->color(fn (?int $state): string => match (true) {
+                        $state === null => 'gray',
+                        $state >= 80 => 'success',
+                        $state >= 50 => 'warning',
+                        default => 'danger',
+                    }),
+                TextColumn::make('security_score')
+                    ->label('Security')
+                    ->badge()
+                    ->placeholder('-')
+                    ->color(fn (?int $state): string => match (true) {
+                        $state === null => 'gray',
+                        $state >= 80 => 'success',
+                        $state >= 50 => 'warning',
+                        default => 'danger',
+                    }),
+                TextColumn::make('reliability_score')
+                    ->label('Reliability')
+                    ->badge()
+                    ->placeholder('-')
+                    ->color(fn (?int $state): string => match (true) {
+                        $state === null => 'gray',
+                        $state >= 80 => 'success',
+                        $state >= 50 => 'warning',
+                        default => 'danger',
+                    }),
+                TextColumn::make('cloud_score')
+                    ->label('Cloud')
                     ->badge()
                     ->placeholder('-')
                     ->color(fn (?int $state): string => match (true) {
@@ -51,6 +81,10 @@ class CVAnalysesTable
                         $state >= 50 => 'warning',
                         default => 'danger',
                     }),
+                TextColumn::make('target_seniority')
+                    ->label('Seniority')
+                    ->placeholder('-')
+                    ->badge(),
                 TextColumn::make('job_title_targeted')
                     ->label('Target Role')
                     ->placeholder('-')
