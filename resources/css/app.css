@@ -8,9 +8,8 @@
 @source '../**/*.js';
 
 :root {
-    /* Light Mode Colors - Aurora Breeze Theme */
-    /* Color Harmony: Cool Analogous + Tetradic Scheme */
-    /* Sky Blue → Cyan → Teal + Periwinkle + Lavender accents */
+    /* Light Mode Colors - Soft Blue Mist Theme */
+    /* Reduced brightness, blue-tinted surfaces, comfortable contrast */
 
     /* Brand Colors - Unified Cool Palette */
     --c-brand-primary: #0ea5e9;
@@ -34,13 +33,13 @@
     --c-coral: #fb923c;
     /* Orange 400 - Warm accent (minimal use) */
 
-    /* Background Colors - Clean & Airy */
-    --c-bg-primary: #ffffff;
-    /* Pure white */
-    --c-bg-body: #f0f9ff;
-    /* Sky 50 - Very light blue tint */
-    --c-bg-navbar: rgba(255, 255, 255, 0.9);
-    /* Glass navbar */
+    /* Background Colors - Soft Blue Tinted */
+    --c-bg-primary: #eaf4ff;
+    /* Soft blue surface */
+    --c-bg-body: #dbeafe;
+    /* Blue 100 - eye-friendly base */
+    --c-bg-navbar: rgba(234, 244, 255, 0.88);
+    /* Soft blue glass navbar */
     --c-bg-hero-start: linear-gradient(
         135deg,
         #0ea5e9 0%,
@@ -60,33 +59,33 @@
     /* Sky 900 - Deep blue footer */
 
     /* Card Backgrounds */
-    --c-bg-secondary: #e0f2fe;
-    /* Sky 100 - Light blue */
-    --c-bg-tertiary: #bae6fd;
-    /* Sky 200 */
-    --c-bg-card: rgba(255, 255, 255, 0.95);
-    /* Semi-transparent white */
+    --c-bg-secondary: #d7ecff;
+    /* Muted sky surface */
+    --c-bg-tertiary: #c3ddf7;
+    /* Muted blue surface */
+    --c-bg-card: rgba(241, 248, 255, 0.9);
+    /* Blue-white card, not pure white */
 
     /* Text Colors - High Contrast */
-    --c-text-primary: #0f172a;
-    /* Slate 900 - Almost black */
-    --c-text-secondary: #334155;
-    /* Slate 700 */
-    --c-text-muted: #64748b;
-    /* Slate 500 */
+    --c-text-primary: #102033;
+    /* Soft navy */
+    --c-text-secondary: #31445f;
+    /* Blue slate */
+    --c-text-muted: #5f728b;
+    /* Muted blue slate */
     --c-text-on-dark: #f0f9ff;
     /* Sky 50 - For dark backgrounds */
     --c-text-hero: #ffffff;
     /* Pure white */
 
     /* Border Colors - Subtle */
-    --c-border: #bae6fd;
-    /* Sky 200 - Light blue border */
+    --c-border: #a9cfee;
+    /* Soft blue border */
     --c-border-highlight: #0ea5e9;
     /* Sky 500 - Highlight border */
 
     /* RGB values for opacity support */
-    --rgb-bg-primary: 255 255 255;
+    --rgb-bg-primary: 234 244 255;
 }
 
 .dark {

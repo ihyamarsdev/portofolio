@@ -1,74 +1,35 @@
 <x-layouts.app title="Certificates">
-    <section class="py-20 bg-bg-primary">
-        <div class="section-container">
-            <div class="max-w-3xl mb-12">
-                <h1 class="text-4xl font-bold text-[--color-text-primary] mb-4">Certifications</h1>
-                <p class="text-lg text-[--color-text-secondary]">
-                    Professional certifications and credentials in cloud platforms and DevOps practices.
-                </p>
+    @php($certificates = \App\Models\Certificate::orderBy('issue_date', 'desc')->get())
+    <section class="bg-bg-primary">
+        <div class="section-container py-16 sm:py-24">
+            <div class="mb-10 max-w-3xl">
+                <p class="font-mono text-xs uppercase tracking-widest text-accent-sky">Credentials</p>
+                <h1 class="mt-2 text-4xl font-semibold tracking-[-.05em] text-text-primary sm:text-6xl">Certificates & proof of practice.</h1>
+                <p class="mt-5 text-base leading-8 text-text-secondary sm:text-lg">Validated cloud, security, infrastructure, and engineering credentials.</p>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @php
-                    $certificates = \App\Models\Certificate::orderBy('issue_date', 'desc')->get();
-                @endphp
-
+            <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 @forelse($certificates as $certificate)
-                    <div class="glass-card p-6 group">
-                    
-                        <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-[--color-accent-emerald] to-[--color-accent-cyan] rounded-xl flex items-center justify-center">
-                            <x-heroicon-o-check-badge class="w-20 h-20 text-text-primary dark:text-white" />
-                        </div>
-
-
-                        <h2
-                            class="text-lg font-semibold text-[--color-text-primary] text-center mb-1 group-hover:text-[--color-accent-emerald] transition-colors">
-                            {{ $certificate->name }}
-                        </h2>
-                        <p class="text-[--color-text-secondary] text-sm text-center mb-4">{{ $certificate->issuer }}</p>
-
-                        <div class="flex items-center justify-center gap-2 mb-4">
+                    <article class="rounded-2xl bg-bg-card p-5 shadow-[0_0_0_1px_rgba(0,0,0,.08)] transition hover:-translate-y-1 dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">
+                        <div class="mb-5 flex items-start justify-between gap-4">
+                            <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-500 text-white"><x-heroicon-o-check-badge class="h-8 w-8" /></div>
                             @if($certificate->is_active && !$certificate->isExpired())
-                                <span
-                                    class="inline-flex items-center gap-1 px-2 py-1 bg-green-500/10 text-green-400 text-xs rounded-full">
-                                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
-                                    Active
-                                </span>
+                                <span class="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-500">Active</span>
                             @else
-                                <span
-                                    class="inline-flex items-center gap-1 px-2 py-1 bg-gray-500/10 text-gray-400 text-xs rounded-full">
-                                    Expired
-                                </span>
+                                <span class="rounded-full bg-slate-500/10 px-3 py-1 text-xs font-medium text-text-muted">Expired</span>
                             @endif
                         </div>
-
-                        <div class="text-center text-sm text-[--color-text-muted] space-y-1">
-                            <p>Issued: {{ $certificate->issue_date->format('M Y') }}</p>
-                            @if($certificate->expiry_date)
-                                <p>Expires: {{ $certificate->expiry_date->format('M Y') }}</p>
-                            @endif
-                        </div>
-
+                        <h2 class="text-lg font-semibold tracking-[-.02em] text-text-primary">{{ $certificate->name }}</h2>
+                        <p class="mt-1 text-sm text-text-secondary">{{ $certificate->issuer }}</p>
+                        <dl class="mt-5 grid grid-cols-2 gap-3 text-sm">
+                            <div><dt class="text-text-muted">Issued</dt><dd class="font-medium text-text-primary">{{ $certificate->issue_date->format('M Y') }}</dd></div>
+                            <div><dt class="text-text-muted">Expires</dt><dd class="font-medium text-text-primary">{{ $certificate->expiry_date?->format('M Y') ?? 'Never' }}</dd></div>
+                        </dl>
                         @if($certificate->credential_url)
-                            <div class="mt-4 pt-4 border-t border-[--color-border]">
-                                <a href="{{ $certificate->credential_url }}" target="_blank"
-                                    class="flex items-center justify-center gap-2 text-sm text-[--color-accent-cyan] hover:underline">
-                                    <x-heroicon-o-arrow-top-right-on-square class="w-4 h-4" />
-                                    Verify Credential
-                                </a>
-                            </div>
+                            <a href="{{ $certificate->credential_url }}" target="_blank" class="mt-5 inline-flex text-sm font-semibold text-accent-sky">Verify credential →</a>
                         @endif
-                    </div>
+                    </article>
                 @empty
-                    <div class="col-span-full text-center py-12">
-                        <div
-                            class="w-16 h-16 mx-auto mb-4 bg-[--color-bg-secondary] rounded-full flex items-center justify-center">
-                            <x-heroicon-o-check-badge class="w-8 h-8 text-[--color-text-muted]" />
-                        </div>
-                        <h3 class="text-lg font-medium text-[--color-text-primary] mb-2">No certificates yet</h3>
-                        <p class="text-[--color-text-secondary]">Certificates will appear here once added through the admin
-                            panel.</p>
-                    </div>
+                    <div class="rounded-2xl bg-bg-card p-10 text-center text-text-secondary shadow-[0_0_0_1px_rgba(0,0,0,.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)] sm:col-span-2 xl:col-span-3">No certificates yet.</div>
                 @endforelse
             </div>
         </div>

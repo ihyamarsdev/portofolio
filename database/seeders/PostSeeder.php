@@ -12,9 +12,9 @@ class PostSeeder extends Seeder
     {
         $posts = [
             [
-                'title' => 'Getting Started with Kubernetes: A Complete Guide',
-                'slug' => 'getting-started-kubernetes',
-                'excerpt' => 'Learn the fundamentals of Kubernetes and how to deploy your first application. This comprehensive guide covers pods, services, deployments, and more.',
+                'title' => 'SRE Kubernetes Operations: Deployments, Rollouts, and Reliability',
+                'slug' => 'sre-kubernetes-operations',
+                'excerpt' => 'Operate Kubernetes workloads with rollout safety, resource limits, health checks, SLOs, and production-ready observability.',
                 'content' => '# Getting Started with Kubernetes
 
 Kubernetes has become the de-facto standard for container orchestration. In this guide, we\'ll explore the core concepts and deploy your first application.
@@ -61,14 +61,14 @@ spec:
 ## Conclusion
 
 This is just the beginning. Kubernetes offers much more including ingress, configmaps, secrets, and more.',
-                'category' => 'Kubernetes',
+                'category' => 'Site Reliability Engineering',
                 'status' => 'published',
                 'published_at' => '2024-01-15 10:00:00',
             ],
             [
-                'title' => 'Building CI/CD Pipelines with GitHub Actions',
-                'slug' => 'cicd-github-actions',
-                'excerpt' => 'Learn how to automate your development workflow with GitHub Actions. Build, test, and deploy your applications automatically.',
+                'title' => 'DevSecOps Pipelines with GitHub Actions',
+                'slug' => 'devsecops-github-actions',
+                'excerpt' => 'Add secure CI/CD stages for tests, SAST, dependency scanning, image scanning, secrets checks, and policy gates.',
                 'content' => '# CI/CD with GitHub Actions
 
 GitHub Actions makes it easy to automate all your software workflows.
@@ -119,15 +119,15 @@ jobs:
 ## Conclusion
 
 GitHub Actions provides a powerful platform for automating your development workflows.',
-                'category' => 'CI/CD',
+                'category' => 'DevSecOps',
                 'status' => 'published',
                 'published_at' => '2024-01-10 08:00:00',
             ],
             [
-                'title' => 'Infrastructure as Code with Terraform',
-                'slug' => 'terraform-infrastructure-code',
-                'excerpt' => 'Discover how to manage your infrastructure as code using Terraform. Create reproducible, version-controlled infrastructure deployments.',
-                'content' => '# Infrastructure as Code with Terraform
+                'title' => 'Cloud Engineering with Terraform Modules',
+                'slug' => 'cloud-engineering-terraform-modules',
+                'excerpt' => 'Build reusable Terraform modules for AWS, GCP, Azure, remote state, IAM, networking, and environment promotion.',
+                'content' => '# Cloud Engineering with Terraform Modules
 
 Terraform enables you to safely and predictably create, change, and improve infrastructure.
 
@@ -183,14 +183,14 @@ terraform {
 - Version pin your providers
 - Use variables for flexibility
 - Implement proper state locking',
-                'category' => 'Infrastructure as Code',
+                'category' => 'Cloud Engineering',
                 'status' => 'published',
                 'published_at' => '2024-01-05 14:00:00',
             ],
             [
-                'title' => 'Monitoring Best Practices with Prometheus',
-                'slug' => 'prometheus-monitoring-guide',
-                'excerpt' => 'Learn how to set up comprehensive monitoring with Prometheus and Grafana. Track metrics, set up alerts, and gain visibility into your systems.',
+                'title' => 'SLO Monitoring with Prometheus and Grafana',
+                'slug' => 'slo-monitoring-prometheus-grafana',
+                'excerpt' => 'Define SLI/SLO dashboards, burn-rate alerts, RED/USE metrics, and incident response workflows with Prometheus and Grafana.',
                 'content' => '# Monitoring with Prometheus
 
 Prometheus is an open-source monitoring and alerting toolkit.
@@ -243,14 +243,14 @@ groups:
 - Set appropriate retention periods
 - Create meaningful dashboards
 - Test your alerting rules',
-                'category' => 'Monitoring',
+                'category' => 'Site Reliability Engineering',
                 'status' => 'published',
                 'published_at' => '2023-12-28 10:00:00',
             ],
             [
-                'title' => 'Docker Best Practices for Production',
-                'slug' => 'docker-best-practices',
-                'excerpt' => 'Master Docker containerization with these production-ready best practices. Build efficient, secure, and scalable Docker images.',
+                'title' => 'Container Security Best Practices for DevSecOps',
+                'slug' => 'container-security-devsecops',
+                'excerpt' => 'Harden production containers with non-root users, minimal images, pinned versions, vulnerability scanning, and SBOM workflows.',
                 'content' => '# Docker Best Practices
 
 Building production-ready Docker images requires attention to several key areas.
@@ -310,7 +310,7 @@ docker scan myimage:latest
 ## Conclusion
 
 Following these practices will result in smaller, more secure, and more maintainable Docker images.',
-                'category' => 'Docker',
+                'category' => 'DevSecOps',
                 'status' => 'published',
                 'published_at' => '2023-12-20 09:00:00',
             ],

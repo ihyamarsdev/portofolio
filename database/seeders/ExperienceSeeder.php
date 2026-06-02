@@ -12,55 +12,55 @@ class ExperienceSeeder extends Seeder
     {
         $experiences = [
             [
-                'position' => 'Senior DevOps Engineer',
+                'position' => 'Senior DevOps / SRE Engineer',
                 'company' => 'TechCorp Indonesia',
                 'location' => 'Jakarta, Indonesia',
                 'employment_type' => 'Full-time',
                 'start_date' => '2023-01-01',
                 'end_date' => null,
-                'description' => 'Leading infrastructure modernization initiatives. Managing Kubernetes clusters serving 1M+ users. Implementing GitOps practices with ArgoCD and improving deployment frequency by 300%.',
+                'description' => 'Own Kubernetes platform reliability, GitOps delivery, observability, incident response, and infrastructure automation for production services serving 1M+ users.',
                 'achievements' => [
-                    'Reduced deployment time from 2 hours to 10 minutes',
-                    'Achieved 99.99% uptime for critical services',
-                    'Built observability platform reducing incident response time by 60%',
-                    'Mentored team of 5 junior engineers',
+                    'Improved deployment lead time from 2 hours to 10 minutes using GitOps and reusable pipelines',
+                    'Maintained 99.99% uptime by defining SLOs, alert rules, and incident runbooks',
+                    'Reduced MTTR by 60% with Prometheus, Grafana, Alertmanager, and structured postmortems',
+                    'Standardized Terraform modules for multi-environment infrastructure provisioning',
                 ],
                 'order' => 1,
-                'skills' => ['Kubernetes', 'Docker', 'Terraform', 'ArgoCD', 'Prometheus', 'Grafana', 'GitHub Actions'],
+                'skills' => ['Kubernetes', 'Docker', 'Terraform', 'ArgoCD', 'Prometheus', 'Grafana', 'Incident Management', 'SLO/SLI/Error Budgets'],
             ],
             [
-                'position' => 'DevOps Engineer',
-                'company' => 'StartupXYZ',
+                'position' => 'DevSecOps Engineer',
+                'company' => 'SecureCloud Labs',
                 'location' => 'Bandung, Indonesia',
                 'employment_type' => 'Full-time',
                 'start_date' => '2021-06-01',
                 'end_date' => '2022-12-31',
-                'description' => 'Built CI/CD pipelines from scratch using GitLab CI. Managed AWS infrastructure including EC2, ECS, Lambda, and RDS. Implemented infrastructure as code with Terraform.',
+                'description' => 'Integrated security into CI/CD and cloud infrastructure by adding vulnerability scanning, secrets management, policy as code, and container runtime controls.',
                 'achievements' => [
-                    'Setup complete CI/CD pipeline reducing release cycle by 80%',
-                    'Migrated monolithic application to microservices architecture',
-                    'Automated backup and disaster recovery processes',
-                    'Reduced AWS costs by 40% through resource optimization',
+                    'Added Trivy and Snyk scans to pipelines, blocking critical vulnerabilities before deployment',
+                    'Implemented Vault-based secrets management and removed static secrets from repositories',
+                    'Introduced OPA Gatekeeper policies for Kubernetes admission control',
+                    'Reduced high-risk container findings by 45% through image hardening and base image standards',
                 ],
                 'order' => 2,
-                'skills' => ['AWS', 'Docker', 'Kubernetes', 'GitLab CI', 'Terraform', 'Ansible'],
+                'skills' => ['Trivy Vulnerability Scanning', 'SAST/DAST Pipelines', 'Secrets Management', 'Policy as Code', 'Runtime Security', 'GitHub Actions'],
             ],
             [
-                'position' => 'Junior System Administrator',
-                'company' => 'DataCenter Corp',
-                'location' => 'Surabaya, Indonesia',
+                'position' => 'Cloud Engineer',
+                'company' => 'StartupXYZ',
+                'location' => 'Remote, Indonesia',
                 'employment_type' => 'Full-time',
                 'start_date' => '2020-08-01',
                 'end_date' => '2021-05-31',
-                'description' => 'Managed on-premise Linux servers and network equipment. Implemented monitoring solutions and automated routine tasks with Bash and Python scripts.',
+                'description' => 'Built AWS and GCP infrastructure using Terraform, containerized services, managed networking, and improved cloud cost and availability posture.',
                 'achievements' => [
-                    'Automated server provisioning reducing setup time by 50%',
-                    'Implemented centralized logging with ELK stack',
-                    'Maintained 99.9% uptime for 50+ servers',
-                    'Created documentation for standard operating procedures',
+                    'Provisioned AWS VPC, ECS, RDS, S3, IAM, and monitoring with Terraform modules',
+                    'Migrated workloads to Kubernetes with zero-downtime rollout strategy',
+                    'Reduced monthly cloud spend by 40% using rightsizing, schedules, and storage lifecycle policies',
+                    'Automated backups and disaster recovery checks for critical services',
                 ],
                 'order' => 3,
-                'skills' => ['Linux', 'Bash', 'Python', 'Nginx', 'Docker', 'Ansible'],
+                'skills' => ['AWS', 'GCP', 'Terraform', 'Docker', 'Kubernetes', 'Ansible', 'Cloudflare'],
             ],
         ];
 
@@ -69,20 +69,13 @@ class ExperienceSeeder extends Seeder
             unset($expData['skills']);
 
             $experience = Experience::updateOrCreate(
-                [
-                    'company' => $expData['company'],
-                    'position' => $expData['position'],
-                ],
+                ['company' => $expData['company'], 'position' => $expData['position']],
                 $expData
             );
 
-            // Attach skills
-            foreach ($skills as $skillName) {
-                $skill = Skill::where('name', $skillName)->first();
-                if ($skill) {
-                    $experience->skills()->syncWithoutDetaching($skill->id);
-                }
-            }
+            $experience->skills()->sync(
+                Skill::whereIn('name', $skills)->pluck('id')->all()
+            );
         }
     }
 }

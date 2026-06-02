@@ -7,40 +7,37 @@ use Illuminate\Database\Seeder;
 
 class HomeSettingsSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        HomeSettings::firstOrCreate([], [
-            'hero_greeting' => 'Hi, I\'m a',
-            'hero_description' => 'I build and maintain scalable infrastructure using Kubernetes, Terraform, and Docker. Automating everything from CI/CD pipelines to cloud deployments.',
-            'availability_status' => 'Available for new opportunities',
+        HomeSettings::updateOrCreate([], [
+            'hero_greeting' => 'Hi, I\'m an',
+            'hero_description' => 'I build secure, reliable, and observable infrastructure for DevOps, DevSecOps, SRE, and Cloud Engineering roles. Kubernetes, Terraform, CI/CD, cloud security, incident response, and production reliability are my core focus areas.',
+            'availability_status' => 'Available for DevOps, DevSecOps, SRE, and Cloud Engineering opportunities',
             'availability_active' => true,
             'terminal_commands' => [
-                'kubectl apply -f infrastructure/',
                 'terraform plan -out=tfplan',
-                'docker-compose up -d',
-                'ansible-playbook deploy.yml',
-                'helm upgrade --install app ./chart',
-                'gh workflow run deploy.yml',
+                'kubectl rollout status deploy/api',
+                'trivy image registry/app:latest',
+                'promtool check rules alerts.yml',
+                'argocd app sync production',
+                'vault kv get secret/platform',
             ],
-            'tech_stack_title' => 'Tech Stack',
-            'tech_stack_description' => 'Tools and technologies I work with daily',
-            'featured_projects_title' => 'Featured Projects',
-            'featured_projects_description' => 'Infrastructure and automation work I\'m proud of',
-            'infrastructure_title' => 'Live Infrastructure',
-            'infrastructure_description' => 'How this portfolio is deployed and monitored',
-            'infrastructure_status_text' => 'All services running',
+            'tech_stack_title' => 'Infrastructure Stack',
+            'tech_stack_description' => 'Tools used across cloud, platform, security, reliability, and automation work',
+            'featured_projects_title' => 'Infrastructure Case Studies',
+            'featured_projects_description' => 'DevOps, DevSecOps, SRE, and Cloud Engineering projects with measurable outcomes',
+            'infrastructure_title' => 'Production Reliability',
+            'infrastructure_description' => 'Live systems, monitoring, uptime, and operational health',
+            'infrastructure_status_text' => 'All services healthy',
             'infrastructure_status' => 'operational',
-            'cta_title' => 'Let\'s Build Something Together',
-            'cta_description' => 'Looking for a DevOps engineer to help scale your infrastructure? Let\'s discuss how I can help automate and optimize your deployment pipeline.',
+            'cta_title' => 'Need secure and reliable infrastructure?',
+            'cta_description' => 'Let\'s discuss platform automation, cloud security, CI/CD, SLOs, observability, or production reliability improvements.',
             'cta_primary_button_text' => 'Get In Touch',
-            'cta_secondary_button_text' => 'Download CV',
-            'site_brand' => '~/devops',
-            'site_title' => 'DevOps Engineer',
-            'meta_description' => 'Portfolio website of a DevOps Engineer specializing in cloud infrastructure, CI/CD, containerization, and automation.',
-            'footer_text' => 'DevOps Portfolio. Built with Laravel & Filament.',
+            'cta_secondary_button_text' => 'Analyze CV',
+            'site_brand' => '~/infra',
+            'site_title' => 'DevOps · DevSecOps · SRE · Cloud Engineer',
+            'meta_description' => 'Portfolio for DevOps, DevSecOps, SRE, and Cloud Engineering with focus on Kubernetes, Terraform, CI/CD, cloud security, observability, and reliability.',
+            'footer_text' => 'Infrastructure Engineering Portfolio. Built with Laravel & Filament.',
         ]);
     }
 }
