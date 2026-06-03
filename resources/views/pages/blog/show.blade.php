@@ -15,20 +15,23 @@
 
                     <h1 class="text-3xl sm:text-4xl font-bold text-[--color-text-primary] mb-4">{{ $post->title }}</h1>
 
+                    @php($displayDate = $post->published_at ?? $post->updated_at ?? $post->created_at)
                     <div class="flex items-center gap-4 text-sm text-[--color-text-muted]">
-                        <time datetime="{{ $post->published_at->toISOString() }}">
-                            {{ $post->published_at->format('F j, Y') }}
-                        </time>
-                        <span>•</span>
+                        @if($displayDate)
+                            <time datetime="{{ $displayDate->toISOString() }}">
+                                {{ $displayDate->format('F j, Y H:i') }}
+                            </time>
+                            <span>•</span>
+                        @endif
                         <span>{{ ceil(str_word_count(strip_tags($post->content)) / 200) }} min read</span>
                     </div>
                 </header>
 
                 <!-- Featured Image -->
-                @if($post->getFirstMediaUrl('featured_image'))
+                @if($post->featured_image_url || $post->getFirstMediaUrl('featured_image'))
                     <div class="aspect-video rounded-xl overflow-hidden mb-12 bg-[--color-bg-secondary]">
-                        <img src="{{ $post->getFirstMediaUrl('featured_image') }}" alt="{{ $post->title }}"
-                            class="w-full h-full object-cover">
+                        <img src="{{ $post->featured_image_url ?: $post->getFirstMediaUrl('featured_image') }}" alt="{{ $post->title }}"
+                            class="h-full w-full bg-sky-50 object-contain p-4 dark:bg-slate-950/40">
                     </div>
                 @endif
 

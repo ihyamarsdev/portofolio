@@ -9,9 +9,10 @@
             </div>
             <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 @forelse($projects as $project)
-                    <article class="group overflow-hidden rounded-2xl bg-bg-card shadow-[0_0_0_1px_rgba(0,0,0,.08)] transition hover:-translate-y-1 hover:shadow-[0_0_0_1px_rgba(0,0,0,.08),0_18px_45px_rgba(0,0,0,.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">
-                        @if($project->getFirstMediaUrl('images'))
-                            <img src="{{ $project->getFirstMediaUrl('images') }}" alt="{{ $project->title }}" class="aspect-video w-full object-cover">
+                    <article class="group relative overflow-hidden rounded-2xl bg-bg-card shadow-[0_0_0_1px_rgba(0,0,0,.08)] transition hover:-translate-y-1 hover:shadow-[0_0_0_1px_rgba(0,0,0,.08),0_18px_45px_rgba(0,0,0,.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">
+                        <a href="{{ route('projects.show', $project->slug) }}" class="absolute inset-0 z-10" aria-label="Open {{ $project->title }}"></a>
+                        @if($project->image_url || $project->getFirstMediaUrl('images'))
+                            <img src="{{ $project->image_url ?: $project->getFirstMediaUrl('images') }}" alt="{{ $project->title }}" class="aspect-video w-full bg-sky-50 object-contain p-3 dark:bg-slate-950/40">
                         @else
                             <div class="aspect-video bg-gradient-to-br from-sky-500/20 via-violet-500/20 to-emerald-500/20"></div>
                         @endif
@@ -20,12 +21,12 @@
                                 @if($project->is_featured)<span class="rounded-full bg-sky-500/10 px-3 py-1 text-xs font-medium text-accent-sky">Featured</span>@endif
                                 @if($project->architecture_diagram)<span class="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-500">Diagram</span>@endif
                             </div>
-                            <a href="{{ route('projects.show', $project->slug) }}"><h2 class="text-xl font-semibold tracking-[-.03em] text-text-primary group-hover:text-accent-sky">{{ $project->title }}</h2></a>
+                            <h2 class="text-xl font-semibold tracking-[-.03em] text-text-primary group-hover:text-accent-sky">{{ $project->title }}</h2>
                             <p class="mt-3 line-clamp-3 text-sm leading-6 text-text-secondary">{{ Str::limit(strip_tags($project->description), 160) }}</p>
-                            <div class="mt-5 flex flex-wrap items-center gap-3 text-sm">
-                                <a href="{{ route('projects.show', $project->slug) }}" class="font-semibold text-accent-sky">Details →</a>
-                                @if($project->repository_url)<a href="{{ $project->repository_url }}" target="_blank" class="text-text-muted hover:text-text-primary">GitHub</a>@endif
-                                @if($project->live_url)<a href="{{ $project->live_url }}" target="_blank" class="text-text-muted hover:text-text-primary">Live</a>@endif
+                            <div class="relative z-20 mt-5 flex flex-wrap items-center gap-3 text-sm">
+                                <span class="font-semibold text-accent-sky">Details →</span>
+                                @if($project->repository_url)<a href="{{ $project->repository_url }}" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-text-primary">GitHub</a>@endif
+                                @if($project->live_url)<a href="{{ $project->live_url }}" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-text-primary">Live</a>@endif
                             </div>
                         </div>
                     </article>

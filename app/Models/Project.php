@@ -18,6 +18,7 @@ class Project extends Model implements HasMedia
         'description',
         'repository_url',
         'live_url',
+        'image_url',
         'architecture_diagram',
         'is_featured',
         'order',

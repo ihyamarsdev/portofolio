@@ -2,7 +2,9 @@
 
 namespace App\Ai\Gateway;
 
+use App\Support\AiNotification;
 use Generator;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Laravel\Ai\Contracts\Providers\TextProvider;
 use Laravel\Ai\Exceptions\AiException;
@@ -35,11 +37,31 @@ class CvOpenAiCompatibleGateway extends OpenAiGateway
             throw new AiException('CV AI provider is misconfigured.');
         }
 
-        $response = Http::baseUrl($this->chatCompletionsBaseUrl($provider))
-            ->withToken($provider->providerCredentials()['key'])
-            ->timeout($timeout ?? 60)
-            ->throw()
-            ->post('chat/completions', $this->buildChatCompletionsBody($model, $instructions, $messages, filled($schema), $options));
+        try {
+            $response = Http::baseUrl($this->chatCompletionsBaseUrl($provider))
+                ->withToken($provider->providerCredentials()['key'])
+                ->timeout($timeout ?? 60)
+                ->post('chat/completions', $this->buildChatCompletionsBody($model, $instructions, $messages, filled($schema), $options));
+        } catch (ConnectionException $exception) {
+            AiNotification::sendFailure(
+                'AI provider connection failed. Please check the provider/network and try again.',
+                'AI Provider'
+            );
+
+            return $this->failedResponse($provider, $model, filled($schema));
+        }
+
+        if ($response->failed()) {
+            $message = $response->json('error.message') ?? $response->body();
+
+            AiNotification::sendFailure(sprintf(
+                'AI provider unavailable. Status: %s. %s',
+                $response->status(),
+                $message,
+            ), 'AI Provider');
+
+            return $this->failedResponse($provider, $model, filled($schema));
+        }
 
         $data = $this->parseJsonResponse($response->body());
 
@@ -93,7 +115,7 @@ class CvOpenAiCompatibleGateway extends OpenAiGateway
                 $structured = [];
                 $keys = array_keys($schema);
                 $positions = [];
-                
+
                 foreach ($keys as $key) {
                     $words = explode('_', $key);
                     $variations = [
@@ -101,32 +123,32 @@ class CvOpenAiCompatibleGateway extends OpenAiGateway
                         str_replace('_', ' ', $key),
                         implode(' ', array_map('ucfirst', $words)),
                         ucfirst(str_replace('_', ' ', $key)),
-                        str_replace('_', '', $key)
+                        str_replace('_', '', $key),
                     ];
                     $variations = array_unique($variations);
-                    
+
                     foreach ($variations as $var) {
-                        $pattern = '/\b' . preg_quote($var, '/') . '\b\s*[:\-–—]*/i';
+                        $pattern = '/\b'.preg_quote($var, '/').'\b\s*[:\-–—]*/i';
                         if (preg_match($pattern, $cleanContent, $matches, PREG_OFFSET_CAPTURE)) {
                             $matchOffset = $matches[0][1];
                             $matchLength = strlen($matches[0][0]);
                             $positions[$key] = [
                                 'start' => $matchOffset,
-                                'end' => $matchOffset + $matchLength
+                                'end' => $matchOffset + $matchLength,
                             ];
                             break;
                         }
                     }
                 }
-                
+
                 if (count($positions) > 0) {
-                    uasort($positions, fn($a, $b) => $a['start'] <=> $b['start']);
+                    uasort($positions, fn ($a, $b) => $a['start'] <=> $b['start']);
                     $keysOrdered = array_keys($positions);
-                    
+
                     for ($i = 0; $i < count($keysOrdered); $i++) {
                         $currentKey = $keysOrdered[$i];
                         $valStart = $positions[$currentKey]['end'];
-                        
+
                         if ($i < count($keysOrdered) - 1) {
                             $nextKey = $keysOrdered[$i + 1];
                             $valEnd = $positions[$nextKey]['start'];
@@ -134,12 +156,12 @@ class CvOpenAiCompatibleGateway extends OpenAiGateway
                         } else {
                             $val = substr($cleanContent, $valStart);
                         }
-                        
+
                         $val = trim($val);
                         $val = preg_replace('/^["\'`“”‘’]+/u', '', $val);
                         $val = preg_replace('/["\'`“”‘’]+$/u', '', $val);
                         $val = trim($val);
-                        
+
                         $structured[$currentKey] = $val;
                     }
                 }
@@ -155,7 +177,7 @@ class CvOpenAiCompatibleGateway extends OpenAiGateway
             }
 
             if (! is_array($structured) || count(array_filter($structured)) === 0) {
-                throw new AiException('CV AI provider returned invalid structured JSON. Raw response: ' . substr($content, 0, 200));
+                throw new AiException('CV AI provider returned invalid structured JSON. Raw response: '.substr($content, 0, 200));
             }
 
             return new StructuredTextResponse($structured, $content, $usage, $meta);
@@ -248,6 +270,28 @@ class CvOpenAiCompatibleGateway extends OpenAiGateway
         }
 
         return $mapped;
+    }
+
+    protected function failedResponse(Provider $provider, string $model, bool $structured = false): TextResponse
+    {
+        $payload = ['error' => true];
+        $usage = new Usage(promptTokens: 0, completionTokens: 0);
+        $meta = new Meta($provider->name(), $model);
+
+        if ($structured) {
+            return new StructuredTextResponse(
+                structured: $payload,
+                text: json_encode($payload),
+                usage: $usage,
+                meta: $meta,
+            );
+        }
+
+        return new TextResponse(
+            text: json_encode($payload),
+            usage: $usage,
+            meta: $meta,
+        );
     }
 
     protected function chatCompletionsBaseUrl(Provider $provider): string

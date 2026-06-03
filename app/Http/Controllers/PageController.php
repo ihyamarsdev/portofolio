@@ -6,6 +6,8 @@ use App\Models\HomeSettings;
 use App\Models\Post;
 use App\Models\Profile;
 use App\Models\Project;
+use App\Models\Skill;
+use App\Models\Stack;
 
 class PageController extends Controller
 {
@@ -18,8 +20,13 @@ class PageController extends Controller
     {
         $profile = $this->getProfile();
         $homeSettings = HomeSettings::getSettings();
+        $stacks = Stack::query()
+            ->whereIn('id', Skill::whereNotNull('stack_id')->pluck('stack_id'))
+            ->orWhereHas('skills')
+            ->orderBy('name')
+            ->get();
 
-        return view('pages.home', compact('profile', 'homeSettings'));
+        return view('pages.home', compact('profile', 'homeSettings', 'stacks'));
     }
 
     public function projects()

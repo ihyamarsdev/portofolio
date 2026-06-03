@@ -27,7 +27,7 @@ class EducationSeeder extends Seeder
                 'start_date' => '2020-09-01',
                 'end_date' => '2022-06-30',
                 'grade' => '3.92',
-                'activities' => 'Focus on cloud infrastructure, DevOps practices, and containerization. Thesis: Automated Deployment Strategies for Multi-Cloud Environments.',
+                'activities' => 'Focus on DevOps infrastructure, DevOps practices, and containerization. Thesis: Automated Deployment Strategies for DevOps Environments.',
                 'order' => 2,
             ],
         ];

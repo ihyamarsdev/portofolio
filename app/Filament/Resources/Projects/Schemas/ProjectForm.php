@@ -2,21 +2,17 @@
 
 namespace App\Filament\Resources\Projects\Schemas;
 
-use App\Ai\Agents\ArchitectureDiagramAgent;
 use App\Models\Project;
-use Filament\Actions\Action;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Notifications\Notification;
-use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class ProjectForm
@@ -88,7 +84,7 @@ class ProjectForm
                             ->icon('heroicon-o-eye')
                             ->schema([
                                 Placeholder::make('project_viewport')
-                                    ->content(fn (?Project $record) => $record && $record->exists ? new \Illuminate\Support\HtmlString(
+                                    ->content(fn (?Project $record) => $record && $record->exists ? new HtmlString(
                                         '<div class="w-full bg-[#0b0b10] border border-[#2d2d3a] rounded-xl overflow-hidden shadow-2xl relative" style="height: 550px;">
                                             <div class="bg-slate-900 border-b border-[#2d2d3a] px-4 py-2 flex items-center justify-between gap-4">
                                                 <div class="flex items-center gap-1.5 shrink-0 select-none">
@@ -98,16 +94,16 @@ class ProjectForm
                                                 </div>
                                                 <div class="flex items-center gap-2 bg-[#09090d] border border-slate-700 rounded-md px-3 py-1 text-xs text-slate-400 font-mono w-full max-w-[450px] overflow-hidden truncate">
                                                     <span class="shrink-0 select-none" style="color: #10b981">HTTPS://</span>
-                                                    <span>' . e(request()->getHost()) . '/projects/' . e($record->slug) . '</span>
+                                                    <span>'.e(request()->getHost()).'/projects/'.e($record->slug).'</span>
                                                 </div>
-                                                <a href="/projects/' . e($record->slug) . '" target="_blank" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-slate-600 rounded text-[11px] font-semibold flex items-center gap-1 transition-all shrink-0">
+                                                <a href="/projects/'.e($record->slug).'" target="_blank" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-slate-600 rounded text-[11px] font-semibold flex items-center gap-1 transition-all shrink-0">
                                                     <span>Open Tab</span>
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                                                 </a>
                                             </div>
-                                            <iframe sandbox="allow-same-origin allow-forms" src="/projects/' . e($record->slug) . '" class="w-full border-none" style="height: calc(100% - 37px); min-height: 510px;"></iframe>
+                                            <iframe sandbox="allow-same-origin allow-forms" src="/projects/'.e($record->slug).'" class="w-full border-none" style="height: calc(100% - 37px); min-height: 510px;"></iframe>
                                         </div>'
-                                    ) : new \Illuminate\Support\HtmlString(
+                                    ) : new HtmlString(
                                         '<div class="w-full bg-[#0b0b10] border border-[#2d2d3a] rounded-xl p-8 flex flex-col items-center justify-center text-center text-slate-400 font-mono" style="height: 250px;">
                                             <svg class="w-12 h-12 text-slate-600 mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 17L12 22L22 17M2 12L12 17L22 12M12 2L2 7L12 12L22 7L12 2Z"></path></svg>
                                             <h4 class="font-bold text-white text-sm">Project Viewport Uninitialized</h4>
@@ -117,7 +113,7 @@ class ProjectForm
                                     ->columnSpanFull(),
                             ])
                             ->collapsible()
-                            ->collapsed(fn (?Project $record) => !($record && $record->exists)),
+                            ->collapsed(fn (?Project $record) => ! ($record && $record->exists)),
                     ]),
 
                 Group::make()
@@ -151,6 +147,13 @@ class ProjectForm
                                     ->url()
                                     ->prefixIcon('heroicon-o-globe-alt')
                                     ->placeholder('https://project-demo.com')
+                                    ->columnSpanFull(),
+                                TextInput::make('image_url')
+                                    ->label('Internet Image URL')
+                                    ->url()
+                                    ->prefixIcon('heroicon-o-photo')
+                                    ->placeholder('https://images.unsplash.com/...')
+                                    ->helperText('Use this when the project image is hosted on the internet instead of uploaded locally.')
                                     ->columnSpanFull(),
                             ])
                             ->collapsible(),

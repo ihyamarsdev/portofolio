@@ -12,7 +12,7 @@ class ExperienceSeeder extends Seeder
     {
         $experiences = [
             [
-                'position' => 'Senior DevOps / SRE Engineer',
+                'position' => 'Senior DevOps / DevOps Engineer',
                 'company' => 'TechCorp Indonesia',
                 'location' => 'Jakarta, Indonesia',
                 'employment_type' => 'Full-time',
@@ -21,21 +21,21 @@ class ExperienceSeeder extends Seeder
                 'description' => 'Own Kubernetes platform reliability, GitOps delivery, observability, incident response, and infrastructure automation for production services serving 1M+ users.',
                 'achievements' => [
                     'Improved deployment lead time from 2 hours to 10 minutes using GitOps and reusable pipelines',
-                    'Maintained 99.99% uptime by defining SLOs, alert rules, and incident runbooks',
+                    'Maintained 99.99% uptime by defining deployment metrics, alert rules, and incident runbooks',
                     'Reduced MTTR by 60% with Prometheus, Grafana, Alertmanager, and structured postmortems',
                     'Standardized Terraform modules for multi-environment infrastructure provisioning',
                 ],
                 'order' => 1,
-                'skills' => ['Kubernetes', 'Docker', 'Terraform', 'ArgoCD', 'Prometheus', 'Grafana', 'Incident Management', 'SLO/SLI/Error Budgets'],
+                'skills' => ['Kubernetes', 'Docker', 'Terraform', 'ArgoCD', 'Prometheus', 'Grafana', 'Incident Management', 'deployment metric/deployment metric/Rollback Metrics'],
             ],
             [
-                'position' => 'DevSecOps Engineer',
+                'position' => 'DevOps Engineer',
                 'company' => 'SecureCloud Labs',
                 'location' => 'Bandung, Indonesia',
                 'employment_type' => 'Full-time',
                 'start_date' => '2021-06-01',
                 'end_date' => '2022-12-31',
-                'description' => 'Integrated security into CI/CD and cloud infrastructure by adding vulnerability scanning, secrets management, policy as code, and container runtime controls.',
+                'description' => 'Integrated security into CI/CD and DevOps infrastructure by adding vulnerability scanning, secrets management, pipeline automation, and container runtime controls.',
                 'achievements' => [
                     'Added Trivy and Snyk scans to pipelines, blocking critical vulnerabilities before deployment',
                     'Implemented Vault-based secrets management and removed static secrets from repositories',
@@ -46,13 +46,13 @@ class ExperienceSeeder extends Seeder
                 'skills' => ['Trivy Vulnerability Scanning', 'SAST/DAST Pipelines', 'Secrets Management', 'Policy as Code', 'Runtime Security', 'GitHub Actions'],
             ],
             [
-                'position' => 'Cloud Engineer',
+                'position' => 'DevOps Engineer',
                 'company' => 'StartupXYZ',
                 'location' => 'Remote, Indonesia',
                 'employment_type' => 'Full-time',
                 'start_date' => '2020-08-01',
                 'end_date' => '2021-05-31',
-                'description' => 'Built AWS and GCP infrastructure using Terraform, containerized services, managed networking, and improved cloud cost and availability posture.',
+                'description' => 'Built AWS infrastructure using Terraform, containerized services, managed networking, and improved DevOps deployment reliability.',
                 'achievements' => [
                     'Provisioned AWS VPC, ECS, RDS, S3, IAM, and monitoring with Terraform modules',
                     'Migrated workloads to Kubernetes with zero-downtime rollout strategy',
@@ -60,7 +60,7 @@ class ExperienceSeeder extends Seeder
                     'Automated backups and disaster recovery checks for critical services',
                 ],
                 'order' => 3,
-                'skills' => ['AWS', 'GCP', 'Terraform', 'Docker', 'Kubernetes', 'Ansible', 'Cloudflare'],
+                'skills' => ['AWS', 'Terraform', 'Docker', 'Kubernetes', 'Ansible', 'Cloudflare'],
             ],
         ];
 

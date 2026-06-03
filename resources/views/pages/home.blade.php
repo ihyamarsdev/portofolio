@@ -28,7 +28,7 @@
 
                     <div class="mt-8 flex flex-col gap-3 sm:flex-row">
                         <a href="{{ route('contact') }}" class="inline-flex items-center justify-center rounded-lg bg-text-primary px-5 py-3 text-sm font-semibold text-bg-primary transition hover:opacity-90">{{ $homeSettings->cta_primary_button_text }}</a>
-                        <a href="{{ route('projects') }}" class="inline-flex items-center justify-center rounded-lg bg-bg-card px-5 py-3 text-sm font-semibold text-text-primary shadow-[0_0_0_1px_rgba(0,0,0,.08)] transition hover:bg-bg-secondary dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">{{ $homeSettings->cta_secondary_button_text }}</a>
+                        <a href="{{ route('cv.preview') }}" class="inline-flex items-center justify-center rounded-lg bg-bg-card px-5 py-3 text-sm font-semibold text-text-primary shadow-[0_0_0_1px_rgba(0,0,0,.08)] transition hover:bg-bg-secondary dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">{{ $homeSettings->cta_secondary_button_text }}</a>
                     </div>
                 </div>
 
@@ -52,6 +52,48 @@
             </div>
         </div>
     </section>
+
+    <!-- Tech Stack Marquee Section -->
+    @if($stacks->isNotEmpty())
+        <section class="relative z-10 overflow-hidden py-12 sm:py-16">
+            <div class="relative flex max-w-full overflow-x-hidden border-y border-sky-200/60 bg-sky-100/40 py-6 backdrop-blur-sm dark:border-slate-800/50 dark:bg-slate-900/40">
+                <!-- Left/Right gradient shadows for faded edges -->
+                <div class="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-bg-body to-transparent z-10"></div>
+                <div class="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-bg-body to-transparent z-10"></div>
+
+                <div class="flex gap-12 animate-marquee whitespace-nowrap">
+                    <div class="flex gap-12 shrink-0 items-center">
+                        @foreach($stacks as $stack)
+                            <div class="flex min-w-28 flex-col items-center justify-center gap-3 rounded-2xl bg-bg-card px-6 py-5 text-center font-medium text-text-primary shadow-[0_0_0_1px_rgba(0,0,0,.06),0_10px_30px_rgba(14,165,233,.08)] transition-transform duration-300 hover:scale-105 dark:shadow-[0_0_0_1px_rgba(255,255,255,.05)] sm:min-w-32">
+                                @if(filter_var($stack->icon, FILTER_VALIDATE_URL))
+                                    <img src="{{ $stack->icon }}" alt="{{ $stack->name }}" class="h-10 w-10 object-contain sm:h-12 sm:w-12">
+                                @elseif(str_starts_with($stack->icon, 'devicon-'))
+                                    <i class="{{ $stack->icon }} text-4xl text-accent-sky sm:text-5xl"></i>
+                                @else
+                                    <span class="text-4xl sm:text-5xl">{{ $stack->icon }}</span>
+                                @endif
+                                <span class="font-mono text-sm font-semibold tracking-tight sm:text-base">{{ $stack->name }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="flex gap-12 shrink-0 items-center" aria-hidden="true">
+                        @foreach($stacks as $stack)
+                            <div class="flex min-w-28 flex-col items-center justify-center gap-3 rounded-2xl bg-bg-card px-6 py-5 text-center font-medium text-text-primary shadow-[0_0_0_1px_rgba(0,0,0,.06),0_10px_30px_rgba(14,165,233,.08)] transition-transform duration-300 hover:scale-105 dark:shadow-[0_0_0_1px_rgba(255,255,255,.05)] sm:min-w-32">
+                                @if(filter_var($stack->icon, FILTER_VALIDATE_URL))
+                                    <img src="{{ $stack->icon }}" alt="{{ $stack->name }}" class="h-10 w-10 object-contain sm:h-12 sm:w-12">
+                                @elseif(str_starts_with($stack->icon, 'devicon-'))
+                                    <i class="{{ $stack->icon }} text-4xl text-accent-sky sm:text-5xl"></i>
+                                @else
+                                    <span class="text-4xl sm:text-5xl">{{ $stack->icon }}</span>
+                                @endif
+                                <span class="font-mono text-sm font-semibold tracking-tight sm:text-base">{{ $stack->name }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </section>
+    @endif
 
     <section class="section-container py-12 sm:py-20">
         <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">

@@ -3,22 +3,26 @@
 namespace App\Filament\Pages;
 
 use App\Ai\Agents\ComprehensiveCVAnalysisAgent;
-use App\Models\CVAnalysis;
-use App\Models\Profile;
-use App\Models\Experience;
-use App\Models\Education;
-use App\Models\Skill;
 use App\Models\Category;
 use App\Models\Certificate;
+use App\Models\CVAnalysis;
+use App\Models\Education;
+use App\Models\Experience;
+use App\Models\Profile;
+use App\Models\Skill;
 use App\Services\CVGeneratorService;
 use BackedEnum;
+use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Laravel\Ai\Responses\StructuredAgentResponse;
 use Livewire\WithFileUploads;
-use Carbon\Carbon;
+use Throwable;
 
 class CVGenerator extends Page
 {
@@ -49,79 +53,138 @@ class CVGenerator extends Page
 
     // Profile Settings state
     public ?string $profile_name = '';
+
     public ?string $profile_title = '';
+
     public ?string $profile_biography = '';
+
     public ?string $profile_email = '';
+
     public ?string $profile_phone = '';
+
     public ?string $profile_location = '';
+
     public ?string $profile_github_url = '';
+
     public ?string $profile_linkedin_url = '';
+
     public ?string $profile_twitter_url = '';
+
     public ?string $profile_website_url = '';
+
     public $profile_avatar = null; // Can be string path or TemporaryUploadedFile
+
     public ?string $profile_avatar_path = '';
 
     // Experience CRUD state
     public $experiences = [];
+
     public bool $showExperienceModal = false;
+
     public ?int $editingExperienceId = null;
+
     public string $exp_company = '';
+
     public string $exp_position = '';
+
     public string $exp_employment_type = 'Full-time';
+
     public string $exp_location = '';
+
     public ?string $exp_start_date = '';
+
     public ?string $exp_end_date = '';
+
     public ?string $exp_description = '';
+
     public array $exp_achievements = [];
+
     public int $exp_order = 0;
+
     public string $new_achievement = '';
+
     public array $selected_exp_skills = [];
+
     public $all_skills_list = [];
 
     // Education CRUD state
     public $educations = [];
+
     public bool $showEducationModal = false;
+
     public ?int $editingEducationId = null;
+
     public string $edu_institution = '';
+
     public string $edu_degree = '';
+
     public string $edu_field_of_study = '';
+
     public ?string $edu_start_date = '';
+
     public ?string $edu_end_date = '';
+
     public ?string $edu_grade = '';
+
     public ?string $edu_activities = '';
+
     public int $edu_order = 0;
 
     // Skills CRUD state
     public $skills = [];
+
     public bool $showSkillModal = false;
+
     public ?int $editingSkillId = null;
+
     public string $skill_name = '';
+
     public ?int $skill_category_id = null;
+
     public int $skill_proficiency = 80;
+
     public float $skill_years_experience = 0.0;
+
     public $categories = [];
 
     // Certificates CRUD state
     public $certificates = [];
+
     public bool $showCertificateModal = false;
+
     public ?int $editingCertificateId = null;
+
     public string $cert_name = '';
+
     public string $cert_issuer = '';
+
     public ?string $cert_credential_id = '';
+
     public ?string $cert_credential_url = '';
+
     public ?string $cert_issue_date = '';
+
     public ?string $cert_expiry_date = '';
+
     public bool $cert_is_active = true;
 
     // AI Analysis & Preview state
     public ?array $analysisResult = null;
+
     public bool $isAnalyzing = false;
+
     public string $selectedTemplate = 'ats';
+
     public ?string $jobDescription = null;
+
     public ?CVAnalysis $currentAnalysis = null;
+
     public $history = [];
+
     public $allAnalyses = [];
+
     public bool $showAnalysisDetailModal = false;
+
     public ?array $selectedAnalysisDetail = null;
 
     public function mount(): void
@@ -137,7 +200,7 @@ class CVGenerator extends Page
     public function loadAllData(): void
     {
         $profile = Profile::where('is_primary', true)->first() ?? Profile::first();
-        
+
         if ($profile) {
             // Load profile properties
             $this->profile_name = $profile->name;
@@ -202,8 +265,8 @@ class CVGenerator extends Page
     // ==========================================
     public function saveProfile(): void
     {
-        $profile = Profile::where('is_primary', true)->first() ?? Profile::first() ?? new Profile();
-        
+        $profile = Profile::where('is_primary', true)->first() ?? Profile::first() ?? new Profile;
+
         $profileData = [
             'name' => $this->profile_name,
             'title' => $this->profile_title,
@@ -245,7 +308,7 @@ class CVGenerator extends Page
     public function openExperienceModal(?int $id = null): void
     {
         $this->editingExperienceId = $id;
-        
+
         if ($id) {
             $exp = Experience::findOrFail($id);
             $this->exp_company = $exp->company;
@@ -611,6 +674,10 @@ class CVGenerator extends Page
             $agent = new ComprehensiveCVAnalysisAgent($cvContent, $this->jobDescription);
             $result = $this->analyzeWithLaravelAi($agent);
 
+            if ($result === [] || ($result['error'] ?? false) === true) {
+                return;
+            }
+
             $this->analysisResult = [
                 'ats_score' => $result['ats_score'] ?? 0,
                 'format_score' => $result['format_score'] ?? 0,
@@ -667,20 +734,12 @@ class CVGenerator extends Page
                 ->body('Your CV has been analyzed successfully.')
                 ->success()
                 ->send();
-            
+
             // Auto switch to overview/dashboard tab to see new scores
             $this->activeTab = 'overview';
 
-        } catch (\Exception $e) {
-            Notification::make()
-                ->title('Analysis Failed')
-                ->body('Error: '.$e->getMessage())
-                ->danger()
-                ->send();
-
-            Log::error('CV Analysis Error: '.$e->getMessage(), [
-                'trace' => $e->getTraceAsString(),
-            ]);
+        } catch (Throwable $e) {
+            $this->notifyAnalysisFailure($e);
         } finally {
             $this->isAnalyzing = false;
         }
@@ -729,12 +788,18 @@ class CVGenerator extends Page
 
     protected function analyzeWithLaravelAi(ComprehensiveCVAnalysisAgent $agent): array
     {
-        $response = $agent->prompt(
-            'Analyze the CV content and return structured output matching the schema.',
-            provider: config('cv.provider', 'cv'),
-            model: config('cv.model'),
-            timeout: 120,
-        );
+        try {
+            $response = $agent->prompt(
+                'Analyze the CV content and return structured output matching the schema.',
+                provider: config('cv.provider', 'cv'),
+                model: config('cv.model'),
+                timeout: 120,
+            );
+        } catch (Throwable $e) {
+            $this->notifyAnalysisFailure($e);
+
+            return [];
+        }
 
         if ($response instanceof StructuredAgentResponse) {
             return $response->toArray();
@@ -743,11 +808,58 @@ class CVGenerator extends Page
         return json_decode($response->text, true, flags: JSON_THROW_ON_ERROR);
     }
 
+    protected function notifyAnalysisFailure(Throwable $exception): void
+    {
+        $message = match (true) {
+            $exception instanceof RequestException => $this->humanizeAiRequestError($exception),
+            $exception instanceof ConnectionException => 'AI provider connection failed. Please check the provider/network and try again.',
+            default => 'Analysis failed. '.$this->safeErrorMessage($exception->getMessage()),
+        };
+
+        Notification::make()
+            ->title('Analysis Failed')
+            ->body($message)
+            ->danger()
+            ->persistent()
+            ->send();
+
+        Log::error('CV Analysis Error: '.$exception->getMessage(), [
+            'status' => $exception instanceof RequestException ? $exception->response->status() : null,
+            'body' => $exception instanceof RequestException ? $exception->response->body() : null,
+            'trace' => $exception->getTraceAsString(),
+        ]);
+    }
+
+    protected function humanizeAiRequestError(RequestException $exception): string
+    {
+        $status = $exception->response->status();
+        $body = $exception->response->json();
+        $providerMessage = data_get($body, 'error.message') ?? $exception->response->body();
+        $providerMessage = $this->safeErrorMessage((string) $providerMessage);
+
+        $prefix = match ($status) {
+            401, 403 => 'AI provider authentication failed. Please check API credentials.',
+            429 => 'AI provider rate limit reached. Please wait and try again.',
+            500, 502, 503, 504 => 'AI provider is temporarily unavailable. Please try again later.',
+            default => 'AI request failed.',
+        };
+
+        return "{$prefix} Status: {$status}. {$providerMessage}";
+    }
+
+    protected function safeErrorMessage(string $message): string
+    {
+        $message = preg_replace('/Bearer\s+[A-Za-z0-9._\-]+/i', 'Bearer [REDACTED]', $message) ?? $message;
+        $message = preg_replace('/api[_-]?key[\"\'\s:=]+[A-Za-z0-9._\-]+/i', 'api_key=[REDACTED]', $message) ?? $message;
+
+        return Str::limit($message, 350);
+    }
+
     public function loadAnalysisIntoWorkspace(int $id): void
     {
         $analysis = CVAnalysis::findOrFail($id);
         $this->currentAnalysis = $analysis;
-        
+
         $this->analysisResult = [
             'ats_score' => $analysis->ats_score,
             'format_score' => $analysis->format_score,
@@ -777,7 +889,7 @@ class CVGenerator extends Page
 
         // Fill job description with summary context if available
         if ($analysis->summary) {
-            $this->jobDescription = "Target Role: " . ($analysis->job_title_targeted ?? 'Unknown') . "\nSummary: " . $analysis->summary;
+            $this->jobDescription = 'Target Role: '.($analysis->job_title_targeted ?? 'Unknown')."\nSummary: ".$analysis->summary;
         }
 
         // Switch to the AI Job Match tab to show these insights inline!
@@ -785,7 +897,7 @@ class CVGenerator extends Page
 
         Notification::make()
             ->title('Analysis Run Loaded')
-            ->body('Showing insights for past run: ' . ($analysis->job_title_targeted ?? 'CV Analysis'))
+            ->body('Showing insights for past run: '.($analysis->job_title_targeted ?? 'CV Analysis'))
             ->info()
             ->send();
     }
@@ -834,7 +946,7 @@ class CVGenerator extends Page
             'experience_review' => $analysis->experience_review ?? [],
             'industry_match' => $analysis->industry_match ?? [],
         ];
-        
+
         $this->showAnalysisDetailModal = true;
     }
 

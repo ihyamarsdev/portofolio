@@ -11,10 +11,20 @@ class Post extends Model implements HasMedia
 {
     use InteractsWithMedia;
 
+    protected static function booted(): void
+    {
+        static::saving(function (Post $post): void {
+            if ($post->status === 'published' && blank($post->published_at)) {
+                $post->published_at = now();
+            }
+        });
+    }
+
     protected $fillable = [
         'title',
         'slug',
         'excerpt',
+        'featured_image_url',
         'content',
         'status',
         'category_id',

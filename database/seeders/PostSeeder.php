@@ -12,9 +12,9 @@ class PostSeeder extends Seeder
     {
         $posts = [
             [
-                'title' => 'SRE Kubernetes Operations: Deployments, Rollouts, and Reliability',
+                'title' => 'DevOps Kubernetes Operations: Deployments, Rollouts, and Reliability',
                 'slug' => 'sre-kubernetes-operations',
-                'excerpt' => 'Operate Kubernetes workloads with rollout safety, resource limits, health checks, SLOs, and production-ready observability.',
+                'excerpt' => 'Operate Kubernetes workloads with rollout safety, resource limits, health checks, deployment metrics, and production-ready observability.',
                 'content' => '# Getting Started with Kubernetes
 
 Kubernetes has become the de-facto standard for container orchestration. In this guide, we\'ll explore the core concepts and deploy your first application.
@@ -61,12 +61,12 @@ spec:
 ## Conclusion
 
 This is just the beginning. Kubernetes offers much more including ingress, configmaps, secrets, and more.',
-                'category' => 'Site Reliability Engineering',
+                'category' => 'DevOps',
                 'status' => 'published',
                 'published_at' => '2024-01-15 10:00:00',
             ],
             [
-                'title' => 'DevSecOps Pipelines with GitHub Actions',
+                'title' => 'DevOps Pipelines with GitHub Actions',
                 'slug' => 'devsecops-github-actions',
                 'excerpt' => 'Add secure CI/CD stages for tests, SAST, dependency scanning, image scanning, secrets checks, and policy gates.',
                 'content' => '# CI/CD with GitHub Actions
@@ -119,15 +119,15 @@ jobs:
 ## Conclusion
 
 GitHub Actions provides a powerful platform for automating your development workflows.',
-                'category' => 'DevSecOps',
+                'category' => 'DevOps',
                 'status' => 'published',
                 'published_at' => '2024-01-10 08:00:00',
             ],
             [
-                'title' => 'Cloud Engineering with Terraform Modules',
+                'title' => 'DevOps Engineering with Terraform Modules',
                 'slug' => 'cloud-engineering-terraform-modules',
-                'excerpt' => 'Build reusable Terraform modules for AWS, GCP, Azure, remote state, IAM, networking, and environment promotion.',
-                'content' => '# Cloud Engineering with Terraform Modules
+                'excerpt' => 'Build reusable Terraform modules for AWS, remote state, IAM, networking, and environment promotion.',
+                'content' => '# DevOps Engineering with Terraform Modules
 
 Terraform enables you to safely and predictably create, change, and improve infrastructure.
 
@@ -183,14 +183,14 @@ terraform {
 - Version pin your providers
 - Use variables for flexibility
 - Implement proper state locking',
-                'category' => 'Cloud Engineering',
+                'category' => 'DevOps Engineering',
                 'status' => 'published',
                 'published_at' => '2024-01-05 14:00:00',
             ],
             [
-                'title' => 'SLO Monitoring with Prometheus and Grafana',
+                'title' => 'deployment metric Monitoring with Prometheus and Grafana',
                 'slug' => 'slo-monitoring-prometheus-grafana',
-                'excerpt' => 'Define SLI/SLO dashboards, burn-rate alerts, RED/USE metrics, and incident response workflows with Prometheus and Grafana.',
+                'excerpt' => 'Define deployment metric/deployment metric dashboards, burn-rate alerts, RED/USE metrics, and incident response workflows with Prometheus and Grafana.',
                 'content' => '# Monitoring with Prometheus
 
 Prometheus is an open-source monitoring and alerting toolkit.
@@ -243,12 +243,12 @@ groups:
 - Set appropriate retention periods
 - Create meaningful dashboards
 - Test your alerting rules',
-                'category' => 'Site Reliability Engineering',
+                'category' => 'DevOps',
                 'status' => 'published',
                 'published_at' => '2023-12-28 10:00:00',
             ],
             [
-                'title' => 'Container Security Best Practices for DevSecOps',
+                'title' => 'Container Security Best Practices for DevOps',
                 'slug' => 'container-security-devsecops',
                 'excerpt' => 'Harden production containers with non-root users, minimal images, pinned versions, vulnerability scanning, and SBOM workflows.',
                 'content' => '# Docker Best Practices
@@ -310,7 +310,7 @@ docker scan myimage:latest
 ## Conclusion
 
 Following these practices will result in smaller, more secure, and more maintainable Docker images.',
-                'category' => 'DevSecOps',
+                'category' => 'DevOps',
                 'status' => 'published',
                 'published_at' => '2023-12-20 09:00:00',
             ],

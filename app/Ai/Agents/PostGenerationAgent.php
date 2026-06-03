@@ -26,11 +26,11 @@ class PostGenerationAgent implements Agent, HasStructuredOutput
 
     public function instructions(): Stringable|string
     {
-        $toneInstruction = $this->tone ? "Write in the following tone/style: {$this->tone}." : "Write in a professional, engaging and clean SEO copywriter tone.";
-        $keywordsInstruction = $this->keywords ? "Make sure to integrate the following target keywords naturally: {$this->keywords}." : "";
+        $personaInstruction = $this->tone ? "Persona and writing direction: {$this->tone}" : 'Persona and writing direction: Write in a professional, engaging, practical technical blogging voice.';
+        $keywordsInstruction = $this->keywords ? "Make sure to integrate the following target keywords naturally: {$this->keywords}." : '';
 
-        $prompt = "You are a world-class SEO content writer and tech blogger. Based on the blog post title '{$this->title}', you must generate high-quality outputs.
-        {$toneInstruction}
+        $prompt = "You are a world-class technical content strategist and infrastructure blogger. Based on the blog post title '{$this->title}', you must generate high-quality outputs.
+        {$personaInstruction}
         {$keywordsInstruction}
         
         Depending on the requested generation type '{$this->generateType}', you MUST return ONLY a valid JSON payload matching the EXACT required structure. Do not wrap in markdown or add conversational intro/outro text.
@@ -52,7 +52,7 @@ class PostGenerationAgent implements Agent, HasStructuredOutput
             }
             
             Based on this current content:
-            ' . strip_tags($this->currentContent ?? '');
+            '.strip_tags($this->currentContent ?? '');
         } else { // both
             $prompt .= '
             Required JSON structure:
@@ -78,6 +78,7 @@ class PostGenerationAgent implements Agent, HasStructuredOutput
             $fields['meta_title'] = $schema->string()->required();
             $fields['meta_description'] = $schema->string()->required();
         }
+
         return $fields;
     }
 }

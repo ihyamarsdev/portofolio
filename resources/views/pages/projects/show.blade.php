@@ -13,10 +13,10 @@
             <div class="max-w-4xl mx-auto">
                 <!-- Project Header -->
                 <div class="mb-8">
-                    @if($project->getFirstMediaUrl('images'))
+                    @if($project->image_url || $project->getFirstMediaUrl('images'))
                         <div class="aspect-video rounded-lg overflow-hidden mb-6 bg-[--color-bg-tertiary]">
-                            <img src="{{ $project->getFirstMediaUrl('images') }}" alt="{{ $project->title }}"
-                                class="w-full h-full object-cover">
+                            <img src="{{ $project->image_url ?: $project->getFirstMediaUrl('images') }}" alt="{{ $project->title }}"
+                                class="h-full w-full bg-sky-50 object-contain p-4 dark:bg-slate-950/40">
                         </div>
                     @endif
 
