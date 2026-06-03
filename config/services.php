@@ -37,6 +37,7 @@ return [
 
     'mermaid' => [
         'node_path' => env('MERMAID_NODE_PATH'),
+        'mmdc_path' => env('MERMAID_MMDC_PATH'),
     ],
 
 ];

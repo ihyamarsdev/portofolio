@@ -13,7 +13,18 @@ class DiagramRenderer
 
     public function __construct()
     {
-        $this->mmdc = base_path('node_modules/.bin/mmdc');
+        $configured = config('services.mermaid.mmdc_path');
+        $candidates = array_filter([
+            $configured,
+            base_path('node_modules/.bin/mmdc'),
+            '/app/node_modules/.bin/mmdc',
+            '/usr/local/bin/mmdc',
+            '/usr/bin/mmdc',
+        ]);
+
+        $resolved = collect($candidates)->first(fn (string $path) => is_file($path) && is_executable($path));
+
+        $this->mmdc = $resolved ?: base_path('node_modules/.bin/mmdc');
     }
 
     /**

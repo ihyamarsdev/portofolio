@@ -62,13 +62,13 @@ FROM node:22-alpine AS runtime-node
 
 WORKDIR /app
 
-ENV NODE_ENV=production \
+ENV NODE_ENV=development \
     PUPPETEER_SKIP_DOWNLOAD=true
 
 COPY package.json package-lock.json ./
 
 RUN --mount=type=cache,target=/root/.npm,sharing=locked \
-    npm ci --omit=dev --fetch-retries=5 --fetch-retry-factor=2 --fetch-retry-mintimeout=10000 --fetch-retry-maxtimeout=120000 \
+    npm ci --fetch-retries=5 --fetch-retry-factor=2 --fetch-retry-mintimeout=10000 --fetch-retry-maxtimeout=120000 \
     && npm cache clean --force
 
 
