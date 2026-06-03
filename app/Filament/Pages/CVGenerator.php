@@ -194,6 +194,10 @@ class CVGenerator extends Page
 
     public function switchTab(string $tab): void
     {
+        if ($tab === 'analyses') {
+            $tab = 'overview';
+        }
+
         $this->activeTab = $tab;
     }
 

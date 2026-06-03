@@ -79,10 +79,6 @@
                     <x-heroicon-o-sparkles class="w-4.5 h-4.5" />
                     <span>AI Job Match</span>
                 </button>
-                <button wire:click="switchTab('analyses')" class="tab-btn {{ $activeTab === 'analyses' ? 'active' : '' }}">
-                    <x-heroicon-o-adjustments-horizontal class="w-4.5 h-4.5" />
-                    <span>Manage Analyses</span>
-                </button>
                 <button wire:click="switchTab('preview')" class="tab-btn {{ $activeTab === 'preview' ? 'active' : '' }}">
                     <x-heroicon-o-eye class="w-4.5 h-4.5" />
                     <span>Live Preview</span>
@@ -172,9 +168,9 @@
                                 <x-heroicon-o-clock class="w-5 h-5 text-cyan-400" />
                                 <span>Historical Runs</span>
                             </h3>
-                            <button wire:click="switchTab('analyses')" type="button" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 rounded-lg text-xs font-semibold text-slate-200 transition-colors inline-flex items-center gap-1">
-                                <x-heroicon-o-adjustments-horizontal class="w-3.5 h-3.5" />
-                                <span>Manage All Analyses</span>
+                            <button wire:click="switchTab('aimatch')" type="button" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 rounded-lg text-xs font-semibold text-slate-200 transition-colors inline-flex items-center gap-1">
+                                <x-heroicon-o-sparkles class="w-3.5 h-3.5" />
+                                <span>Open AI Job Match</span>
                             </button>
                         </div>
                         <div class="overflow-x-auto">
@@ -895,141 +891,47 @@
         @endif
 
         {{-- ========================================================================= --}}
-        {{-- TAB 8: MANAGE CV ANALYSES --}}
-        {{-- ========================================================================= --}}
-        @if($activeTab === 'analyses')
-            <div class="tab-pane-content space-y-6 animate-fade-in">
-                
-                {{-- Header Card --}}
-                <div class="glass-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded bg-cyan-950 border border-cyan-500/20 text-cyan-400 flex items-center justify-center">
-                            <x-heroicon-o-adjustments-horizontal class="w-5 h-5" />
-                        </div>
-                        <div>
-                            <h3 class="text-md font-bold text-white">CV Analysis Management Hub</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">Audit and manage all historical AI-powered CV analysis runs.</p>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Analyses Table/Cards --}}
-                @if($allAnalyses && count($allAnalyses) > 0)
-                    <div class="glass-card p-6">
-                        <div class="overflow-x-auto font-space-grotesk">
-                            <table class="w-full text-left text-sm text-slate-300">
-                                <thead class="text-xs uppercase text-slate-500 border-b border-[#2d2d3a]">
-                                    <tr>
-                                        <th class="py-3 px-4">Date & Time</th>
-                                        <th class="py-3 px-4">Profile</th>
-                                        <th class="py-3 px-4">Target Role</th>
-                                        <th class="py-3 px-4 text-center">ATS Score</th>
-                                        <th class="py-3 px-4 text-center">Format Score</th>
-                                        <th class="py-3 px-4 text-center">About Me</th>
-                                        <th class="py-3 px-4 text-center">Job Match</th>
-                                        <th class="py-3 px-4 text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-[#1e1e2d]">
-                                    @foreach($allAnalyses as $item)
-                                        <tr class="hover:bg-slate-800/20 group transition-colors">
-                                            <td class="py-3.5 px-4 text-white font-medium font-mono text-xs">{{ $item->created_at->format('M j, Y H:i:s') }}</td>
-                                            <td class="py-3.5 px-4">
-                                                <div class="flex items-center gap-2">
-                                                    <span class="w-6 h-6 rounded-full bg-cyan-950 border border-cyan-500/30 text-[10px] text-cyan-400 font-bold flex items-center justify-center uppercase shrink-0">
-                                                        {{ substr($item->profile?->name ?? 'U', 0, 2) }}
-                                                    </span>
-                                                    <span class="text-slate-300 font-semibold truncate max-w-[120px]">{{ $item->profile?->name ?? 'Unknown' }}</span>
-                                                </div>
-                                            </td>
-                                            <td class="py-3.5 px-4 text-slate-300 font-semibold max-w-[200px] truncate" title="{{ $item->job_title_targeted ?? 'General CV Analysis' }}">
-                                                {{ $item->job_title_targeted ?? 'General CV Analysis' }}
-                                            </td>
-                                            <td class="py-3.5 px-4 text-center">
-                                                <span class="px-2.5 py-0.5 rounded text-xs font-bold font-mono {{ $item->ats_score >= 80 ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/30' : ($item->ats_score >= 50 ? 'bg-amber-950 text-amber-400 border border-amber-500/30' : 'bg-rose-950 text-rose-400 border border-rose-500/30') }}">
-                                                    {{ $item->ats_score }}%
-                                                </span>
-                                            </td>
-                                            <td class="py-3.5 px-4 text-center">
-                                                <span class="px-2.5 py-0.5 rounded text-xs font-bold font-mono {{ $item->format_score >= 80 ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/30' : ($item->format_score >= 50 ? 'bg-amber-950 text-amber-400 border border-amber-500/30' : 'bg-rose-950 text-rose-400 border border-rose-500/30') }}">
-                                                    {{ $item->format_score }}%
-                                                </span>
-                                            </td>
-                                            <td class="py-3.5 px-4 text-center">
-                                                @if($item->about_me_score !== null)
-                                                    <span class="px-2.5 py-0.5 rounded text-xs font-bold font-mono {{ $item->about_me_score >= 80 ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/30' : ($item->about_me_score >= 50 ? 'bg-amber-950 text-amber-400 border border-amber-500/30' : 'bg-rose-950 text-rose-400 border border-rose-500/30') }}">
-                                                        {{ $item->about_me_score }}%
-                                                    </span>
-                                                @else
-                                                    <span class="text-slate-500 font-mono">-</span>
-                                                @endif
-                                            </td>
-                                            <td class="py-3.5 px-4 text-center">
-                                                @if($item->job_match_score !== null)
-                                                    <span class="px-2.5 py-0.5 rounded text-xs font-bold font-mono {{ $item->job_match_score >= 80 ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/30' : ($item->job_match_score >= 50 ? 'bg-amber-950 text-amber-400 border border-amber-500/30' : 'bg-rose-950 text-rose-400 border border-rose-500/30') }}">
-                                                        {{ $item->job_match_score }}%
-                                                    </span>
-                                                @else
-                                                    <span class="text-slate-500 font-mono">-</span>
-                                                @endif
-                                            </td>
-                                            <td class="py-3.5 px-4 text-right">
-                                                <div class="flex justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <button type="button" wire:click="openAnalysisDetailModal({{ $item->id }})" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded hover:text-cyan-300 inline-flex border border-slate-700" title="View Detailed Report">
-                                                        <x-heroicon-o-document-text class="w-4 h-4" />
-                                                    </button>
-                                                    <button type="button" wire:click="loadAnalysisIntoWorkspace({{ $item->id }})" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded hover:text-white inline-flex border border-slate-700" title="Load into AI Match Workspace">
-                                                        <x-heroicon-o-arrow-path class="w-4 h-4" />
-                                                    </button>
-                                                    <button wire:click="deleteAnalysis({{ $item->id }})" wire:confirm="Are you sure you want to delete this analysis run?" class="p-1.5 bg-slate-800 hover:bg-rose-950 text-slate-400 rounded hover:text-rose-400 inline-flex border border-slate-700" title="Delete Run">
-                                                        <x-heroicon-o-trash class="w-4 h-4" />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                @else
-                    <div class="glass-card p-12 text-center">
-                        <x-heroicon-o-adjustments-horizontal class="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                        <h4 class="text-xl font-bold text-white">No CV Analyses Found</h4>
-                        <p class="text-sm text-slate-400 mt-2 max-w-md mx-auto">You have not run any AI analyses yet. Use the "Run AI Analysis" button or the AI Job Match panel to generate your first review!</p>
-                        <x-filament::button wire:click="switchTab('aimatch')" color="primary" class="mt-5">
-                            Go to AI Job Match
-                        </x-filament::button>
-                    </div>
-                @endif
-            </div>
-        @endif
-
-        {{-- ========================================================================= --}}
-        {{-- TAB 9: LIVE PREVIEW & EXPORT --}}
+        {{-- TAB 8: LIVE PREVIEW & EXPORT --}}
         {{-- ========================================================================= --}}
         @if($activeTab === 'preview')
             <div class="tab-pane-content space-y-6 animate-fade-in">
-                <div class="glass-card p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded bg-cyan-950 border border-cyan-500/20 text-cyan-400 flex items-center justify-center">
-                            <x-heroicon-o-eye class="w-5 h-5" />
+                <div class="glass-card p-5 space-y-5">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded bg-cyan-950 border border-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                                <x-heroicon-o-eye class="w-5 h-5" />
+                            </div>
+                            <div>
+                                <h3 class="text-md font-bold text-white">Real-time Canvas Sync</h3>
+                                <p class="text-xs text-slate-400 mt-0.5">Template: <span class="text-cyan-400 font-bold uppercase">{{ $selectedTemplate }}</span></p>
+                            </div>
                         </div>
-                        <div>
-                            <h3 class="text-md font-bold text-white">Real-time Canvas Sync</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">Template: <span class="text-cyan-400 font-bold uppercase">{{ $selectedTemplate }}</span></p>
+
+                        <div class="flex items-center gap-3">
+                            <a href="{{ route('cv.preview') }}?template={{ $selectedTemplate }}" target="_blank" rel="noopener" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-slate-600 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition-all">
+                                <span>Open Full Canvas</span>
+                                <x-heroicon-o-arrow-top-right-on-square class="w-3.5 h-3.5" />
+                            </a>
+                            <x-filament::button wire:click="downloadCv" color="success" size="sm" class="glow-green-hover">
+                                <x-heroicon-o-arrow-down-tray class="w-4 h-4 mr-1.5" />
+                                <span>Download PDF</span>
+                            </x-filament::button>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-3">
-                        <a href="{{ route('cv.preview') }}?template={{ $selectedTemplate }}" target="_blank" rel="noopener" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-slate-600 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition-all">
-                            <span>Open Full Canvas</span>
-                            <x-heroicon-o-arrow-top-right-on-square class="w-3.5 h-3.5" />
-                        </a>
-                        <x-filament::button wire:click="downloadCv" color="success" size="sm" class="glow-green-hover">
-                            <x-heroicon-o-arrow-down-tray class="w-4 h-4 mr-1.5" />
-                            <span>Download PDF</span>
-                        </x-filament::button>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        @foreach(config('cv-templates', []) as $key => $template)
+                            <button type="button" wire:click="selectTemplate('{{ $key }}')" class="text-left rounded-xl border p-4 transition-all {{ $selectedTemplate === $key ? 'border-cyan-400 bg-cyan-950/30 shadow-lg shadow-cyan-500/10' : 'border-slate-700 bg-slate-900/40 hover:border-slate-500 hover:bg-slate-800/60' }}">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="text-sm font-bold {{ $selectedTemplate === $key ? 'text-cyan-300' : 'text-white' }}">{{ $template['name'] }}</span>
+                                    @if($selectedTemplate === $key)
+                                        <x-heroicon-o-check-circle class="w-5 h-5 text-cyan-400 shrink-0" />
+                                    @endif
+                                </div>
+                                <p class="mt-2 text-xs leading-5 text-slate-400">{{ $template['description'] ?? 'CV template' }}</p>
+                                <span class="mt-3 inline-flex rounded-md bg-slate-950/60 px-2 py-1 text-[10px] font-mono uppercase text-slate-500">{{ $key }}</span>
+                            </button>
+                        @endforeach
                     </div>
                 </div>
 

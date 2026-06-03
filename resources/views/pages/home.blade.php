@@ -1,6 +1,8 @@
 <x-layouts.app title="Home">
     @php
         $homeSettings = $homeSettings ?? \App\Models\HomeSettings::getSettings();
+        $profile = \App\Models\Profile::query()->where('is_primary', true)->first() ?? \App\Models\Profile::query()->first();
+        $resumeTemplate = $profile?->cv_template ?: 'ats';
         $projects = \App\Models\Project::query()->where('is_featured', true)->orderBy('order')->latest()->take(3)->get();
         $posts = \App\Models\Post::published()->latest('published_at')->take(3)->get();
     @endphp
@@ -28,7 +30,7 @@
 
                     <div class="mt-8 flex flex-col gap-3 sm:flex-row">
                         <a href="{{ route('contact') }}" class="inline-flex items-center justify-center rounded-lg bg-text-primary px-5 py-3 text-sm font-semibold text-bg-primary transition hover:opacity-90">{{ $homeSettings->cta_primary_button_text }}</a>
-                        <a href="{{ route('cv.preview') }}" class="inline-flex items-center justify-center rounded-lg bg-bg-card px-5 py-3 text-sm font-semibold text-text-primary shadow-[0_0_0_1px_rgba(0,0,0,.08)] transition hover:bg-bg-secondary dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">{{ $homeSettings->cta_secondary_button_text }}</a>
+                        <a href="{{ route('cv.preview', ['template' => $resumeTemplate]) }}" target="_blank" rel="noopener" class="inline-flex items-center justify-center rounded-lg bg-bg-card px-5 py-3 text-sm font-semibold text-text-primary shadow-[0_0_0_1px_rgba(0,0,0,.08)] transition hover:bg-bg-secondary dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">{{ $homeSettings->cta_secondary_button_text }}</a>
                     </div>
                 </div>
 

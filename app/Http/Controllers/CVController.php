@@ -107,14 +107,26 @@ class CVController extends Controller
 
     public function preview(Request $request)
     {
-        $template = $request->query('template', 'ats');
         $profile = $this->getPrimaryProfile();
 
         if (! $profile) {
             return back()->with('error', 'Please create a profile first.');
         }
 
+        $template = $this->resolveTemplate($request, $profile);
+
         return view("cv.{$template}", $this->cvService->buildCvData($profile));
+    }
+
+    protected function resolveTemplate(Request $request, Profile $profile): string
+    {
+        $template = $request->query('template') ?: $profile->cv_template ?: 'ats';
+
+        if (! array_key_exists($template, config('cv-templates', []))) {
+            return 'ats';
+        }
+
+        return $template;
     }
 
     protected function getPrimaryProfile(): ?Profile
