@@ -93,6 +93,7 @@ RUN apt-get update \
     && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
     && rm -rf /var/lib/apt/lists/* /tmp/*
 
+COPY composer.json composer.lock ./
 COPY --from=vendor /app/vendor ./vendor
 COPY app ./app
 COPY bootstrap ./bootstrap
