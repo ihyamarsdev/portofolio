@@ -51,6 +51,12 @@ docs/
 /public/build
 /public/hot
 /public/storage
+/public/css/filament
+/public/fonts/filament
+/public/js/awcodes
+/public/js/filament
+/public/js/guava
+/public/js/tangodev-it
 /storage/*.key
 /public/hot
 

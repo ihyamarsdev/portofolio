@@ -59,7 +59,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "node -e \"fetch('http://127.0.0.1:8888/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"",
+          "php -r \"$$status = @file_get_contents('http://127.0.0.1:8888/'); exit($$status === false ? 1 : 0);\"",
         ]
       interval: 30s
       timeout: 10s
