@@ -58,7 +58,14 @@ docs/
 /public/js/guava
 /public/js/tangodev-it
 /storage/*.key
-/public/hot
+
+# Removed migration scratch app
+/django
+
+# Python artifacts from migration experiments
+/.venv
+__pycache__/
+*.pyc
 
 # Laravel specific
 /storage/framework/cache/data/*

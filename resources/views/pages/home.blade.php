@@ -128,8 +128,11 @@
                 </div>
                 <div class="grid gap-4 sm:grid-cols-3">
                     @forelse($posts as $post)
+                        @php($displayDate = $post->published_at ?? $post->updated_at ?? $post->created_at)
                         <a href="{{ route('blog.show', $post->slug) }}" class="rounded-2xl bg-white/10 p-4 transition hover:bg-white/15">
-                            <p class="text-xs opacity-70">{{ $post->published_at->format('M j, Y') }}</p>
+                            @if($displayDate)
+                                <p class="text-xs opacity-70">{{ $displayDate->format('M j, Y') }}</p>
+                            @endif
                             <h3 class="mt-2 text-sm font-semibold leading-6">{{ $post->title }}</h3>
                         </a>
                     @empty

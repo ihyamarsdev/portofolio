@@ -24,7 +24,7 @@ services:
     volumes:
       - storage:/app/storage
     ports:
-      - "100.104.67.88:8888:8888"
+      - "8888:8888"
     security_opt:
       - no-new-privileges:true
     tmpfs:

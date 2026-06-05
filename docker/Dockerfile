@@ -2,11 +2,11 @@
 
 # =============================================================================
 # Production Dockerfile for Laravel 13 + FrankenPHP
-# Pattern: Laravel optimized multi-stage build
-# - dependency files first for stable Docker cache
-# - frontend assets isolated in Node stage
-# - runtime copies only needed Laravel files/artifacts
-# - PHP extensions installed in final runtime stage
+# Optimized for fast rebuilds:
+# - deps copied before source for cache hits
+# - Composer scripts disabled during image build
+# - frontend assets built once
+# - final image copies only runtime files
 # =============================================================================
 
 FROM composer:2 AS vendor
@@ -42,20 +42,21 @@ FROM node:22-alpine AS frontend
 WORKDIR /app
 
 ENV NODE_ENV=development \
-    PUPPETEER_SKIP_DOWNLOAD=true
+    PUPPETEER_SKIP_DOWNLOAD=true \
+    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
 COPY package.json package-lock.json ./
 
 RUN --mount=type=cache,target=/root/.npm,sharing=locked \
     npm ci --fetch-retries=5 --fetch-retry-factor=2 --fetch-retry-mintimeout=10000 --fetch-retry-maxtimeout=120000
 
+COPY vite.config.js ./vite.config.js
+COPY resources ./resources
+COPY public ./public
 COPY app ./app
 COPY bootstrap ./bootstrap
 COPY config ./config
 COPY routes ./routes
-COPY resources ./resources
-COPY public ./public
-COPY vite.config.js ./vite.config.js
 COPY artisan ./artisan
 COPY --from=vendor /app/vendor ./vendor
 
@@ -119,9 +120,7 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
     && chown -R www-data:www-data /app/storage /app/bootstrap/cache \
     && find /app/storage -type d -exec chmod 775 {} \; \
     && find /app/bootstrap/cache -type d -exec chmod 775 {} \; \
-    && rm -rf \
-        /root/.composer \
-        /tmp/*
+    && rm -rf /root/.composer /tmp/*
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD php -r "$status = @file_get_contents('http://127.0.0.1:8888/'); exit($status === false ? 1 : 0);"
