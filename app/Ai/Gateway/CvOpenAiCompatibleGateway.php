@@ -5,6 +5,12 @@ namespace App\Ai\Gateway;
 use App\Support\AiNotification;
 use Generator;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\JsonSchema\Types\ArrayType;
+use Illuminate\JsonSchema\Types\BooleanType;
+use Illuminate\JsonSchema\Types\IntegerType;
+use Illuminate\JsonSchema\Types\NumberType;
+use Illuminate\JsonSchema\Types\ObjectType;
+use Illuminate\JsonSchema\Types\StringType;
 use Illuminate\Support\Facades\Http;
 use Laravel\Ai\Contracts\Providers\TextProvider;
 use Laravel\Ai\Exceptions\AiException;
@@ -167,11 +173,90 @@ class CvOpenAiCompatibleGateway extends OpenAiGateway
                 }
             }
 
-            // Ensure all required schema keys exist in the structured output
+            // Ensure all required schema keys exist in the structured output and have correct types
             if (is_array($structured)) {
-                foreach (array_keys($schema) as $requiredKey) {
-                    if (! isset($structured[$requiredKey])) {
-                        $structured[$requiredKey] = '';
+                foreach ($schema as $requiredKey => $typeObj) {
+                    if (! isset($structured[$requiredKey]) || $structured[$requiredKey] === null) {
+                        if ($typeObj instanceof ArrayType || $typeObj instanceof ObjectType) {
+                            $structured[$requiredKey] = [];
+                        } elseif ($typeObj instanceof IntegerType || $typeObj instanceof NumberType) {
+                            $structured[$requiredKey] = 0;
+                        } elseif ($typeObj instanceof BooleanType) {
+                            $structured[$requiredKey] = false;
+                        } else {
+                            $structured[$requiredKey] = '';
+                        }
+                    } else {
+                        // Key exists, let's enforce type
+                        $val = $structured[$requiredKey];
+                        if ($typeObj instanceof ArrayType) {
+                            if (is_string($val)) {
+                                $cleanVal = trim($val);
+                                if (str_starts_with($cleanVal, '```')) {
+                                    $cleanVal = preg_replace('/^```(?:json)?\n?/i', '', $cleanVal);
+                                    $cleanVal = preg_replace('/```$/', '', $cleanVal);
+                                    $cleanVal = trim($cleanVal);
+                                }
+                                $decoded = json_decode($cleanVal, true);
+                                if (is_array($decoded)) {
+                                    $structured[$requiredKey] = $decoded;
+                                } else {
+                                    // Parse bullet points or wrap in array
+                                    $lines = preg_split('/\R+/', $val);
+                                    $items = [];
+                                    foreach ($lines as $line) {
+                                        $line = trim(preg_replace('/^\s*[-*•+\d.]+\s+/', '', trim($line)));
+                                        if ($line !== '') {
+                                            $items[] = $line;
+                                        }
+                                    }
+                                    $structured[$requiredKey] = count($items) > 0 ? $items : [$val];
+                                }
+                            } elseif (! is_array($val)) {
+                                $structured[$requiredKey] = (array) $val;
+                            }
+                        } elseif ($typeObj instanceof ObjectType) {
+                            if (is_string($val)) {
+                                $cleanVal = trim($val);
+                                if (str_starts_with($cleanVal, '```')) {
+                                    $cleanVal = preg_replace('/^```(?:json)?\n?/i', '', $cleanVal);
+                                    $cleanVal = preg_replace('/```$/', '', $cleanVal);
+                                    $cleanVal = trim($cleanVal);
+                                }
+                                $decoded = json_decode($cleanVal, true);
+                                $structured[$requiredKey] = is_array($decoded) ? $decoded : [];
+                            } elseif (! is_array($val)) {
+                                $structured[$requiredKey] = (array) $val;
+                            }
+                        } elseif ($typeObj instanceof IntegerType || $typeObj instanceof NumberType) {
+                            if (is_string($val)) {
+                                $val = trim($val);
+                                if (str_contains($val, '/')) {
+                                    $val = explode('/', $val)[0];
+                                }
+                                $val = str_replace('%', '', $val);
+                                $val = trim($val);
+                            }
+                            if (is_numeric($val)) {
+                                $structured[$requiredKey] = $typeObj instanceof IntegerType ? (int) round((float) $val) : (float) $val;
+                            } else {
+                                // Extract first float or int match
+                                if (preg_match('/[+-]?\d+(?:\.\d+)?/', $val, $matches)) {
+                                    $extracted = $matches[0];
+                                    $structured[$requiredKey] = $typeObj instanceof IntegerType ? (int) round((float) $extracted) : (float) $extracted;
+                                } else {
+                                    $structured[$requiredKey] = 0;
+                                }
+                            }
+                        } elseif ($typeObj instanceof BooleanType) {
+                            $structured[$requiredKey] = filter_var($val, FILTER_VALIDATE_BOOLEAN);
+                        } elseif ($typeObj instanceof StringType) {
+                            if (is_array($val)) {
+                                $structured[$requiredKey] = json_encode($val);
+                            } else {
+                                $structured[$requiredKey] = (string) $val;
+                            }
+                        }
                     }
                 }
             }

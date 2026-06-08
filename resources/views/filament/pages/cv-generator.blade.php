@@ -161,7 +161,7 @@
                 </div>
 
                 {{-- History Table --}}
-                @if($history && count($history) > 0)
+                @if($history && count(is_countable($history) ? $history : []) > 0)
                     <div class="glass-card p-6">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-bold text-white flex items-center gap-2">
@@ -385,7 +385,7 @@
                     </x-filament::button>
                 </div>
 
-                @if($experiences && count($experiences) > 0)
+                @if($experiences && count(is_countable($experiences) ? $experiences : []) > 0)
                     <div class="space-y-4 relative before:absolute before:left-6 before:top-4 before:bottom-4 before:w-[2px] before:bg-[#2d2d3a]">
                         @foreach($experiences as $exp)
                             <div class="glass-card p-5 relative pl-14 hover:border-cyan-500/30 transition-all group">
@@ -418,15 +418,15 @@
                                         </div>
                                     @endif
 
-                                    @if($exp->achievements && count($exp->achievements) > 0)
+                                    @if($exp->achievements && count(is_countable($exp->achievements) ? $exp->achievements : []) > 0)
                                         <ul class="list-disc pl-5 space-y-1 text-slate-300 text-xs">
-                                            @foreach($exp->achievements as $achievement)
+                                            @foreach((is_array($exp->achievements) ? $exp->achievements : []) as $achievement)
                                                 <li>{{ $achievement }}</li>
                                             @endforeach
                                         </ul>
                                     @endif
 
-                                    @if($exp->skills && count($exp->skills) > 0)
+                                    @if($exp->skills && count(is_countable($exp->skills) ? $exp->skills : []) > 0)
                                         <div class="flex flex-wrap gap-1.5 pt-2">
                                             @foreach($exp->skills as $skill)
                                                 <span class="text-[10px] font-mono font-semibold bg-cyan-950/30 text-cyan-400 border border-cyan-500/20 px-2 py-0.5 rounded">{{ $skill->name }}</span>
@@ -465,7 +465,7 @@
                     </x-filament::button>
                 </div>
 
-                @if($educations && count($educations) > 0)
+                @if($educations && count(is_countable($educations) ? $educations : []) > 0)
                     <div class="space-y-4 relative before:absolute before:left-6 before:top-4 before:bottom-4 before:w-[2px] before:bg-[#2d2d3a]">
                         @foreach($educations as $edu)
                             <div class="glass-card p-5 relative pl-14 hover:border-cyan-500/30 transition-all group">
@@ -536,7 +536,7 @@
                     </x-filament::button>
                 </div>
 
-                @if($skills && count($skills) > 0)
+                @if($skills && count(is_countable($skills) ? $skills : []) > 0)
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         @foreach($skills->groupBy('category_id') as $catId => $categorySkills)
                             @php
@@ -601,7 +601,7 @@
                     </x-filament::button>
                 </div>
 
-                @if($certificates && count($certificates) > 0)
+                @if($certificates && count(is_countable($certificates) ? $certificates : []) > 0)
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @foreach($certificates as $cert)
                             <div class="glass-card p-5 hover:border-cyan-500/30 transition-all group flex items-start justify-between gap-3">
@@ -674,7 +674,16 @@
                             </h3>
 
                             <div>
-                                <label class="block text-sm font-medium text-slate-300 mb-1.5">Job Description</label>
+                                <label class="block text-sm font-medium text-slate-300 mb-1.5">Target Role</label>
+                                <select wire:model="targetRole" class="cyber-input w-full text-xs font-semibold bg-[#12121a] text-slate-200 border border-[#2d2d3a] rounded-lg p-2.5 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/20">
+                                    <option value="Devops Engineer">DevOps Engineer</option>
+                                    <option value="Cloud Engineer">Cloud Engineer</option>
+                                    <option value="Site Reliability Engineer">Site Reliability Engineer</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-1.5">Job Description (Optional)</label>
                                 <textarea wire:model="jobDescription" rows="8" class="cyber-textarea w-full text-xs font-mono" placeholder="Paste the target job requirements or description details here to perform deep-match analysis..."></textarea>
                             </div>
 
@@ -738,7 +747,7 @@
                                     <div class="space-y-3">
                                         <h4 class="text-sm font-bold text-slate-200">Domain Match Details</h4>
                                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                            @foreach($analysisResult['industry_match'] as $domain => $score)
+                                            @foreach((is_array($analysisResult['industry_match'] ?? null) ? $analysisResult['industry_match'] : []) as $domain => $score)
                                                 <div class="bg-[#12121a]/60 border border-[#2d2d3a]/30 p-3 rounded-lg flex items-center justify-between">
                                                     <span class="text-xs text-slate-400 font-semibold">{{ strtoupper($domain) }}</span>
                                                     <span class="text-xs font-mono font-bold text-cyan-400">{{ $score }}%</span>
@@ -753,10 +762,10 @@
                                     <div class="bg-emerald-950/10 border border-emerald-500/20 p-4 rounded-xl">
                                         <h5 class="text-xs font-bold text-emerald-400 uppercase tracking-wide flex items-center gap-1.5 mb-2.5">
                                             <x-heroicon-o-check-circle class="w-4 h-4" />
-                                            <span>Keywords Found ({{ count($analysisResult['keywords']['found'] ?? []) }})</span>
+                                            <span>Keywords Found ({{ count(is_countable($analysisResult['keywords']['found'] ?? null) ? $analysisResult['keywords']['found'] : []) }})</span>
                                         </h5>
                                         <div class="flex flex-wrap gap-1">
-                                            @forelse(($analysisResult['keywords']['found'] ?? []) as $kw)
+                                            @forelse((is_array($analysisResult['keywords']['found'] ?? null) ? $analysisResult['keywords']['found'] : []) as $kw)
                                                 <span class="text-[10px] bg-emerald-950/30 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">{{ $kw }}</span>
                                             @empty
                                                 <span class="text-[10px] text-slate-500">None detected</span>
@@ -767,10 +776,10 @@
                                     <div class="bg-amber-950/10 border border-amber-500/20 p-4 rounded-xl">
                                         <h5 class="text-xs font-bold text-amber-400 uppercase tracking-wide flex items-center gap-1.5 mb-2.5">
                                             <x-heroicon-o-exclamation-triangle class="w-4 h-4" />
-                                            <span>Weak Evidence ({{ count($analysisResult['keywords']['weak_evidence'] ?? []) }})</span>
+                                            <span>Weak Evidence ({{ count(is_countable($analysisResult['keywords']['weak_evidence'] ?? null) ? $analysisResult['keywords']['weak_evidence'] : []) }})</span>
                                         </h5>
                                         <div class="flex flex-wrap gap-1">
-                                            @forelse(($analysisResult['keywords']['weak_evidence'] ?? []) as $kw)
+                                            @forelse((is_array($analysisResult['keywords']['weak_evidence'] ?? null) ? $analysisResult['keywords']['weak_evidence'] : []) as $kw)
                                                 <span class="text-[10px] bg-amber-950/30 text-amber-300 border border-amber-500/20 px-2 py-0.5 rounded">{{ $kw }}</span>
                                             @empty
                                                 <span class="text-[10px] text-slate-500">No weak-evidence flags.</span>
@@ -781,10 +790,10 @@
                                     <div class="bg-rose-950/10 border border-rose-500/20 p-4 rounded-xl">
                                         <h5 class="text-xs font-bold text-rose-400 uppercase tracking-wide flex items-center gap-1.5 mb-2.5">
                                             <x-heroicon-o-x-circle class="w-4 h-4" />
-                                            <span>Missing Keywords ({{ count($analysisResult['keywords']['missing'] ?? []) }})</span>
+                                            <span>Missing Keywords ({{ count(is_countable($analysisResult['keywords']['missing'] ?? null) ? $analysisResult['keywords']['missing'] : []) }})</span>
                                         </h5>
                                         <div class="flex flex-wrap gap-1">
-                                            @forelse(($analysisResult['keywords']['missing'] ?? []) as $kw)
+                                            @forelse((is_array($analysisResult['keywords']['missing'] ?? null) ? $analysisResult['keywords']['missing'] : []) as $kw)
                                                 <span class="text-[10px] bg-rose-950/30 text-rose-400 border border-rose-500/20 px-2 py-0.5 rounded">{{ $kw }}</span>
                                             @empty
                                                 <span class="text-[10px] text-slate-500">Perfect keyword coverage!</span>
@@ -794,11 +803,11 @@
                                 </div>
 
                                 {{-- Recommendations --}}
-                                @if(isset($analysisResult['suggestions']) && count($analysisResult['suggestions']) > 0)
+                                @if(isset($analysisResult['suggestions']) && count(is_countable($analysisResult['suggestions']) ? $analysisResult['suggestions'] : []) > 0)
                                     <div class="space-y-3">
                                         <h4 class="text-sm font-bold text-slate-200">Recommended Optimization Steps</h4>
                                         <div class="space-y-2">
-                                            @foreach($analysisResult['suggestions'] as $idx => $suggestion)
+                                            @foreach((is_array($analysisResult['suggestions'] ?? null) ? $analysisResult['suggestions'] : []) as $idx => $suggestion)
                                                 <div class="bg-[#12121a]/80 border border-[#2d2d3a]/50 p-3 rounded-lg flex items-start gap-3">
                                                     <span class="w-5 h-5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-500/30 text-xs flex items-center justify-center flex-shrink-0 font-bold font-mono">{{ $idx + 1 }}</span>
                                                     <p class="text-xs text-slate-300 leading-relaxed">{{ $suggestion }}</p>
@@ -809,44 +818,44 @@
                                 @endif
 
                                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                                    @if(!empty($analysisResult['strengths']))
+                                    @if(!empty($analysisResult['strengths']) && is_array($analysisResult['strengths']))
                                         <div class="bg-emerald-950/10 border border-emerald-500/20 p-4 rounded-xl space-y-2">
                                             <h4 class="text-sm font-bold text-emerald-300">Professional Strengths</h4>
                                             <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-                                                @foreach($analysisResult['strengths'] as $strength)
+                                                @foreach((is_array($analysisResult['strengths'] ?? null) ? $analysisResult['strengths'] : []) as $strength)
                                                     <li class="flex gap-2"><span class="text-emerald-400">•</span><span>{{ $strength }}</span></li>
                                                 @endforeach
                                             </ul>
                                         </div>
                                     @endif
 
-                                    @if(!empty($analysisResult['critical_gaps']))
+                                    @if(!empty($analysisResult['critical_gaps']) && is_array($analysisResult['critical_gaps']))
                                         <div class="bg-rose-950/10 border border-rose-500/20 p-4 rounded-xl space-y-2">
                                             <h4 class="text-sm font-bold text-rose-300">Critical Gaps</h4>
                                             <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-                                                @foreach($analysisResult['critical_gaps'] as $gap)
+                                                @foreach((is_array($analysisResult['critical_gaps'] ?? null) ? $analysisResult['critical_gaps'] : []) as $gap)
                                                     <li class="flex gap-2"><span class="text-rose-400">•</span><span>{{ $gap }}</span></li>
                                                 @endforeach
                                             </ul>
                                         </div>
                                     @endif
 
-                                    @if(!empty($analysisResult['missing_metrics']))
+                                    @if(!empty($analysisResult['missing_metrics']) && is_array($analysisResult['missing_metrics']))
                                         <div class="bg-amber-950/10 border border-amber-500/20 p-4 rounded-xl space-y-2">
                                             <h4 class="text-sm font-bold text-amber-300">Missing Metrics</h4>
                                             <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-                                                @foreach($analysisResult['missing_metrics'] as $metric)
+                                                @foreach((is_array($analysisResult['missing_metrics'] ?? null) ? $analysisResult['missing_metrics'] : []) as $metric)
                                                     <li class="flex gap-2"><span class="text-amber-400">•</span><span>{{ $metric }}</span></li>
                                                 @endforeach
                                             </ul>
                                         </div>
                                     @endif
 
-                                    @if(!empty($analysisResult['rewrite_priorities']))
+                                    @if(!empty($analysisResult['rewrite_priorities']) && is_array($analysisResult['rewrite_priorities']))
                                         <div class="bg-sky-950/10 border border-sky-500/20 p-4 rounded-xl space-y-2">
                                             <h4 class="text-sm font-bold text-sky-300">Rewrite Priorities</h4>
                                             <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-                                                @foreach($analysisResult['rewrite_priorities'] as $priority)
+                                                @foreach((is_array($analysisResult['rewrite_priorities'] ?? null) ? $analysisResult['rewrite_priorities'] : []) as $priority)
                                                     <li class="flex gap-2"><span class="text-sky-400">•</span><span>{{ $priority }}</span></li>
                                                 @endforeach
                                             </ul>
@@ -854,11 +863,11 @@
                                     @endif
                                 </div>
 
-                                @if(!empty($analysisResult['experience_review']))
+                                @if(!empty($analysisResult['experience_review']) && is_array($analysisResult['experience_review']))
                                     <div class="space-y-3">
                                         <h4 class="text-sm font-bold text-slate-200">Experience Evidence Review</h4>
                                         <div class="space-y-3">
-                                            @foreach($analysisResult['experience_review'] as $review)
+                                            @foreach((is_array($analysisResult['experience_review'] ?? null) ? $analysisResult['experience_review'] : []) as $review)
                                                 <div class="bg-[#12121a]/80 border border-[#2d2d3a]/50 p-4 rounded-xl space-y-2">
                                                     <div class="text-sm font-semibold text-white">{{ $review['section'] ?? 'Experience' }}</div>
                                                     <div class="text-xs text-emerald-300">Strength: {{ $review['strength'] ?? '-' }}</div>
@@ -1026,9 +1035,9 @@
                             </button>
                         </div>
 
-                        @if($exp_achievements && count($exp_achievements) > 0)
+                        @if($exp_achievements && count(is_countable($exp_achievements) ? $exp_achievements : []) > 0)
                             <ul class="space-y-1.5 pt-2">
-                                @foreach($exp_achievements as $idx => $ach)
+                                @foreach((is_array($exp_achievements) ? $exp_achievements : []) as $idx => $ach)
                                     <li class="bg-[#1a1a24] border border-[#2d2d3a] px-3 py-1.5 rounded-lg flex items-center justify-between text-xs text-slate-300">
                                         <span class="flex-1 leading-relaxed">{{ $ach }}</span>
                                         <button type="button" wire:click="removeAchievement({{ $idx }})" class="text-slate-500 hover:text-rose-400 ml-2">
@@ -1349,10 +1358,10 @@
                             <div class="space-y-2">
                                 <h4 class="text-sm font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                                     <x-heroicon-o-check-circle class="w-4.5 h-4.5" />
-                                    <span>Keywords Found ({{ count($selectedAnalysisDetail['keywords']['found'] ?? []) }})</span>
+                                    <span>Keywords Found ({{ count(is_countable($selectedAnalysisDetail['keywords']['found'] ?? null) ? $selectedAnalysisDetail['keywords']['found'] : []) }})</span>
                                 </h4>
                                 <div class="p-4 bg-emerald-950/10 border border-emerald-900/30 rounded-xl min-h-[120px] max-h-[220px] overflow-y-auto">
-                                    @if(!empty($selectedAnalysisDetail['keywords']['found']))
+                                    @if(!empty($selectedAnalysisDetail['keywords']['found']) && is_array($selectedAnalysisDetail['keywords']['found']))
                                         <div class="flex flex-wrap gap-1.5">
                                             @foreach($selectedAnalysisDetail['keywords']['found'] as $kw)
                                                 <span class="px-2 py-1 bg-emerald-950/40 text-emerald-400 border border-emerald-500/20 text-xs font-semibold rounded font-mono">
@@ -1364,155 +1373,155 @@
                                         <span class="text-slate-500 text-xs italic">No matching keywords parsed yet.</span>
                                     @endif
                                 </div>
-                            </div>
+                             </div>
 
-                            {{-- Weak Evidence --}}
-                            <div class="space-y-2">
-                                <h4 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                                    <x-heroicon-o-exclamation-triangle class="w-4.5 h-4.5" />
-                                    <span>Weak Evidence ({{ count($selectedAnalysisDetail['keywords']['weak_evidence'] ?? []) }})</span>
-                                </h4>
-                                <div class="p-4 bg-amber-950/10 border border-amber-900/30 rounded-xl min-h-[120px] max-h-[220px] overflow-y-auto">
-                                    @if(!empty($selectedAnalysisDetail['keywords']['weak_evidence']))
-                                        <div class="flex flex-wrap gap-1.5">
-                                            @foreach($selectedAnalysisDetail['keywords']['weak_evidence'] as $kw)
-                                                <span class="px-2 py-1 bg-amber-950/40 text-amber-300 border border-amber-500/20 text-xs font-semibold rounded font-mono">
-                                                    {{ $kw }}
-                                                </span>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <span class="text-slate-500 text-xs italic">No weak-evidence claims flagged.</span>
-                                    @endif
-                                </div>
-                            </div>
+                             {{-- Weak Evidence --}}
+                             <div class="space-y-2">
+                                 <h4 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                                     <x-heroicon-o-exclamation-triangle class="w-4.5 h-4.5" />
+                                     <span>Weak Evidence ({{ count(is_countable($selectedAnalysisDetail['keywords']['weak_evidence'] ?? null) ? $selectedAnalysisDetail['keywords']['weak_evidence'] : []) }})</span>
+                                 </h4>
+                                 <div class="p-4 bg-amber-950/10 border border-amber-900/30 rounded-xl min-h-[120px] max-h-[220px] overflow-y-auto">
+                                     @if(!empty($selectedAnalysisDetail['keywords']['weak_evidence']) && is_array($selectedAnalysisDetail['keywords']['weak_evidence']))
+                                         <div class="flex flex-wrap gap-1.5">
+                                             @foreach($selectedAnalysisDetail['keywords']['weak_evidence'] as $kw)
+                                                 <span class="px-2 py-1 bg-amber-950/40 text-amber-300 border border-amber-500/20 text-xs font-semibold rounded font-mono">
+                                                     {{ $kw }}
+                                                 </span>
+                                             @endforeach
+                                         </div>
+                                     @else
+                                         <span class="text-slate-500 text-xs italic">No weak-evidence claims flagged.</span>
+                                     @endif
+                                 </div>
+                             </div>
 
-                            {{-- Missing Keywords --}}
-                            <div class="space-y-2">
-                                <h4 class="text-sm font-bold text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
-                                    <x-heroicon-o-x-circle class="w-4.5 h-4.5" />
-                                    <span>Missing Keywords ({{ count($selectedAnalysisDetail['keywords']['missing'] ?? []) }})</span>
-                                </h4>
-                                <div class="p-4 bg-rose-950/10 border border-rose-900/30 rounded-xl min-h-[120px] max-h-[220px] overflow-y-auto">
-                                    @if(!empty($selectedAnalysisDetail['keywords']['missing']))
-                                        <div class="flex flex-wrap gap-1.5">
-                                            @foreach($selectedAnalysisDetail['keywords']['missing'] as $kw)
-                                                <span class="px-2 py-1 bg-rose-950/40 text-rose-400 border border-rose-500/20 text-xs font-semibold rounded font-mono">
-                                                    {{ $kw }}
-                                                </span>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <span class="text-emerald-400 text-xs font-semibold italic flex items-center gap-1">
-                                            <x-heroicon-o-sparkles class="w-3.5 h-3.5" />
-                                            <span>Flawless! All key terms are covered.</span>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
+                             {{-- Missing Keywords --}}
+                             <div class="space-y-2">
+                                 <h4 class="text-sm font-bold text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
+                                     <x-heroicon-o-x-circle class="w-4.5 h-4.5" />
+                                     <span>Missing Keywords ({{ count(is_countable($selectedAnalysisDetail['keywords']['missing'] ?? null) ? $selectedAnalysisDetail['keywords']['missing'] : []) }})</span>
+                                 </h4>
+                                 <div class="p-4 bg-rose-950/10 border border-rose-900/30 rounded-xl min-h-[120px] max-h-[220px] overflow-y-auto">
+                                     @if(!empty($selectedAnalysisDetail['keywords']['missing']) && is_array($selectedAnalysisDetail['keywords']['missing']))
+                                         <div class="flex flex-wrap gap-1.5">
+                                             @foreach($selectedAnalysisDetail['keywords']['missing'] as $kw)
+                                                 <span class="px-2 py-1 bg-rose-950/40 text-rose-400 border border-rose-500/20 text-xs font-semibold rounded font-mono">
+                                                     {{ $kw }}
+                                                 </span>
+                                             @endforeach
+                                         </div>
+                                     @else
+                                         <span class="text-emerald-400 text-xs font-semibold italic flex items-center gap-1">
+                                             <x-heroicon-o-sparkles class="w-3.5 h-3.5" />
+                                             <span>Flawless! All key terms are covered.</span>
+                                         </span>
+                                     @endif
+                                 </div>
+                             </div>
+                         </div>
 
-                        {{-- AI Action Recommendations --}}
-                        @if(!empty($selectedAnalysisDetail['suggestions']))
-                            <div class="space-y-3">
-                                <h4 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                                    <x-heroicon-o-clipboard-document-check class="w-4.5 h-4.5 text-cyan-400" />
-                                    <span>Step-by-Step AI Improvement Action Checklist</span>
-                                </h4>
-                                <div class="space-y-2.5 max-h-[300px] overflow-y-auto border border-[#2d2d3a] rounded-xl p-4 bg-[#0e0e13]/60">
-                                    @foreach($selectedAnalysisDetail['suggestions'] as $idx => $sug)
-                                        <div class="p-3 bg-[#181824]/40 border border-[#2d2d3a]/50 rounded-lg flex items-start gap-3 hover:border-cyan-500/30 transition-all duration-200">
-                                            <span class="w-5 h-5 rounded-full bg-cyan-950 border border-cyan-500/40 text-[10px] text-cyan-400 font-bold flex items-center justify-center shrink-0 mt-0.5 font-mono">
-                                                {{ $idx + 1 }}
-                                            </span>
-                                            <p class="text-xs text-slate-300 leading-relaxed font-semibold">{{ $sug }}</p>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
+                         {{-- AI Action Recommendations --}}
+                         @if(!empty($selectedAnalysisDetail['suggestions']) && is_array($selectedAnalysisDetail['suggestions']))
+                             <div class="space-y-3">
+                                 <h4 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                                     <x-heroicon-o-clipboard-document-check class="w-4.5 h-4.5 text-cyan-400" />
+                                     <span>Step-by-Step AI Improvement Action Checklist</span>
+                                 </h4>
+                                 <div class="space-y-2.5 max-h-[300px] overflow-y-auto border border-[#2d2d3a] rounded-xl p-4 bg-[#0e0e13]/60">
+                                     @foreach($selectedAnalysisDetail['suggestions'] as $idx => $sug)
+                                         <div class="p-3 bg-[#181824]/40 border border-[#2d2d3a]/50 rounded-lg flex items-start gap-3 hover:border-cyan-500/30 transition-all duration-200">
+                                             <span class="w-5 h-5 rounded-full bg-cyan-950 border border-cyan-500/40 text-[10px] text-cyan-400 font-bold flex items-center justify-center shrink-0 mt-0.5 font-mono">
+                                                 {{ $idx + 1 }}
+                                             </span>
+                                             <p class="text-xs text-slate-300 leading-relaxed font-semibold">{{ $sug }}</p>
+                                         </div>
+                                     @endforeach
+                                 </div>
+                             </div>
+                         @endif
 
-                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                            @if(!empty($selectedAnalysisDetail['strengths']))
-                                <div class="p-4 bg-emerald-950/10 border border-emerald-900/30 rounded-xl space-y-2">
-                                    <h4 class="text-sm font-bold text-emerald-300">Professional Strengths</h4>
-                                    <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-                                        @foreach($selectedAnalysisDetail['strengths'] as $strength)
-                                            <li class="flex gap-2"><span class="text-emerald-400">•</span><span>{{ $strength }}</span></li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
+                         <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                             @if(!empty($selectedAnalysisDetail['strengths']) && is_array($selectedAnalysisDetail['strengths']))
+                                 <div class="p-4 bg-emerald-950/10 border border-emerald-900/30 rounded-xl space-y-2">
+                                     <h4 class="text-sm font-bold text-emerald-300">Professional Strengths</h4>
+                                     <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
+                                         @foreach($selectedAnalysisDetail['strengths'] as $strength)
+                                             <li class="flex gap-2"><span class="text-emerald-400">•</span><span>{{ $strength }}</span></li>
+                                         @endforeach
+                                     </ul>
+                                 </div>
+                             @endif
 
-                            @if(!empty($selectedAnalysisDetail['critical_gaps']))
-                                <div class="p-4 bg-rose-950/10 border border-rose-900/30 rounded-xl space-y-2">
-                                    <h4 class="text-sm font-bold text-rose-300">Critical Gaps</h4>
-                                    <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-                                        @foreach($selectedAnalysisDetail['critical_gaps'] as $gap)
-                                            <li class="flex gap-2"><span class="text-rose-400">•</span><span>{{ $gap }}</span></li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
+                             @if(!empty($selectedAnalysisDetail['critical_gaps']) && is_array($selectedAnalysisDetail['critical_gaps']))
+                                 <div class="p-4 bg-rose-950/10 border border-rose-900/30 rounded-xl space-y-2">
+                                     <h4 class="text-sm font-bold text-rose-300">Critical Gaps</h4>
+                                     <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
+                                         @foreach($selectedAnalysisDetail['critical_gaps'] as $gap)
+                                             <li class="flex gap-2"><span class="text-rose-400">•</span><span>{{ $gap }}</span></li>
+                                         @endforeach
+                                     </ul>
+                                 </div>
+                             @endif
 
-                            @if(!empty($selectedAnalysisDetail['missing_metrics']))
-                                <div class="p-4 bg-amber-950/10 border border-amber-900/30 rounded-xl space-y-2">
-                                    <h4 class="text-sm font-bold text-amber-300">Missing Metrics</h4>
-                                    <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-                                        @foreach($selectedAnalysisDetail['missing_metrics'] as $metric)
-                                            <li class="flex gap-2"><span class="text-amber-400">•</span><span>{{ $metric }}</span></li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
+                             @if(!empty($selectedAnalysisDetail['missing_metrics']) && is_array($selectedAnalysisDetail['missing_metrics']))
+                                 <div class="p-4 bg-amber-950/10 border border-amber-900/30 rounded-xl space-y-2">
+                                     <h4 class="text-sm font-bold text-amber-300">Missing Metrics</h4>
+                                     <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
+                                         @foreach($selectedAnalysisDetail['missing_metrics'] as $metric)
+                                             <li class="flex gap-2"><span class="text-amber-400">•</span><span>{{ $metric }}</span></li>
+                                         @endforeach
+                                     </ul>
+                                 </div>
+                             @endif
 
-                            @if(!empty($selectedAnalysisDetail['rewrite_priorities']))
-                                <div class="p-4 bg-sky-950/10 border border-sky-900/30 rounded-xl space-y-2">
-                                    <h4 class="text-sm font-bold text-sky-300">Rewrite Priorities</h4>
-                                    <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-                                        @foreach($selectedAnalysisDetail['rewrite_priorities'] as $priority)
-                                            <li class="flex gap-2"><span class="text-sky-400">•</span><span>{{ $priority }}</span></li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-                        </div>
+                             @if(!empty($selectedAnalysisDetail['rewrite_priorities']) && is_array($selectedAnalysisDetail['rewrite_priorities']))
+                                 <div class="p-4 bg-sky-950/10 border border-sky-900/30 rounded-xl space-y-2">
+                                     <h4 class="text-sm font-bold text-sky-300">Rewrite Priorities</h4>
+                                     <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
+                                         @foreach($selectedAnalysisDetail['rewrite_priorities'] as $priority)
+                                             <li class="flex gap-2"><span class="text-sky-400">•</span><span>{{ $priority }}</span></li>
+                                         @endforeach
+                                     </ul>
+                                 </div>
+                             @endif
+                         </div>
 
-                        @if(!empty($selectedAnalysisDetail['experience_review']))
-                            <div class="space-y-3">
-                                <h4 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                                    <x-heroicon-o-document-magnifying-glass class="w-4.5 h-4.5 text-cyan-400" />
-                                    <span>Experience Evidence Review</span>
-                                </h4>
-                                <div class="space-y-2.5">
-                                    @foreach($selectedAnalysisDetail['experience_review'] as $review)
-                                        <div class="p-4 bg-[#181824]/40 border border-[#2d2d3a]/50 rounded-lg space-y-2">
-                                            <div class="text-sm font-semibold text-white">{{ $review['section'] ?? 'Experience' }}</div>
-                                            <div class="text-xs text-emerald-300">Strength: {{ $review['strength'] ?? '-' }}</div>
-                                            <div class="text-xs text-rose-300">Gap: {{ $review['gap'] ?? '-' }}</div>
-                                            <div class="text-xs text-sky-300">Rewrite Hint: {{ $review['rewrite_hint'] ?? '-' }}</div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
+                         @if(!empty($selectedAnalysisDetail['experience_review']) && is_array($selectedAnalysisDetail['experience_review']))
+                             <div class="space-y-3">
+                                 <h4 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                                     <x-heroicon-o-document-magnifying-glass class="w-4.5 h-4.5 text-cyan-400" />
+                                     <span>Experience Evidence Review</span>
+                                 </h4>
+                                 <div class="space-y-2.5">
+                                     @foreach($selectedAnalysisDetail['experience_review'] as $review)
+                                         <div class="p-4 bg-[#181824]/40 border border-[#2d2d3a]/50 rounded-lg space-y-2">
+                                             <div class="text-sm font-semibold text-white">{{ $review['section'] ?? 'Experience' }}</div>
+                                             <div class="text-xs text-emerald-300">Strength: {{ $review['strength'] ?? '-' }}</div>
+                                             <div class="text-xs text-rose-300">Gap: {{ $review['gap'] ?? '-' }}</div>
+                                             <div class="text-xs text-sky-300">Rewrite Hint: {{ $review['rewrite_hint'] ?? '-' }}</div>
+                                         </div>
+                                     @endforeach
+                                 </div>
+                             </div>
+                         @endif
 
-                        {{-- Industry/Domain Match --}}
-                        @if(!empty($selectedAnalysisDetail['industry_match']))
-                            <div class="space-y-3">
-                                <h4 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                                    <x-heroicon-o-tag class="w-4.5 h-4.5 text-cyan-400" />
-                                    <span>Industry & Skill Keyword Coverage Match</span>
-                                </h4>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    @foreach($selectedAnalysisDetail['industry_match'] as $domain => $score)
-                                        <div class="p-3.5 bg-[#181824]/40 border border-[#2d2d3a]/60 rounded-xl space-y-2">
-                                            <div class="flex justify-between items-center text-xs">
-                                                <span class="font-bold text-slate-300">{{ $domain }}</span>
-                                                <span class="font-mono text-cyan-400 font-bold">{{ $score }}%</span>
-                                            </div>
-                                            <div class="w-full bg-slate-850 rounded-full h-1.5 overflow-hidden border border-slate-700/30">
-                                                <div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-full rounded-full transition-all duration-1000" style="width: {{ $score }}%"></div>
+                         {{-- Industry/Domain Match --}}
+                         @if(!empty($selectedAnalysisDetail['industry_match']) && is_array($selectedAnalysisDetail['industry_match']))
+                             <div class="space-y-3">
+                                 <h4 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                                     <x-heroicon-o-tag class="w-4.5 h-4.5 text-cyan-400" />
+                                     <span>Industry & Skill Keyword Coverage Match</span>
+                                 </h4>
+                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                     @foreach($selectedAnalysisDetail['industry_match'] as $domain => $score)
+                                         <div class="p-3.5 bg-[#181824]/40 border border-[#2d2d3a]/60 rounded-xl space-y-2">
+                                             <div class="flex justify-between items-center text-xs">
+                                                 <span class="font-bold text-slate-300">{{ $domain }}</span>
+                                                 <span class="font-mono text-cyan-400 font-bold">{{ $score }}%</span>
+                                             </div>
+                                             <div class="w-full bg-slate-850 rounded-full h-1.5 overflow-hidden border border-slate-700/30">
+                                                 <div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-full rounded-full transition-all duration-1000" style="width: {{ $score }}%"></div>
                                             </div>
                                         </div>
                                     @endforeach

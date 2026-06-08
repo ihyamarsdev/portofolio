@@ -177,6 +177,8 @@ class CVGenerator extends Page
 
     public ?string $jobDescription = null;
 
+    public string $targetRole = 'Devops Engineer';
+
     public ?CVAnalysis $currentAnalysis = null;
 
     public $history = [];
@@ -675,7 +677,7 @@ class CVGenerator extends Page
 
             $cvContent = $this->buildCVContent($profile);
 
-            $agent = new ComprehensiveCVAnalysisAgent($cvContent, $this->jobDescription);
+            $agent = new ComprehensiveCVAnalysisAgent($cvContent, $this->jobDescription, $this->targetRole);
             $result = $this->analyzeWithLaravelAi($agent);
 
             if ($result === [] || ($result['error'] ?? false) === true) {
@@ -739,8 +741,10 @@ class CVGenerator extends Page
                 ->success()
                 ->send();
 
-            // Auto switch to overview/dashboard tab to see new scores
-            $this->activeTab = 'overview';
+            // Auto switch to overview/dashboard tab to see new scores unless we are on aimatch
+            if ($this->activeTab !== 'aimatch') {
+                $this->activeTab = 'overview';
+            }
 
         } catch (Throwable $e) {
             $this->notifyAnalysisFailure($e);
