@@ -713,7 +713,83 @@
 
                     {{-- Output panel --}}
                     <div class="lg:col-span-2">
-                        @if($analysisResult)
+                        @if($isAnalyzing)
+                            {{-- Cyberpunk Terminal Loader for AI Analysis --}}
+                            <div class="glass-card p-6 space-y-4 font-mono text-xs text-slate-300 border border-cyan-500/30 shadow-lg shadow-cyan-500/5"
+                                 x-data="{
+                                     logs: [],
+                                     allLogs: [
+                                         { type: 'info', text: 'Initializing AI Engine connection...' },
+                                         { type: 'info', text: 'Retrieving primary candidate profile...' },
+                                         { type: 'info', text: 'Fetching and compiling work experiences...' },
+                                         { type: 'info', text: 'Fetching and compiling skills & technologies...' },
+                                         { type: 'info', text: 'Target role selected: {{ $targetRole }}' },
+                                         @if($jobDescription)
+                                         { type: 'info', text: 'Analyzing custom job description requirements ({{ strlen($jobDescription) }} bytes)...' },
+                                         @endif
+                                         { type: 'info', text: 'Analyzing resume text matching against reference concepts...' },
+                                         { type: 'warning', text: 'Sending prompt payloads to AI model gateway ({{ config(\'cv.provider\', \'cv\') }}/{{ config(\'cv.model\', \'default-model\') }})...' },
+                                         { type: 'warning', text: 'Waiting for structured response format...' },
+                                         { type: 'info', text: 'Processing ATS readability & format metrics...' },
+                                         { type: 'info', text: 'Evaluating SRE reliability, cloud, and security criteria...' },
+                                         { type: 'info', text: 'Analyzing keyword matches, suggestions, and gaps...' },
+                                         { type: 'info', text: 'Saving final analysis results to database...' },
+                                         { type: 'success', text: 'Analysis finished! Loading workspace insights...' }
+                                     ],
+                                     currentIndex: 0,
+                                     timer: null,
+                                     init() {
+                                         this.logs = [];
+                                         this.currentIndex = 0;
+                                         this.timer = setInterval(() => {
+                                             if (this.currentIndex < this.allLogs.length) {
+                                                 let log = this.allLogs[this.currentIndex];
+                                                 let time = new Date().toLocaleTimeString();
+                                                 this.logs.push(`[${time}] [${log.type.toUpperCase()}] ${log.text}`);
+                                                 this.currentIndex++;
+                                                 
+                                                 // Auto scroll to bottom
+                                                 this.$nextTick(() => {
+                                                     let consoleDiv = this.$refs.console;
+                                                     if (consoleDiv) {
+                                                         consoleDiv.scrollTop = consoleDiv.scrollHeight;
+                                                     }
+                                                 });
+                                             } else {
+                                                 clearInterval(this.timer);
+                                             }
+                                         }, 450);
+                                     },
+                                     destroy() {
+                                         if (this.timer) clearInterval(this.timer);
+                                     }
+                                 }">
+                                <div class="flex items-center justify-between border-b border-[#2d2d3a] pb-3 mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                                        <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                                        <span class="text-slate-400 font-bold ml-2">AI Analysis Live Console</span>
+                                    </div>
+                                    <span class="text-cyan-400 animate-pulse text-[10px] tracking-wider uppercase font-bold">Processing...</span>
+                                </div>
+                                <div x-ref="console" class="bg-[#0c0c14] border border-[#2d2d3a] rounded-lg p-4 h-80 overflow-y-auto space-y-2 scrollbar-thin select-none">
+                                    <template x-for="log in logs">
+                                        <div class="leading-relaxed whitespace-pre-wrap font-mono"
+                                             :class="{
+                                                 'text-cyan-400': log.includes('[INFO]'),
+                                                 'text-amber-400 font-semibold': log.includes('[WARNING]'),
+                                                 'text-emerald-400 font-bold': log.includes('[SUCCESS]')
+                                             }"
+                                             x-text="log">
+                                        </div>
+                                    </template>
+                                    <div class="inline-flex items-center gap-1 text-cyan-400 font-bold animate-pulse">
+                                        <span>&gt;_</span>
+                                    </div>
+                                </div>
+                            </div>
+                        @elseif($analysisResult)
                             <div class="glass-card p-6 space-y-6">
                                 <div class="flex items-center justify-between border-b border-[#2d2d3a] pb-4">
                                     <h3 class="text-lg font-bold text-white flex items-center gap-2">
