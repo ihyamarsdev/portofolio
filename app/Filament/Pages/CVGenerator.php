@@ -759,6 +759,8 @@ class CVGenerator extends Page
     #[On('trigger-analysis')]
     public function runAnalysis(): void
     {
+        @set_time_limit(150);
+
         try {
             $profile = Profile::where('is_primary', true)->first() ?? Profile::first();
 
