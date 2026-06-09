@@ -388,7 +388,21 @@
                 @if($experiences && count(is_countable($experiences) ? $experiences : []) > 0)
                     <div class="space-y-4 relative before:absolute before:left-6 before:top-4 before:bottom-4 before:w-[2px] before:bg-[#2d2d3a]">
                         @foreach($experiences as $exp)
-                            <div class="glass-card p-5 relative pl-14 hover:border-cyan-500/30 transition-all group">
+                            <div class="glass-card p-5 relative pl-14 hover:border-cyan-500/30 transition-all group transition-all duration-200"
+                                 draggable="true"
+                                 x-data="{ dragging: false }"
+                                 x-on:dragstart="dragging = true; event.dataTransfer.setData('text/plain', {{ $exp->id }})"
+                                 x-on:dragend="dragging = false"
+                                 x-on:dragover.prevent
+                                 x-on:drop="
+                                     dragging = false;
+                                     const dragId = event.dataTransfer.getData('text/plain');
+                                     const dropId = {{ $exp->id }};
+                                     if (dragId && dragId != dropId) {
+                                         $wire.reorderExperiences(dragId, dropId);
+                                     }
+                                 "
+                                 :class="{ 'opacity-40 border-dashed border-cyan-500/50 bg-cyan-950/10 shadow-inner scale-[0.98]': dragging }">
                                 <div class="absolute left-[18px] top-6 w-3 h-3 rounded-full bg-[#2d2d3a] border border-[#12121a] group-hover:bg-cyan-400 group-hover:shadow-[0_0_8px_#06b6d4] transition-all"></div>
                                 
                                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-[#2d2d3a]/50 pb-3 mb-3">
@@ -401,6 +415,9 @@
                                             {{ $exp->start_date->format('M Y') }} - {{ $exp->end_date ? $exp->end_date->format('M Y') : 'Present' }}
                                         </span>
                                         <div class="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div class="p-1.5 text-slate-500 cursor-grab active:cursor-grabbing hover:text-cyan-400" title="Drag to reorder">
+                                                <x-heroicon-o-bars-3 class="w-4 h-4" />
+                                            </div>
                                             <button wire:click="openExperienceModal({{ $exp->id }})" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded hover:text-white" title="Edit">
                                                 <x-heroicon-o-pencil-square class="w-4 h-4" />
                                             </button>
@@ -1062,12 +1079,6 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4 border-t border-[#2d2d3a]/50 pt-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase">Display Order</label>
-                            <input type="number" wire:model.defer="exp_order" class="cyber-input w-full font-mono text-xs" />
-                        </div>
-                    </div>
                 </div>
 
                 <div class="px-6 py-4 border-t border-[#2d2d3a] bg-[#181824]/50 flex justify-end gap-3">

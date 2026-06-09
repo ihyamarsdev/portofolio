@@ -115,7 +115,7 @@ PROMPT;
         $instructions .= "\n\n".$keywordReference;
 
         if ($this->targetRole) {
-            $instructions .= "\nTARGET ROLE FOR EVALUATION: " . $this->targetRole . ". Evaluate the CV specifically against the requirements, core concepts, tooling, and standards of a " . $this->targetRole . ". Adjust all scoring, keyword checks, suggestions, and gaps accordingly.";
+            $instructions .= "\nTARGET ROLE FOR EVALUATION: ".$this->targetRole.'. Evaluate the CV specifically against the requirements, core concepts, tooling, and standards of a '.$this->targetRole.'. Adjust all scoring, keyword checks, suggestions, and gaps accordingly.';
         }
 
         if ($this->jobDescription) {

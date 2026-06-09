@@ -21,6 +21,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Ai\Responses\StructuredAgentResponse;
+use Livewire\Attributes\Url;
 use Livewire\WithFileUploads;
 use Throwable;
 
@@ -49,6 +50,7 @@ class CVGenerator extends Page
     protected string $view = 'filament.pages.cv-generator';
 
     // Navigation and Tab state
+    #[Url(as: 'tab')]
     public string $activeTab = 'overview'; // Options: overview, profile, experience, education, skills, certificates, aimatch, preview
 
     // Profile Settings state
@@ -257,7 +259,7 @@ class CVGenerator extends Page
         }
 
         // Load Experience, Education, Skills, Categories, Certificates
-        $this->experiences = Experience::orderBy('start_date', 'desc')->orderBy('order', 'asc')->get();
+        $this->experiences = Experience::orderBy('order', 'asc')->orderBy('start_date', 'desc')->get();
         $this->educations = Education::orderBy('start_date', 'desc')->orderBy('order', 'asc')->get();
         $this->skills = Skill::with('category')->get();
         $this->categories = Category::all();
@@ -369,6 +371,10 @@ class CVGenerator extends Page
             'exp_end_date' => 'nullable|date|after_or_equal:exp_start_date',
         ]);
 
+        $order = $this->editingExperienceId
+            ? (Experience::find($this->editingExperienceId)->order ?? 0)
+            : (Experience::max('order') ?? 0) + 1;
+
         $exp = Experience::updateOrCreate(
             ['id' => $this->editingExperienceId],
             [
@@ -380,7 +386,7 @@ class CVGenerator extends Page
                 'end_date' => $this->exp_end_date ? Carbon::parse($this->exp_end_date) : null,
                 'description' => $this->exp_description,
                 'achievements' => $this->exp_achievements,
-                'order' => $this->exp_order,
+                'order' => $order,
             ]
         );
 
@@ -407,6 +413,33 @@ class CVGenerator extends Page
             ->send();
 
         $this->loadAllData();
+    }
+
+    public function reorderExperiences(int $dragId, int $dropId): void
+    {
+        $orderedIds = Experience::orderBy('order', 'asc')->orderBy('start_date', 'desc')->pluck('id')->toArray();
+
+        $dragIndex = array_search($dragId, $orderedIds);
+        $dropIndex = array_search($dropId, $orderedIds);
+
+        if ($dragIndex !== false && $dropIndex !== false && $dragIndex !== $dropIndex) {
+            // Remove the dragged ID
+            array_splice($orderedIds, $dragIndex, 1);
+            // Insert it at the drop ID position
+            array_splice($orderedIds, $dropIndex, 0, $dragId);
+
+            // Save new orders
+            foreach ($orderedIds as $index => $id) {
+                Experience::where('id', $id)->update(['order' => $index + 1]);
+            }
+
+            $this->loadAllData();
+
+            Notification::make()
+                ->title('Order Updated')
+                ->success()
+                ->send();
+        }
     }
 
     // ==========================================

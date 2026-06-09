@@ -262,7 +262,7 @@ class CVGeneratorService
 
     protected function getExperiences(): Collection
     {
-        return Experience::orderBy('start_date', 'desc')->get();
+        return Experience::orderBy('order', 'asc')->orderBy('start_date', 'desc')->get();
     }
 
     protected function getEducations(): Collection
