@@ -45,38 +45,36 @@
                      clearInterval(this.timer);
                  }
              }, 450);
-         }
-     }"
-     x-init="
-         // Initialize with welcome message
-         let initTime = new Date().toLocaleTimeString();
-         logs.push(`[${initTime}] [INFO] Console initialized.`);
-         logs.push(`[${initTime}] [INFO] Select a target role and click 'Run AI Analysis Match' to start...`);
+         },
+         init() {
+             let initTime = new Date().toLocaleTimeString();
+             this.logs.push(`[${initTime}] [INFO] Console initialized.`);
+             this.logs.push(`[${initTime}] [INFO] Select a target role and click 'Run AI Analysis Match' to start...`);
 
-         $watch('isAnalyzing', value => {
-             if (value) {
-                 runLogs();
-             } else {
-                 clearInterval(timer);
-                 setTimeout(() => {
-                     let result = $wire.analysisResult;
-                     let time = new Date().toLocaleTimeString();
-                     if (result) {
-                         logs.push(`[${time}] [INFO] Response received from AI model gateway.`);
-                         logs.push(`[${time}] [INFO] Parsed structured JSON schema successfully.`);
-                         logs.push(`[${time}] [INFO] Scores computed - ATS: ${result.ats_score}% | Format: ${result.format_score}% | Job Match: ${result.job_match_score ?? 0}%.`);
-                         logs.push(`[${time}] [INFO] Saving analysis record to Database.`);
-                         logs.push(`[${time}] [SUCCESS] Analysis completed successfully!`);
-                     } else {
-                         // Check if we already have an active log run (meaning it was not just loaded on mount)
-                         if (logs.length > 2) {
-                             logs.push(`[${time}] [ERROR] AI analysis failed or returned an empty response.`);
+             this.$watch('isAnalyzing', value => {
+                 if (value) {
+                     this.runLogs();
+                 } else {
+                     clearInterval(this.timer);
+                     setTimeout(() => {
+                         let result = this.$wire.analysisResult;
+                         let time = new Date().toLocaleTimeString();
+                         if (result) {
+                             this.logs.push(`[${time}] [INFO] Response received from AI model gateway.`);
+                             this.logs.push(`[${time}] [INFO] Parsed structured JSON schema successfully.`);
+                             this.logs.push(`[${time}] [INFO] Scores computed - ATS: ${result.ats_score}% | Format: ${result.format_score}% | Job Match: ${result.job_match_score ?? 0}%.`);
+                             this.logs.push(`[${time}] [INFO] Saving analysis record to Database.`);
+                             this.logs.push(`[${time}] [SUCCESS] Analysis completed successfully!`);
+                         } else {
+                             if (this.logs.length > 2) {
+                                 this.logs.push(`[${time}] [ERROR] AI analysis failed or returned an empty response.`);
+                             }
                          }
-                     }
-                     scrollConsole();
-                 }, 150);
-             }
-         });
+                         this.scrollConsole();
+                     }, 150);
+                 }
+             });
+         }
      }">
     <div class="flex items-center justify-between border-b border-[#2d2d3a] pb-3 mb-2">
         <div class="flex items-center gap-2">
