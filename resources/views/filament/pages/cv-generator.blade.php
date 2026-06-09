@@ -716,6 +716,7 @@
                         {{-- Cyberpunk Terminal Loader for AI Analysis --}}
                         <div class="glass-card p-6 space-y-4 font-mono text-xs text-slate-300 border border-cyan-500/30 shadow-lg shadow-cyan-500/5 mb-6"
                              x-data="{
+                                 isAnalyzing: $wire.entangle('isAnalyzing'),
                                  logs: [],
                                  allLogs: [
                                      { type: 'info', text: 'Initializing AI Engine connection...' },
@@ -757,29 +758,29 @@
                                      }, 450);
                                  }
                              }"
-                             x-show="$wire.isAnalyzing || ($wire.analysisResult && logs.length > 0)"
+                             x-show="isAnalyzing || ($wire.analysisResult && logs.length > 0)"
                              x-init="
-                                 if ($wire.isAnalyzing) {
+                                 if (isAnalyzing) {
                                      runLogs();
                                  }
-                                 this.$watch('$wire.isAnalyzing', isAnalyzing => {
-                                     if (isAnalyzing) {
+                                 $watch('isAnalyzing', value => {
+                                     if (value) {
                                          runLogs();
                                      } else {
-                                         clearInterval(this.timer);
+                                         clearInterval(timer);
                                          setTimeout(() => {
                                              let result = $wire.analysisResult;
                                              let time = new Date().toLocaleTimeString();
                                              if (result) {
-                                                 this.logs.push(`[${time}] [INFO] Response received from AI model gateway.`);
-                                                 this.logs.push(`[${time}] [INFO] Parsed structured JSON schema successfully.`);
-                                                 this.logs.push(`[${time}] [INFO] Scores computed - ATS: ${result.ats_score}% | Format: ${result.format_score}% | Job Match: ${result.job_match_score ?? 0}%.`);
-                                                 this.logs.push(`[${time}] [INFO] Saving analysis record to Database.`);
-                                                 this.logs.push(`[${time}] [SUCCESS] Analysis completed successfully!`);
+                                                 logs.push(`[${time}] [INFO] Response received from AI model gateway.`);
+                                                 logs.push(`[${time}] [INFO] Parsed structured JSON schema successfully.`);
+                                                 logs.push(`[${time}] [INFO] Scores computed - ATS: ${result.ats_score}% | Format: ${result.format_score}% | Job Match: ${result.job_match_score ?? 0}%.`);
+                                                 logs.push(`[${time}] [INFO] Saving analysis record to Database.`);
+                                                 logs.push(`[${time}] [SUCCESS] Analysis completed successfully!`);
                                              } else {
-                                                 this.logs.push(`[${time}] [ERROR] AI analysis failed or returned an empty response.`);
+                                                 logs.push(`[${time}] [ERROR] AI analysis failed or returned an empty response.`);
                                              }
-                                             this.scrollConsole();
+                                             scrollConsole();
                                          }, 150);
                                      }
                                  });
@@ -791,8 +792,8 @@
                                     <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
                                     <span class="text-slate-400 font-bold ml-2">AI Analysis Live Console</span>
                                 </div>
-                                <span class="text-cyan-400 animate-pulse text-[10px] tracking-wider uppercase font-bold" x-show="$wire.isAnalyzing">Processing...</span>
-                                <span class="text-emerald-400 text-[10px] tracking-wider uppercase font-bold" x-show="!$wire.isAnalyzing">Ready</span>
+                                <span class="text-cyan-400 animate-pulse text-[10px] tracking-wider uppercase font-bold" x-show="isAnalyzing">Processing...</span>
+                                <span class="text-emerald-400 text-[10px] tracking-wider uppercase font-bold" x-show="!isAnalyzing">Ready</span>
                             </div>
                             <div x-ref="console" class="bg-[#0c0c14] border border-[#2d2d3a] rounded-lg p-4 h-64 overflow-y-auto space-y-2 scrollbar-thin select-none">
                                 <template x-for="log in logs">
@@ -806,7 +807,7 @@
                                          x-text="log">
                                     </div>
                                 </template>
-                                <div class="inline-flex items-center gap-1 text-cyan-400 font-bold animate-pulse" x-show="$wire.isAnalyzing">
+                                <div class="inline-flex items-center gap-1 text-cyan-400 font-bold animate-pulse" x-show="isAnalyzing">
                                     <span>&gt;_</span>
                                 </div>
                             </div>
