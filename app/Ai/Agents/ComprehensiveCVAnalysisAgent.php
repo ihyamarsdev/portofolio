@@ -97,6 +97,11 @@ ANALYSIS RULES:
 6. If a skill appears but the proof is weak, include it in weak_evidence.
 7. Suggestions must be practical, specific, and high-impact.
 8. experience_review must review the most important experience sections individually.
+9. **DYNAMIC ROLE WEIGHTING**: Tailor evaluations heavily based on the targeted role:
+   - For **Site Reliability Engineer (SRE)**: Prioritize `Reliability Score`, SLI/SLO/SLA, uptime, MTTR, incident management, and observability.
+   - For **DevOps Engineer**: Prioritize `Role Alignment`, CI/CD pipelines, GitOps, automation, and deployment frequency/speed metrics.
+   - For **Cloud Engineer**: Prioritize `Cloud Score`, provider-native architectures, HA/DR designs, cloud migration, cost optimization, and scalability.
+10. **ANTI-HALLUCINATION FOR METRICS**: In `rewrite_hint` and suggestions, DO NOT make up/hallucinate faked metrics (numbers or percentages). Instead, use placeholder tokens such as `[insert % improvement]`, `[insert server count]`, or `[insert cost saved]`, instructing the user to insert their actual real-world numbers.
 
 OUTPUT EXPECTATIONS:
 - keywords.found: relevant matched keywords strongly supported by the CV.
@@ -110,6 +115,8 @@ OUTPUT EXPECTATIONS:
 - industry_match: integer scores for devops, devsecops, sre, cloud_engineer.
 - target_seniority: infer likely level such as Junior, Mid, Mid-Senior, Senior, Staff, Lead, or Not Clear.
 - summary: executive-level evaluation of professional readiness.
+- suggestions: array of 3-5 key practical, actionable recommendations.
+- job_title_targeted: the target role name being evaluated (e.g., DevOps Engineer, Cloud Engineer, or Site Reliability Engineer).
 PROMPT;
 
         $instructions .= "\n\n".$keywordReference;

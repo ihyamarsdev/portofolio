@@ -709,12 +709,12 @@
                                 Run AI Analysis Match
                             </x-filament::button>
                         </div>
+
+                        <x-cv-analysis-console :targetRole="$targetRole" :jobDescription="$jobDescription" />
                     </div>
 
                     {{-- Output panel --}}
                     <div class="lg:col-span-2">
-                        <x-cv-analysis-console :targetRole="$targetRole" :jobDescription="$jobDescription" />
-
                         @if(!$isAnalyzing && $analysisResult)
                             <div class="glass-card p-6 space-y-6">
                                 <div class="flex items-center justify-between border-b border-[#2d2d3a] pb-4">
@@ -911,6 +911,27 @@
                                 <x-heroicon-o-sparkles class="w-12 h-12 text-slate-600 mx-auto mb-3" />
                                 <h4 class="text-md font-bold text-white">Interactive AI Insights Ready</h4>
                                 <p class="text-xs text-slate-400 max-w-sm mx-auto mt-1">Paste a job description on the left panel, and click "Run AI Analysis" to review direct scoring results, keywords audit, and action items inline.</p>
+                            </div>
+                        @else
+                            {{-- Skeleton Loader during analysis --}}
+                            <div class="glass-card p-6 space-y-6 animate-pulse">
+                                <div class="flex items-center justify-between border-b border-[#2d2d3a] pb-4">
+                                    <div class="h-6 w-48 bg-slate-800 rounded"></div>
+                                    <div class="h-6 w-24 bg-slate-800 rounded-full"></div>
+                                </div>
+                                <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
+                                    @for($i=0; $i<5; $i++)
+                                        <div class="bg-[#1e1e2d]/40 border border-[#2d2d3a]/30 p-4 rounded-xl text-center space-y-2">
+                                            <div class="h-8 w-12 bg-slate-800 rounded mx-auto"></div>
+                                            <div class="h-3 w-16 bg-slate-800 rounded mx-auto"></div>
+                                        </div>
+                                    @endfor
+                                </div>
+                                <div class="space-y-3 pt-4 border-t border-[#2d2d3a]/50">
+                                    <div class="h-4 w-1/4 bg-slate-800 rounded"></div>
+                                    <div class="h-3 w-full bg-slate-800/60 rounded"></div>
+                                    <div class="h-3 w-5/6 bg-slate-800/60 rounded"></div>
+                                </div>
                             </div>
                         @endif
                     </div>

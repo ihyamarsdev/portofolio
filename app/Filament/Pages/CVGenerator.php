@@ -21,6 +21,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Ai\Responses\StructuredAgentResponse;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\WithFileUploads;
 use Throwable;
@@ -211,7 +212,7 @@ class CVGenerator extends Page
 
         if ($profile) {
             $analysis = $profile->cvAnalyses()
-                ->where('job_title_targeted', $value)
+                ->whereRaw('LOWER(job_title_targeted) = ?', [strtolower($value)])
                 ->latest()
                 ->first();
 
@@ -280,8 +281,15 @@ class CVGenerator extends Page
             $this->history = $profile->cvAnalyses()->latest()->take(10)->get();
 
             if ($this->currentAnalysis) {
-                if ($this->currentAnalysis->job_title_targeted && in_array($this->currentAnalysis->job_title_targeted, ['Devops Engineer', 'Cloud Engineer', 'Site Reliability Engineer'])) {
-                    $this->targetRole = $this->currentAnalysis->job_title_targeted;
+                if ($this->currentAnalysis->job_title_targeted) {
+                    $normalized = strtolower($this->currentAnalysis->job_title_targeted);
+                    if (str_contains($normalized, 'devops')) {
+                        $this->targetRole = 'Devops Engineer';
+                    } elseif (str_contains($normalized, 'cloud')) {
+                        $this->targetRole = 'Cloud Engineer';
+                    } elseif (str_contains($normalized, 'reliability') || str_contains($normalized, 'sre')) {
+                        $this->targetRole = 'Site Reliability Engineer';
+                    }
                 }
 
                 $this->analysisResult = [
@@ -745,7 +753,12 @@ class CVGenerator extends Page
     public function analyze(): void
     {
         $this->isAnalyzing = true;
+        $this->dispatch('trigger-analysis');
+    }
 
+    #[On('trigger-analysis')]
+    public function runAnalysis(): void
+    {
         try {
             $profile = Profile::where('is_primary', true)->first() ?? Profile::first();
 
@@ -772,6 +785,11 @@ class CVGenerator extends Page
                 return;
             }
 
+            $targetedJobTitle = $result['job_title_targeted'] ?? null;
+            if (empty($targetedJobTitle) || trim($targetedJobTitle) === '') {
+                $targetedJobTitle = $this->targetRole;
+            }
+
             $this->analysisResult = [
                 'ats_score' => $result['ats_score'] ?? 0,
                 'format_score' => $result['format_score'] ?? 0,
@@ -791,7 +809,7 @@ class CVGenerator extends Page
                 'industry_match' => $result['industry_match'] ?? [],
                 'summary' => $result['summary'] ?? null,
                 'job_match_score' => $result['job_match_score'] ?? null,
-                'job_title_targeted' => $result['job_title_targeted'] ?? null,
+                'job_title_targeted' => $targetedJobTitle,
                 'target_seniority' => $result['target_seniority'] ?? null,
             ];
 
@@ -816,7 +834,7 @@ class CVGenerator extends Page
                 'industry_match' => $result['industry_match'] ?? [],
                 'job_match_score' => $result['job_match_score'] ?? null,
                 'summary' => $result['summary'] ?? null,
-                'job_title_targeted' => $result['job_title_targeted'] ?? null,
+                'job_title_targeted' => $targetedJobTitle,
                 'target_seniority' => $result['target_seniority'] ?? null,
             ]);
 
