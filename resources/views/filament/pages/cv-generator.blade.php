@@ -728,7 +728,7 @@
                                          { type: 'info', text: 'Analyzing custom job description requirements ({{ strlen($jobDescription) }} bytes)...' },
                                          @endif
                                          { type: 'info', text: 'Analyzing resume text matching against reference concepts...' },
-                                         { type: 'warning', text: 'Sending prompt payloads to AI model gateway ({{ config(\'cv.provider\', \'cv\') }}/{{ config(\'cv.model\', \'default-model\') }})...' },
+                                         { type: 'warning', text: 'Sending prompt payloads to AI model gateway ({{ config('cv.provider', 'cv') }}/{{ config('cv.model', 'default-model') }})...' },
                                          { type: 'warning', text: 'Waiting for structured response format...' },
                                          { type: 'info', text: 'Processing ATS readability & format metrics...' },
                                          { type: 'info', text: 'Evaluating SRE reliability, cloud, and security criteria...' },
