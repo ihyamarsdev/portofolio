@@ -205,6 +205,57 @@ class CVGenerator extends Page
         $this->activeTab = $tab;
     }
 
+    public function updatedTargetRole(string $value): void
+    {
+        $profile = Profile::where('is_primary', true)->first() ?? Profile::first();
+
+        if ($profile) {
+            $analysis = $profile->cvAnalyses()
+                ->where('job_title_targeted', $value)
+                ->latest()
+                ->first();
+
+            if ($analysis) {
+                $this->currentAnalysis = $analysis;
+                $this->analysisResult = [
+                    'ats_score' => $analysis->ats_score,
+                    'format_score' => $analysis->format_score,
+                    'about_me_score' => $analysis->about_me_score ?? 0,
+                    'impact_score' => $analysis->impact_score ?? 0,
+                    'role_alignment_score' => $analysis->role_alignment_score ?? 0,
+                    'security_score' => $analysis->security_score ?? 0,
+                    'reliability_score' => $analysis->reliability_score ?? 0,
+                    'cloud_score' => $analysis->cloud_score ?? 0,
+                    'keywords' => [
+                        'found' => $analysis->keywords_found ?? [],
+                        'missing' => $analysis->keywords_missing ?? [],
+                        'weak_evidence' => $analysis->weak_evidence ?? [],
+                    ],
+                    'suggestions' => $analysis->suggestions ?? [],
+                    'strengths' => $analysis->strengths ?? [],
+                    'critical_gaps' => $analysis->critical_gaps ?? [],
+                    'missing_metrics' => $analysis->missing_metrics ?? [],
+                    'rewrite_priorities' => $analysis->rewrite_priorities ?? [],
+                    'experience_review' => $analysis->experience_review ?? [],
+                    'industry_match' => $analysis->industry_match ?? [],
+                    'summary' => $analysis->summary,
+                    'job_match_score' => $analysis->job_match_score,
+                    'job_title_targeted' => $analysis->job_title_targeted,
+                    'target_seniority' => $analysis->target_seniority,
+                ];
+                if ($analysis->summary) {
+                    $this->jobDescription = 'Target Role: '.($analysis->job_title_targeted ?? 'Unknown')."\nSummary: ".$analysis->summary;
+                } else {
+                    $this->jobDescription = '';
+                }
+            } else {
+                $this->currentAnalysis = null;
+                $this->analysisResult = null;
+                $this->jobDescription = '';
+            }
+        }
+    }
+
     public function loadAllData(): void
     {
         $profile = Profile::where('is_primary', true)->first() ?? Profile::first();
@@ -229,6 +280,10 @@ class CVGenerator extends Page
             $this->history = $profile->cvAnalyses()->latest()->take(10)->get();
 
             if ($this->currentAnalysis) {
+                if ($this->currentAnalysis->job_title_targeted && in_array($this->currentAnalysis->job_title_targeted, ['Devops Engineer', 'Cloud Engineer', 'Site Reliability Engineer'])) {
+                    $this->targetRole = $this->currentAnalysis->job_title_targeted;
+                }
+
                 $this->analysisResult = [
                     'ats_score' => $this->currentAnalysis->ats_score,
                     'format_score' => $this->currentAnalysis->format_score,

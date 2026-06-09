@@ -692,7 +692,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-slate-300 mb-1.5">Target Role</label>
-                                <select wire:model="targetRole" class="cyber-input w-full text-xs font-semibold bg-[#12121a] text-slate-200 border border-[#2d2d3a] rounded-lg p-2.5 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/20">
+                                <select wire:model.live="targetRole" class="cyber-input w-full text-xs font-semibold bg-[#12121a] text-slate-200 border border-[#2d2d3a] rounded-lg p-2.5 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/20">
                                     <option value="Devops Engineer">DevOps Engineer</option>
                                     <option value="Cloud Engineer">Cloud Engineer</option>
                                     <option value="Site Reliability Engineer">Site Reliability Engineer</option>
