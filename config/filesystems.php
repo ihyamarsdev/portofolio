@@ -38,7 +38,18 @@ return [
             'report' => false,
         ],
 
-        'public' => [
+        'public' => env('FILESYSTEM_DISK') === 'rustfs' ? [
+            'driver' => 's3',
+            'key' => env('RUSTFS_ACCESS_KEY_ID'),
+            'secret' => env('RUSTFS_SECRET_ACCESS_KEY'),
+            'region' => env('RUSTFS_REGION', 'us-east-1'),
+            'bucket' => env('RUSTFS_BUCKET'),
+            'url' => env('RUSTFS_URL'),
+            'endpoint' => env('RUSTFS_ENDPOINT'),
+            'use_path_style_endpoint' => env('RUSTFS_USE_PATH_STYLE_ENDPOINT', true),
+            'throw' => false,
+            'report' => false,
+        ] : [
             'driver' => 'local',
             'root' => storage_path('app/public'),
             'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
@@ -56,6 +67,19 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => false,
+            'report' => false,
+        ],
+
+        'rustfs' => [
+            'driver' => 's3',
+            'key' => env('RUSTFS_ACCESS_KEY_ID'),
+            'secret' => env('RUSTFS_SECRET_ACCESS_KEY'),
+            'region' => env('RUSTFS_REGION', 'us-east-1'),
+            'bucket' => env('RUSTFS_BUCKET'),
+            'url' => env('RUSTFS_URL'),
+            'endpoint' => env('RUSTFS_ENDPOINT'),
+            'use_path_style_endpoint' => env('RUSTFS_USE_PATH_STYLE_ENDPOINT', true),
             'throw' => false,
             'report' => false,
         ],
