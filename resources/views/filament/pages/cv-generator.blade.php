@@ -326,7 +326,8 @@
                                 @if($profile_avatar)
                                     <img src="{{ $profile_avatar->temporaryUrl() }}" class="w-32 h-32 rounded-full object-cover border-2 border-cyan-500/50 shadow-lg glow-cyan shadow-cyan-500/20" />
                                 @elseif($profile_avatar_path)
-                                    <img src="/storage/{{ $profile_avatar_path }}" class="w-32 h-32 rounded-full object-cover border-2 border-cyan-500/30" />
+                                    <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($profile_avatar_path) }}" class="w-32 h-32 rounded-full object-cover border-2 border-cyan-500/30" />
+
                                 @else
                                     <div class="w-32 h-32 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center text-slate-500">
                                         <x-heroicon-o-user class="w-16 h-16" />
