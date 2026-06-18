@@ -1,0 +1,11 @@
+--- a/vendor/livewire/livewire/src/Features/SupportFileUploads/TemporaryUploadedFile.php
++++ b/vendor/livewire/livewire/src/Features/SupportFileUploads/TemporaryUploadedFile.php
+@@ -149,7 +149,7 @@
+             'jpg', 'jpeg', 'mpga', 'webp', 'wma',
+         ]);
+ 
+-        return in_array($this->guessExtension(),  $supportedPreviewTypes);
++        return in_array($this->guessExtension(),  $supportedPreviewTypes) || in_array($this->getClientOriginalExtension(), $supportedPreviewTypes);
+     }
+ 
+     public function readStream()
