@@ -3,7 +3,7 @@
               $category_class, $category_title_class, $skill_item_class
  --}}
 @php
-    $groupedSkills = $skills->groupBy(fn($skill) => $skill->category?->name ?? 'General');
+    $groupedSkills = $skills->groupBy(fn($skill) => $skill->category_name ?? $skill->category?->name ?? (is_string($skill->category ?? null) ? $skill->category : 'General'));
 @endphp
 <div class="{{ $section_class ?? 'section' }}">
     <h2 class="{{ $heading_class ?? '' }}">Skills</h2>

@@ -537,7 +537,7 @@
                     </div>
                     <div class="skills-grid">
                         @php
-                            $groupedSkills = $skills->groupBy(fn($skill) => $skill->category?->name ?? 'General');
+                            $groupedSkills = $skills->groupBy(fn($skill) => $skill->category_name ?? $skill->category?->name ?? (is_string($skill->category ?? null) ? $skill->category : 'General'));
                         @endphp
                         @foreach($groupedSkills as $categoryName => $categorySkills)
                             <div class="skill-category">

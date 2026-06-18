@@ -5,22 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreInboxRequest;
 use App\Mail\ContactMessageReceived;
 use App\Models\Inbox;
-use Illuminate\Support\Facades\Mail;
+use App\Models\User;
+use App\Notifications\InboxMessageNotification;
+use Illuminate\Support\Facades\Notification;
 
 class ContactController extends Controller
 {
     public function store(StoreInboxRequest $request)
     {
-        $validated = $request->validated();
+        $inbox = Inbox::create($request->validated());
 
-        $inbox = Inbox::create($validated);
-
-        try {
-            Mail::to('ihyamars@gmail.com')->send(new ContactMessageReceived($inbox));
-        } catch (\Throwable $exception) {
-            // Log the error but don't crash the user request if mail sending fails
-            report($exception);
-        }
+        // Dispatch queued email notification to admin
+        Notification::route('mail', config('mail.admin_address'))
+            ->notify(new InboxMessageNotification($inbox));
 
         return back()->with('success', 'Thank you for your message! I\'ll get back to you soon.');
     }

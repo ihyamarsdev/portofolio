@@ -277,18 +277,39 @@ class CVGeneratorService
 
     protected function getSkills(): Collection
     {
-        return Skill::all();
+        return Skill::with('category')->get();
     }
 
     protected function normalizeSkills(Collection|array $skills): Collection
     {
         return collect($skills)->map(function ($skill) {
-            if (is_object($skill) && method_exists($skill, 'category') && ! is_string($skill->category)) {
-                $skill->setAttribute('category', $skill->category?->name ?? 'Other');
+            if (is_object($skill)) {
+                $skill->setAttribute('category_name', $this->resolveSkillCategoryName($skill));
             }
 
             return $skill;
         });
+    }
+
+    protected function resolveSkillCategoryName($skill): string
+    {
+        if (is_object($skill) && isset($skill->category_name) && is_string($skill->category_name) && $skill->category_name !== '') {
+            return $skill->category_name;
+        }
+
+        if (is_object($skill) && method_exists($skill, 'relationLoaded') && method_exists($skill, 'category')) {
+            $category = $skill->relationLoaded('category') ? $skill->getRelation('category') : $skill->category;
+
+            if (is_object($category) && isset($category->name) && is_string($category->name) && $category->name !== '') {
+                return $category->name;
+            }
+        }
+
+        if (is_object($skill) && isset($skill->category) && is_string($skill->category) && $skill->category !== '') {
+            return $skill->category;
+        }
+
+        return 'General';
     }
 
     protected function addHeaderToDocx($section, Profile $profile)
