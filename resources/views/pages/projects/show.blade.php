@@ -74,20 +74,13 @@
                 @endif
 
                 <!-- Architecture Diagram -->
-                @if($project->getFirstMediaUrl('diagrams') || $project->architecture_diagram)
+                @if($project->architecture_diagram)
                     <div class="glass-card p-6">
                         <h2 class="text-xl font-semibold text-[--color-text-primary] mb-4">Architecture Diagram</h2>
                         <div class="bg-white rounded-lg p-4 overflow-x-auto">
-                            @if($project->getFirstMediaUrl('diagrams'))
-                                {{-- Display pre-rendered SVG --}}
-                                <img src="{{ $project->getFirstMediaUrl('diagrams') }}"
-                                    alt="Architecture Diagram for {{ $project->title }}" class="max-w-full h-auto mx-auto">
-                            @elseif($project->architecture_diagram)
-                                {{-- Fallback to Mermaid.js rendering --}}
-                                <div class="mermaid">
-                                    {{ $project->architecture_diagram }}
-                                </div>
-                            @endif
+                            <div class="mermaid">
+                                {{ $project->architecture_diagram }}
+                            </div>
                         </div>
                     </div>
                 @endif
@@ -95,7 +88,7 @@
         </div>
     </section>
 
-    @if($project->architecture_diagram && !$project->getFirstMediaUrl('diagrams'))
+    @if($project->architecture_diagram)
         @push('scripts')
             <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
             <script>

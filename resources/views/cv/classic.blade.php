@@ -10,6 +10,12 @@
     <style>
         @page {
             size: A4;
+            margin-top: 2.2cm;
+            margin-bottom: 2cm;
+            margin-left: 0;
+            margin-right: 0;
+        }
+        @page :first {
             margin: 0;
         }
 
@@ -144,7 +150,6 @@
         /* Section */
         .section {
             margin-bottom: 28px;
-            page-break-inside: avoid;
         }
 
         .section-header {
@@ -181,17 +186,19 @@
             margin: 0 auto;
         }
 
-        /* Experience */
         .experience-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            display: block;
         }
 
         .experience-item {
             page-break-inside: avoid;
             position: relative;
             padding-left: 24px;
+            margin-bottom: 20px;
+        }
+
+        .experience-item:last-child {
+            margin-bottom: 0;
         }
 
         .experience-item::before {
@@ -259,16 +266,18 @@
             color: var(--accent);
         }
 
-        /* Education */
         .education-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            display: block;
         }
 
         .education-item {
             page-break-inside: avoid;
             text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .education-item:last-child {
+            margin-bottom: 0;
         }
 
         .degree {
@@ -359,6 +368,11 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
+            .page {
+                display: block !important;
+                min-height: auto !important;
+                height: auto !important;
+            }
         }
     </style>
 </head>
@@ -441,6 +455,11 @@
                             </article>
                         @endforeach
                     </div>
+                    @if(isset($totalExperiences) && $totalExperiences > 3)
+                        <div class="cv-note" style="font-size: 8.5pt; color: var(--text-muted); font-style: italic; margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 12px; text-align: center;">
+                            * Note: Showing only the 3 latest experiences. View the remaining {{ $totalExperiences - 3 }} experiences on my website: <a href="{{ route('about') }}" style="color: var(--accent); text-decoration: none;">{{ str_replace(['http://', 'https://'], '', route('about')) }}</a>
+                        </div>
+                    @endif
                 </section>
             @endif
 
@@ -468,6 +487,11 @@
                             </article>
                         @endforeach
                     </div>
+                    @if(isset($totalEducations) && $totalEducations > 3)
+                        <div class="cv-note" style="font-size: 8.5pt; color: var(--text-muted); font-style: italic; margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 12px; text-align: center;">
+                            * Note: Showing only the 3 latest education histories. View the remaining {{ $totalEducations - 3 }} education histories on my website: <a href="{{ route('about') }}" style="color: var(--accent); text-decoration: none;">{{ str_replace(['http://', 'https://'], '', route('about')) }}</a>
+                        </div>
+                    @endif
                 </section>
             @endif
 

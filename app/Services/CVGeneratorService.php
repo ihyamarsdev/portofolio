@@ -210,10 +210,15 @@ class CVGeneratorService
      */
     public function buildCvData(Profile $profile, Collection|array|null $experiences = null, Collection|array|null $educations = null, Collection|array|null $skills = null): array
     {
+        $allExperiences = collect($experiences ?? $this->getExperiences());
+        $allEducations = collect($educations ?? $this->getEducations());
+
         return [
             'profile' => $profile,
-            'experiences' => collect($experiences ?? $this->getExperiences()),
-            'educations' => collect($educations ?? $this->getEducations()),
+            'experiences' => $allExperiences->take(3),
+            'totalExperiences' => $allExperiences->count(),
+            'educations' => $allEducations->take(3),
+            'totalEducations' => $allEducations->count(),
             'skills' => $this->normalizeSkills($skills ?? $this->getSkills()),
         ];
     }

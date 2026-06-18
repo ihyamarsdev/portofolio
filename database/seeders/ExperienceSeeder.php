@@ -62,6 +62,53 @@ class ExperienceSeeder extends Seeder
                 'order' => 3,
                 'skills' => ['AWS', 'Terraform', 'Docker', 'Kubernetes', 'Ansible', 'Cloudflare'],
             ],
+            [
+                'position' => 'DevOps Consultant',
+                'company' => 'CloudScale Consulting',
+                'location' => 'Jakarta, Indonesia',
+                'employment_type' => 'Contract',
+                'start_date' => '2019-09-01',
+                'end_date' => '2020-07-31',
+                'description' => 'Provided cloud migration and automation consulting services for enterprise clients in banking and fintech sectors.',
+                'achievements' => [
+                    'Designed and implemented secure CI/CD pipelines for 12 enterprise applications',
+                    'Migrated legacy on-premise infrastructure to AWS, improving reliability and scalability',
+                    'Automated server patching and compliance auditing using Ansible and AWS Systems Manager',
+                ],
+                'order' => 4,
+                'skills' => ['AWS', 'Ansible', 'Terraform', 'Docker'],
+            ],
+            [
+                'position' => 'System Administrator',
+                'company' => 'Global Solutions Ltd',
+                'location' => 'Jakarta, Indonesia',
+                'employment_type' => 'Full-time',
+                'start_date' => '2018-01-01',
+                'end_date' => '2019-08-31',
+                'description' => 'Managed Linux and Windows server environments, backup systems, network security, and user access controls.',
+                'achievements' => [
+                    'Maintained 99.9% uptime for core corporate servers and network infrastructure',
+                    'Implemented centralized logging and monitoring system using ELK stack',
+                    'Automated daily backup verification and system health checks via Bash scripting',
+                ],
+                'order' => 5,
+                'skills' => ['Docker', 'Ansible'],
+            ],
+            [
+                'position' => 'Junior Linux Engineer',
+                'company' => 'DataCenter Pratama',
+                'location' => 'Bandung, Indonesia',
+                'employment_type' => 'Full-time',
+                'start_date' => '2016-09-01',
+                'end_date' => '2017-12-31',
+                'description' => 'Assisted in managing data center hardware, installing operating systems, troubleshooting networking issues, and monitoring servers.',
+                'achievements' => [
+                    'Successfully provisioned and configured over 150 bare metal Linux servers',
+                    'Resolved system alerts and user access tickets within defined SLA targets',
+                ],
+                'order' => 6,
+                'skills' => ['Docker'],
+            ],
         ];
 
         foreach ($experiences as $expData) {

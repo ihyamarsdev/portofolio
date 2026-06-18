@@ -10,6 +10,12 @@
     <style>
         @page {
             size: A4;
+            margin-top: 2.2cm;
+            margin-bottom: 2cm;
+            margin-left: 0;
+            margin-right: 0;
+        }
+        @page :first {
             margin: 0;
         }
 
@@ -132,25 +138,26 @@
            ═══════════════════════════════════════════════ */
         .content {
             padding: 32px 40px;
-            display: grid;
-            gap: 28px;
+            display: block;
         }
 
         /* Section */
         .section {
-            page-break-inside: avoid;
+            margin-bottom: 28px;
+        }
+        .section:last-child {
+            margin-bottom: 0;
         }
 
         .section-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
             margin-bottom: 16px;
             padding-bottom: 8px;
             border-bottom: 2px solid var(--border);
         }
 
         .section-number {
+            display: inline-block;
+            vertical-align: middle;
             font-family: 'Epilogue', sans-serif;
             font-size: 8pt;
             font-weight: 700;
@@ -158,9 +165,12 @@
             background: var(--accent-light);
             padding: 4px 8px;
             letter-spacing: 1px;
+            margin-right: 12px;
         }
 
         .section-title {
+            display: inline-block;
+            vertical-align: middle;
             font-family: 'Epilogue', sans-serif;
             font-size: 10pt;
             font-weight: 700;
@@ -178,24 +188,31 @@
 
         /* Experience Grid */
         .experience-grid {
-            display: grid;
-            gap: 20px;
+            display: block;
         }
 
         .experience-item {
-            display: grid;
-            grid-template-columns: 120px 1fr;
-            gap: 16px;
+            display: block;
             padding-bottom: 16px;
+            margin-bottom: 20px;
             border-bottom: 1px solid var(--border);
             page-break-inside: avoid;
         }
 
+        .experience-item:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
         .experience-item:last-child {
             border-bottom: none;
+            margin-bottom: 0;
         }
 
         .date-column {
+            float: left;
+            width: 120px;
             font-family: 'Epilogue', sans-serif;
             font-size: 9pt;
             font-weight: 600;
@@ -215,9 +232,7 @@
         }
 
         .content-column {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+            margin-left: 136px;
         }
 
         .position {
@@ -263,21 +278,30 @@
 
         /* Education Grid */
         .education-grid {
-            display: grid;
-            gap: 16px;
+            display: block;
         }
 
         .education-item {
-            display: grid;
-            grid-template-columns: 60px 1fr;
-            gap: 16px;
+            display: block;
             padding-bottom: 12px;
+            margin-bottom: 16px;
             border-bottom: 1px solid var(--border);
             page-break-inside: avoid;
         }
 
+        .education-item:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
         .education-item:last-child {
             border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .education-item > div:last-child {
+            margin-left: 76px;
         }
 
         .year-column {
@@ -369,6 +393,11 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
+            .page {
+                display: block !important;
+                min-height: auto !important;
+                height: auto !important;
+            }
         }
     </style>
 </head>
@@ -455,6 +484,11 @@
                             </div>
                         @endforeach
                     </div>
+                    @if(isset($totalExperiences) && $totalExperiences > 3)
+                        <div class="cv-note" style="font-size: 8.5pt; color: var(--text-muted); font-style: italic; margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 12px;">
+                            * Note: Showing only the 3 latest experiences. View the remaining {{ $totalExperiences - 3 }} experiences on my website: <a href="{{ route('about') }}" style="color: var(--accent); text-decoration: none;">{{ str_replace(['http://', 'https://'], '', route('about')) }}</a>
+                        </div>
+                    @endif
                 </section>
             @endif
 
@@ -486,6 +520,11 @@
                             </div>
                         @endforeach
                     </div>
+                    @if(isset($totalEducations) && $totalEducations > 3)
+                        <div class="cv-note" style="font-size: 8.5pt; color: var(--text-muted); font-style: italic; margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 12px;">
+                            * Note: Showing only the 3 latest education histories. View the remaining {{ $totalEducations - 3 }} education histories on my website: <a href="{{ route('about') }}" style="color: var(--accent); text-decoration: none;">{{ str_replace(['http://', 'https://'], '', route('about')) }}</a>
+                        </div>
+                    @endif
                 </section>
             @endif
 

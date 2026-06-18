@@ -10,13 +10,10 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
-use Spatie\Browsershot\Browsershot;
 
 class CVController extends Controller
 {
     protected CVGeneratorService $cvService;
-
-    protected ?bool $browsershotAvailable = null;
 
     public function __construct(CVGeneratorService $cvService)
     {
@@ -37,24 +34,7 @@ class CVController extends Controller
 
         $filename = 'cv-'.str()->slug($profile->name ?? 'candidate').'.pdf';
 
-        if ($this->isBrowsershotAvailable()) {
-            try {
-                return $this->downloadWithBrowsershot(
-                    $template,
-                    $profile,
-                    $experiences,
-                    $educations,
-                    $skills,
-                    $filename
-                );
-            } catch (\Throwable $exception) {
-                Log::warning('Browsershot PDF generation failed, falling back to DomPDF.', [
-                    'error' => $exception->getMessage(),
-                ]);
-            }
-        }
-
-        return Pdf::loadView("cv.{$template}", compact('profile', 'experiences', 'educations', 'skills'))
+        return Pdf::loadView("cv.{$template}", compact('profile', 'experiences', 'educations', 'skills') + ['isPdf' => true])
             ->setPaper('a4')
             ->download($filename);
     }
@@ -115,7 +95,7 @@ class CVController extends Controller
 
         $template = $this->resolveTemplate($request, $profile);
 
-        return view("cv.{$template}", $this->cvService->buildCvData($profile));
+        return view("cv.{$template}", $this->cvService->buildCvData($profile) + ['isPdf' => false]);
     }
 
     protected function resolveTemplate(Request $request, Profile $profile): string
@@ -132,52 +112,5 @@ class CVController extends Controller
     protected function getPrimaryProfile(): ?Profile
     {
         return Profile::where('is_primary', true)->first();
-    }
-
-    protected function isBrowsershotAvailable(): bool
-    {
-        if ($this->browsershotAvailable !== null) {
-            return $this->browsershotAvailable;
-        }
-
-        return Cache::remember('browsershot_available', 300, function () {
-            try {
-                Browsershot::html('<html><body>test</body></html>')
-                    ->noSandbox()
-                    ->timeout(10)
-                    ->bodyHtml();
-
-                $this->browsershotAvailable = true;
-
-                return true;
-            } catch (\Throwable) {
-                $this->browsershotAvailable = false;
-
-                return false;
-            }
-        });
-    }
-
-    protected function downloadWithBrowsershot(
-        string $template,
-        Profile $profile,
-        $experiences,
-        $educations,
-        $skills,
-        string $filename
-    ): Response {
-        $html = View::make("cv.{$template}", compact('profile', 'experiences', 'educations', 'skills'))->render();
-
-        $pdf = Browsershot::html($html)
-            ->format('A4')
-            ->margins(0, 0, 0, 0)
-            ->noSandbox()
-            ->waitUntilNetworkIdle()
-            ->timeout(60)
-            ->pdf();
-
-        return response($pdf)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
     }
 }

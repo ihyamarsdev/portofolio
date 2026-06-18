@@ -13,6 +13,12 @@
     <style>
         @page {
             size: A4;
+            margin-top: 2.2cm;
+            margin-bottom: 2cm;
+            margin-left: 0;
+            margin-right: 0;
+        }
+        @page :first {
             margin: 0;
         }
 
@@ -123,13 +129,15 @@
            ═══════════════════════════════════════════════ */
         .content {
             padding: 0 40px 32px;
-            display: grid;
-            gap: 24px;
+            display: block;
         }
 
         /* Section */
         .section {
-            page-break-inside: avoid;
+            margin-bottom: 24px;
+        }
+        .section:last-child {
+            margin-bottom: 0;
         }
 
         .section-title {
@@ -160,20 +168,29 @@
             max-width: 480px;
         }
 
-        /* Experience */
         .experience-list {
-            display: grid;
-            gap: 16px;
+            display: block;
         }
 
         .experience-item {
             page-break-inside: avoid;
-            display: grid;
-            grid-template-columns: 80px 1fr;
-            gap: 16px;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .experience-item:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .experience-item:last-child {
+            margin-bottom: 0;
         }
 
         .date-block {
+            float: left;
+            width: 80px;
             padding-top: 2px;
         }
 
@@ -195,6 +212,7 @@
         .experience-content {
             border-left: 1px solid #e4e4e7;
             padding-left: 16px;
+            margin-left: 96px;
         }
 
         .position {
@@ -243,13 +261,16 @@
 
         /* Education */
         .education-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
+            display: block;
         }
 
         .education-item {
             page-break-inside: avoid;
+            margin-bottom: 16px;
+        }
+
+        .education-item:last-child {
+            margin-bottom: 0;
         }
 
         .degree {
@@ -276,13 +297,16 @@
 
         /* Skills */
         .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
+            display: block;
         }
 
         .skill-category {
             page-break-inside: avoid;
+            margin-bottom: 16px;
+        }
+
+        .skill-category:last-child {
+            margin-bottom: 0;
         }
 
         .category-name {
@@ -350,6 +374,11 @@
             body {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+            }
+            .page {
+                display: block !important;
+                min-height: auto !important;
+                height: auto !important;
             }
         }
     </style>
@@ -431,6 +460,11 @@
                             </article>
                         @endforeach
                     </div>
+                    @if(isset($totalExperiences) && $totalExperiences > 3)
+                        <div class="cv-note" style="font-size: 8.5pt; color: var(--text-muted); font-style: italic; margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 12px;">
+                            * Note: Showing only the 3 latest experiences. View the remaining {{ $totalExperiences - 3 }} experiences on my website: <a href="{{ route('about') }}" style="color: var(--accent); text-decoration: none;">{{ str_replace(['http://', 'https://'], '', route('about')) }}</a>
+                        </div>
+                    @endif
                 </section>
             @endif
 
@@ -448,6 +482,11 @@
                             </article>
                         @endforeach
                     </div>
+                    @if(isset($totalEducations) && $totalEducations > 3)
+                        <div class="cv-note" style="font-size: 8.5pt; color: var(--text-muted); font-style: italic; margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 12px;">
+                            * Note: Showing only the 3 latest education histories. View the remaining {{ $totalEducations - 3 }} education histories on my website: <a href="{{ route('about') }}" style="color: var(--accent); text-decoration: none;">{{ str_replace(['http://', 'https://'], '', route('about')) }}</a>
+                        </div>
+                    @endif
                 </section>
             @endif
 

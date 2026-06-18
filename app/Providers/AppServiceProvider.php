@@ -4,10 +4,10 @@ namespace App\Providers;
 
 use App\Ai\Gateway\CvOpenAiCompatibleGateway;
 use App\Models\Project;
-use App\Observers\ProjectObserver;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Ai\Ai;
 use Laravel\Ai\Providers\OpenAiProvider;
 
@@ -32,10 +32,15 @@ class AppServiceProvider extends ServiceProvider
             $app->make(Dispatcher::class),
         ));
 
-        Project::observe(ProjectObserver::class);
+        Mail::extend('mailtrap', function (array $config) {
+            return new \App\Mail\Transports\MailtrapSdkTransport(
+                $config['api_key'] ?? env('MAILTRAP_API_TOKEN', '')
+            );
+        });
 
         if (! $this->app->environment('local')) {
             URL::forceScheme('https');
         }
     }
 }
+

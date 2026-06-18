@@ -12,6 +12,12 @@
     <style>
         @page {
             size: A4;
+            margin-top: 2.2cm;
+            margin-bottom: 2cm;
+            margin-left: 0;
+            margin-right: 0;
+        }
+        @page :first {
             margin: 0;
         }
 
@@ -215,7 +221,6 @@
         /* Section Headers */
         .section {
             margin-bottom: 24px;
-            page-break-inside: avoid;
         }
 
         .section-header {
@@ -393,9 +398,10 @@
 
             .page {
                 break-after: page;
+                min-height: auto !important;
+                height: auto !important;
             }
 
-            .section,
             .item,
             .education-item,
             .skill-category {
@@ -522,6 +528,11 @@
                             @endif
                         </div>
                     @endforeach
+                    @if(isset($totalExperiences) && $totalExperiences > 3)
+                        <div class="cv-note" style="font-size: 8pt; color: #64748b; font-style: italic; margin-top: 12px; border-top: 1px dashed #cbd5e1; padding-top: 12px;">
+                            * Note: Showing only the 3 latest experiences. View the remaining {{ $totalExperiences - 3 }} experiences on my website: <a href="{{ route('about') }}" style="color: #06b6d4; text-decoration: none;">{{ str_replace(['http://', 'https://'], '', route('about')) }}</a>
+                        </div>
+                    @endif
                 </div>
             @endif
 
@@ -552,6 +563,11 @@
                             @endif
                         </div>
                     @endforeach
+                    @if(isset($totalEducations) && $totalEducations > 3)
+                        <div class="cv-note" style="font-size: 8pt; color: #64748b; font-style: italic; margin-top: 12px; border-top: 1px dashed #cbd5e1; padding-top: 12px;">
+                            * Note: Showing only the 3 latest education histories. View the remaining {{ $totalEducations - 3 }} education histories on my website: <a href="{{ route('about') }}" style="color: #06b6d4; text-decoration: none;">{{ str_replace(['http://', 'https://'], '', route('about')) }}</a>
+                        </div>
+                    @endif
                 </div>
             @endif
         </div>
