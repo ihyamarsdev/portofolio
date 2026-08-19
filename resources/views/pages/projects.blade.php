@@ -1,11 +1,11 @@
-<x-layouts.app title="Projects">
+<x-layouts.app title="{{ __('messages.projects.title') }}">
     @php($projects = \App\Models\Project::with('skills')->orderBy('order')->latest()->get())
     <section class="bg-bg-primary">
         <div class="section-container py-16 sm:py-24">
             <div class="mb-10 max-w-3xl">
-                <p class="font-mono text-xs uppercase tracking-widest text-accent-sky">Portfolio</p>
-                <h1 class="mt-2 text-4xl font-semibold tracking-[-.05em] text-text-primary sm:text-6xl">Projects built for reliability.</h1>
-                <p class="mt-5 text-base leading-8 text-text-secondary sm:text-lg">Infrastructure, automation, backend, AI, deployment, monitoring, and product engineering work.</p>
+                <p class="font-mono text-xs uppercase tracking-widest text-accent-sky">{{ __('messages.nav.projects') }}</p>
+                <h1 class="mt-2 text-4xl font-semibold tracking-[-.05em] text-text-primary sm:text-6xl">{{ __('messages.projects.title') }}</h1>
+                <p class="mt-5 text-base leading-8 text-text-secondary sm:text-lg">{{ __('messages.projects.subtitle') }}</p>
             </div>
             <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 @forelse($projects as $project)
@@ -18,20 +18,20 @@
                         @endif
                         <div class="p-5">
                             <div class="mb-3 flex flex-wrap gap-2">
-                                @if($project->is_featured)<span class="rounded-full bg-sky-500/10 px-3 py-1 text-xs font-medium text-accent-sky">Featured</span>@endif
-                                @if($project->architecture_diagram)<span class="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-500">Diagram</span>@endif
+                                @if($project->is_featured)<span class="rounded-full bg-sky-500/10 px-3 py-1 text-xs font-medium text-accent-sky">{{ __('messages.projects.featured') }}</span>@endif
+                                @if($project->architecture_diagram)<span class="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-500">{{ __('messages.projects.architecture_diagram') }}</span>@endif
                             </div>
                             <h2 class="text-xl font-semibold tracking-[-.03em] text-text-primary group-hover:text-accent-sky">{{ $project->title }}</h2>
                             <p class="mt-3 line-clamp-3 text-sm leading-6 text-text-secondary">{{ Str::limit(strip_tags($project->description), 160) }}</p>
                             <div class="relative z-20 mt-5 flex flex-wrap items-center gap-3 text-sm">
                                 <span class="font-semibold text-accent-sky">Details →</span>
-                                @if($project->repository_url)<a href="{{ $project->repository_url }}" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-text-primary">GitHub</a>@endif
-                                @if($project->live_url)<a href="{{ $project->live_url }}" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-text-primary">Live</a>@endif
+                                @if($project->repository_url)<a href="{{ $project->repository_url }}" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-text-primary">{{ __('messages.projects.view_repository') }}</a>@endif
+                                @if($project->live_url)<a href="{{ $project->live_url }}" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-text-primary">{{ __('messages.projects.live_demo') }}</a>@endif
                             </div>
                         </div>
                     </article>
                 @empty
-                    <div class="rounded-2xl bg-bg-card p-10 text-center text-text-secondary shadow-[0_0_0_1px_rgba(0,0,0,.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)] sm:col-span-2 xl:col-span-3">No projects yet.</div>
+                    <div class="rounded-2xl bg-bg-card p-10 text-center text-text-secondary shadow-[0_0_0_1px_rgba(0,0,0,.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)] sm:col-span-2 xl:col-span-3">{{ __('messages.projects.no_projects_found') }}</div>
                 @endforelse
             </div>
         </div>

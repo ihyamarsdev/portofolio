@@ -22,7 +22,7 @@ class ProjectGenerationAgent implements Agent, HasStructuredOutput
 
     public function instructions(): Stringable|string
     {
-        $techStackInstruction = $this->techStack ? "Focus on the following technologies/skills in the project: {$this->techStack}." : "";
+        $techStackInstruction = $this->techStack ? "Focus on the following technologies/skills in the project: {$this->techStack}." : '';
 
         $prompt = "You are an elite software architect and technical writer. Based on the project title '{$this->title}', you must generate high-quality project details.
         {$techStackInstruction}
@@ -40,18 +40,18 @@ class ProjectGenerationAgent implements Agent, HasStructuredOutput
             $prompt .= '
             Required JSON structure:
             {
-                "diagram": "<Mermaid flowchart syntax using ' . ($this->diagramStyle ?? 'flowchart TD') . ' style. Show main services, database, APIs, and data flow.>",
+                "diagram": "<Mermaid flowchart syntax using '.($this->diagramStyle ?? 'flowchart TD').' style. Show main services, database, APIs, and data flow.>",
                 "explanation": "<brief explanation of the diagram architecture>"
             }
             
             Based on this current project description:
-            ' . ($this->currentDescription ?? '');
+            '.($this->currentDescription ?? '');
         } else { // both
             $prompt .= '
             Required JSON structure:
             {
                 "description": "<comprehensive, highly detailed technical description of the project. Explain the architecture, components, problem solved, and key features. Use clean markdown formatting. Write at least 300-400 words.>",
-                "diagram": "<Mermaid flowchart syntax using ' . ($this->diagramStyle ?? 'flowchart TD') . ' style. Show main services, database, APIs, and data flow.>",
+                "diagram": "<Mermaid flowchart syntax using '.($this->diagramStyle ?? 'flowchart TD').' style. Show main services, database, APIs, and data flow.>",
                 "explanation": "<brief explanation of the diagram architecture>"
             }';
         }
@@ -69,6 +69,7 @@ class ProjectGenerationAgent implements Agent, HasStructuredOutput
             $fields['diagram'] = $schema->string()->required();
             $fields['explanation'] = $schema->string()->required();
         }
+
         return $fields;
     }
 }

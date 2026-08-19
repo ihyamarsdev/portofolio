@@ -71,20 +71,32 @@
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center gap-8">
                     <a href="{{ route('home') }}"
-                        class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+                        class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">{{ __('messages.nav.home') }}</a>
                     <a href="{{ route('projects') }}"
-                        class="nav-link {{ request()->routeIs('projects*') ? 'active' : '' }}">Projects</a>
+                        class="nav-link {{ request()->routeIs('projects*') ? 'active' : '' }}">{{ __('messages.nav.projects') }}</a>
                     <a href="{{ route('about') }}"
-                        class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">About</a>
+                        class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">{{ __('messages.nav.about') }}</a>
                     <a href="{{ route('certificates') }}"
-                        class="nav-link {{ request()->routeIs('certificates') ? 'active' : '' }}">Certificates</a>
+                        class="nav-link {{ request()->routeIs('certificates') ? 'active' : '' }}">{{ __('messages.nav.certificates') }}</a>
                     <a href="{{ route('blog') }}"
-                        class="nav-link {{ request()->routeIs('blog*') ? 'active' : '' }}">Blog</a>
+                        class="nav-link {{ request()->routeIs('blog*') ? 'active' : '' }}">{{ __('messages.nav.blog') }}</a>
                     <a href="{{ route('contact') }}"
-                        class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
+                        class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">{{ __('messages.nav.contact') }}</a>
                 </div>
 
                 <div class="flex items-center gap-4">
+
+                    <!-- Language Switcher -->
+                    <div class="relative flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-lg border border-[--color-border] text-xs font-semibold">
+                        <a href="{{ route('lang.switch', 'en') }}"
+                            class="px-2 py-1 rounded-md transition-all flex items-center gap-1 {{ app()->getLocale() === 'en' ? 'bg-violet-600 text-white shadow-sm font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+                            <span>🇬🇧</span> EN
+                        </a>
+                        <a href="{{ route('lang.switch', 'id') }}"
+                            class="px-2 py-1 rounded-md transition-all flex items-center gap-1 {{ app()->getLocale() === 'id' ? 'bg-violet-600 text-white shadow-sm font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+                            <span>🇮🇩</span> ID
+                        </a>
+                    </div>
 
                     <!-- Theme Toggle -->
                     <button onclick="toggleTheme()"
@@ -118,17 +130,17 @@
             <!-- Mobile Menu -->
             <div id="mobile-menu" class="hidden md:hidden py-4 space-y-2">
                 <a href="{{ route('home') }}"
-                    class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('home') ? 'active bg-[--color-bg-secondary]' : '' }}">Home</a>
+                    class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('home') ? 'active bg-[--color-bg-secondary]' : '' }}">{{ __('messages.nav.home') }}</a>
                 <a href="{{ route('projects') }}"
-                    class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('projects*') ? 'active bg-[--color-bg-secondary]' : '' }}">Projects</a>
+                    class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('projects*') ? 'active bg-[--color-bg-secondary]' : '' }}">{{ __('messages.nav.projects') }}</a>
                 <a href="{{ route('about') }}"
-                    class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('about') ? 'active bg-[--color-bg-secondary]' : '' }}">About</a>
+                    class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('about') ? 'active bg-[--color-bg-secondary]' : '' }}">{{ __('messages.nav.about') }}</a>
                 <a href="{{ route('certificates') }}"
-                    class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('certificates') ? 'active bg-[--color-bg-secondary]' : '' }}">Certificates</a>
+                    class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('certificates') ? 'active bg-[--color-bg-secondary]' : '' }}">{{ __('messages.nav.certificates') }}</a>
                 <a href="{{ route('blog') }}"
-                    class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('blog*') ? 'active bg-[--color-bg-secondary]' : '' }}">Blog</a>
+                    class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('blog*') ? 'active bg-[--color-bg-secondary]' : '' }}">{{ __('messages.nav.blog') }}</a>
                 <a href="{{ route('contact') }}"
-                    class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('contact') ? 'active bg-[--color-bg-secondary]' : '' }}">Contact</a>
+                    class="block py-2 px-4 rounded-lg nav-link {{ request()->routeIs('contact') ? 'active bg-[--color-bg-secondary]' : '' }}">{{ __('messages.nav.contact') }}</a>
             </div>
         </div>
     </nav>

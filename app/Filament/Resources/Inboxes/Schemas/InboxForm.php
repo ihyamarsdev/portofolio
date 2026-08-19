@@ -11,6 +11,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
 
 class InboxForm
 {
@@ -50,36 +51,36 @@ class InboxForm
                                         ->success()
                                         ->send();
                                 }
-                            })
+                            }),
                     ])
                     ->schema([
                         Placeholder::make('decrypted_message')
                             ->label('Decrypted Transmission')
                             ->columnSpanFull()
-                            ->content(fn ($record) => $record ? new \Illuminate\Support\HtmlString(
+                            ->content(fn ($record) => $record ? new HtmlString(
                                 '<div class="relative w-full bg-[#050509] border border-emerald-500/25 rounded-xl p-6 font-mono text-sm leading-relaxed text-emerald-400 select-text overflow-hidden shadow-2xl">
                                     <!-- Terminal Header Grid -->
                                     <div class="border-b border-emerald-500/15 pb-4 mb-4 flex flex-col md:flex-row justify-between gap-2 text-xs text-emerald-500/70 select-none">
                                         <div>
-                                            <span class="text-emerald-400 font-bold">[SENDER]:</span> ' . e($record->name) . ' (' . e($record->email) . ')
+                                            <span class="text-emerald-400 font-bold">[SENDER]:</span> '.e($record->name).' ('.e($record->email).')
                                         </div>
                                         <div>
-                                            <span class="text-emerald-400 font-bold">[RECEIVED]:</span> ' . e($record->created_at->format('Y-m-d H:i:s')) . '
+                                            <span class="text-emerald-400 font-bold">[RECEIVED]:</span> '.e($record->created_at->format('Y-m-d H:i:s')).'
                                         </div>
                                     </div>
                                     
                                     <!-- Terminal Command Line -->
                                     <div class="mb-4 text-xs text-yellow-500/80 font-bold select-none animate-pulse">
-                                        $ gpg --decrypt-transmission --stream --identity ' . e(request()->getHost()) . '
+                                        $ gpg --decrypt-transmission --stream --identity '.e(request()->getHost()).'
                                     </div>
                                     
                                     <!-- Message Body -->
-                                    <div class="whitespace-pre-wrap selection:bg-emerald-500 selection:text-[#050509] leading-6">' . e($record->message) . '</div>
+                                    <div class="whitespace-pre-wrap selection:bg-emerald-500 selection:text-[#050509] leading-6">'.e($record->message).'</div>
                                     
                                     <!-- Scanning Lines Background Effect -->
                                     <div class="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(16,185,129,0.03)_50%,_rgba(0,0,0,0)_50%)] bg-[length:100%_4px] opacity-35"></div>
                                  </div>'
-                            ) : new \Illuminate\Support\HtmlString(
+                            ) : new HtmlString(
                                 '<div class="w-full bg-[#050509] border border-dashed border-emerald-500/25 rounded-xl p-8 flex flex-col items-center justify-center text-center text-slate-500 font-mono" style="height: 150px;">
                                     <span class="text-yellow-500 animate-pulse mb-2">[SYSTEM] awaiting transmission incoming...</span>
                                 </div>'

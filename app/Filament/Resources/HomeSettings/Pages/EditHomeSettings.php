@@ -4,7 +4,6 @@ namespace App\Filament\Resources\HomeSettings\Pages;
 
 use App\Filament\Resources\HomeSettings\HomeSettingsResource;
 use App\Models\HomeSettings;
-use BackedEnum;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
 
@@ -18,30 +17,49 @@ class EditHomeSettings extends Page
 
     // State properties
     public ?string $site_brand = '';
+
     public ?string $site_title = '';
+
     public ?string $meta_description = '';
+
     public ?string $footer_text = '';
 
     public ?string $hero_greeting = '';
+
     public ?string $hero_description = '';
+
     public ?string $availability_status = '';
+
     public bool $availability_active = true;
+
     public array $terminal_commands = [];
+
     public string $new_command = '';
 
     public ?string $tech_stack_title = '';
+
     public ?string $tech_stack_description = '';
+
     public ?string $featured_projects_title = '';
+
     public ?string $featured_projects_description = '';
+
     public ?string $cta_title = '';
+
     public ?string $cta_description = '';
+
     public ?string $cta_primary_button_text = '';
+
     public ?string $cta_secondary_button_text = '';
 
     public ?string $infrastructure_title = '';
+
     public ?string $infrastructure_description = '';
+
     public ?string $infrastructure_status_text = '';
+
     public string $infrastructure_status = 'operational';
+
     public array $infrastructure_services = [];
 
     public string $activeTab = 'branding'; // Options: branding, hero, section_copy, infrastructure, preview
@@ -125,7 +143,7 @@ class EditHomeSettings extends Page
             'cta_secondary_button_text' => 'required|string|max:255',
         ]);
 
-        $settings = HomeSettings::first() ?? new HomeSettings();
+        $settings = HomeSettings::first() ?? new HomeSettings;
 
         $settings->fill([
             'site_brand' => $this->site_brand,
