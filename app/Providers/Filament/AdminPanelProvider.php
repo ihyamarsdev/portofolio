@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\EditProfile;
+use App\Livewire\LanguageSwitcher;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -69,6 +70,12 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->renderHook(
+                'panels::topbar.end',
+                fn (): \Illuminate\Support\HtmlString => new \Illuminate\Support\HtmlString(
+                    (string) \Livewire\Livewire::mount(LanguageSwitcher::class)
+                ),
+            )
             ->authMiddleware([Authenticate::class]);
     }
 }
