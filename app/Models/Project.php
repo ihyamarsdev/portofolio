@@ -6,11 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Translatable\HasTranslations;
 use Symfony\Component\HttpFoundation\File\File;
 
 class Project extends Model implements HasMedia
 {
-    use InteractsWithMedia;
+    use HasTranslations, InteractsWithMedia;
+
+    public array $translatable = [
+        'title',
+        'description',
+    ];
 
     protected $fillable = [
         'title',

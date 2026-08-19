@@ -3,9 +3,32 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
 
 class HomeSettings extends Model
 {
+    use HasTranslations;
+
+    public array $translatable = [
+        'hero_greeting',
+        'hero_description',
+        'availability_status',
+        'tech_stack_title',
+        'tech_stack_description',
+        'featured_projects_title',
+        'featured_projects_description',
+        'infrastructure_title',
+        'infrastructure_description',
+        'cta_title',
+        'cta_description',
+        'cta_primary_button_text',
+        'cta_secondary_button_text',
+        'site_brand',
+        'site_title',
+        'meta_description',
+        'footer_text',
+    ];
+
     protected $fillable = [
         'hero_greeting',
         'hero_description',

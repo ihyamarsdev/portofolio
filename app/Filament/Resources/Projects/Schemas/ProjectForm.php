@@ -10,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\HtmlString;
@@ -25,46 +26,52 @@ class ProjectForm
                 Group::make()
                     ->columnSpan(['lg' => 2])
                     ->schema([
-                        Section::make('Project Information')
-                            ->description('Basic information about the project')
-                            ->icon('heroicon-o-information-circle')
+                        Tabs::make('Project Content')
+                            ->tabs([
+                                Tabs\Tab::make('🇬🇧 English (EN)')
+                                    ->schema([
+                                        TextInput::make('title.en')
+                                            ->label('Project Title (English)')
+                                            ->required()
+                                            ->placeholder('e.g., Kubernetes Auto-Scaling Pipeline')
+                                            ->live(onBlur: true)
+                                            ->afterStateUpdated(
+                                                fn (Set $set, ?string $state) => $set(
+                                                    'slug',
+                                                    Str::slug($state),
+                                                ),
+                                            )
+                                            ->maxLength(255),
+                                        Textarea::make('description.en')
+                                            ->label('Description (English)')
+                                            ->required()
+                                            ->rows(5)
+                                            ->placeholder('Describe the project architecture, purpose, and key features...')
+                                            ->columnSpanFull(),
+                                    ]),
+                                Tabs\Tab::make('🇮🇩 Bahasa Indonesia (ID)')
+                                    ->schema([
+                                        TextInput::make('title.id')
+                                            ->label('Judul Proyek (Bahasa Indonesia)')
+                                            ->placeholder('misal: Pipeline Auto-Scaling Kubernetes')
+                                            ->maxLength(255),
+                                        Textarea::make('description.id')
+                                            ->label('Deskripsi Proyek (Bahasa Indonesia)')
+                                            ->rows(5)
+                                            ->placeholder('Jelaskan arsitektur proyek, tujuan, dan fitur utama...')
+                                            ->columnSpanFull(),
+                                    ]),
+                            ])
+                            ->columnSpanFull(),
+
+                        Section::make('URL & Permalink')
                             ->schema([
-                                TextInput::make('title')
-                                    ->required()
-                                    ->placeholder('e.g., Kubernetes Auto-Scaling Pipeline')
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(
-                                        fn (Set $set, ?string $state) => $set(
-                                            'slug',
-                                            Str::slug($state),
-                                        ),
-                                    )
-                                    ->maxLength(255)
-                                    ->helperText(
-                                        'The slug will be automatically generated from the title',
-                                    ),
                                 TextInput::make('slug')
                                     ->required()
                                     ->unique(ignoreRecord: true)
                                     ->maxLength(255)
-                                    ->helperText('URL-friendly version of the title'),
-                            ])
-                            ->columns(2),
-
-                        Section::make('Description')
-                            ->description(
-                                'Detailed project description and technical details',
-                            )
-                            ->icon('heroicon-o-document-text')
-                            ->schema([
-                                Textarea::make('description')
-                                    ->required()
-                                    ->rows(5)
-                                    ->placeholder('Describe the project architecture, purpose, and key features...')
-                                    ->columnSpanFull(),
-                            ])
-                            ->collapsible()
-                            ->collapsed(false),
+                                    ->helperText('URL-friendly version of the project title'),
+                            ]),
 
                         Section::make('Architecture Diagram')
                             ->description('Mermaid diagram representation of the project architecture')

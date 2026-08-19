@@ -6,10 +6,10 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 
 class HomeSettingsForm
@@ -22,88 +22,100 @@ class HomeSettingsForm
                 Group::make()
                     ->columnSpan(['lg' => 2])
                     ->schema([
-                        Section::make('Hero Section')
-                            ->description('Configure the main intro section on the homepage.')
-                            ->icon('heroicon-o-sparkles')
-                            ->schema([
-                                Grid::make(2)
+                        Tabs::make('Homepage Content')
+                            ->tabs([
+                                Tabs\Tab::make('🇬🇧 English (EN)')
                                     ->schema([
-                                        TextInput::make('hero_greeting')
-                                            ->label('Greeting')
-                                            ->default('Hi, I\'m a')
-                                            ->required(),
-                                        TextInput::make('availability_status')
-                                            ->label('Availability Status')
-                                            ->default('Available for new opportunities')
-                                            ->required(),
-                                    ]),
-                                Textarea::make('hero_description')
-                                    ->label('Description')
-                                    ->rows(3)
-                                    ->required(),
-                                Toggle::make('availability_active')
-                                    ->label('Show Availability')
-                                    ->default(true),
-                            ]),
+                                        Section::make('Hero Section (EN)')
+                                            ->schema([
+                                                Grid::make(2)
+                                                    ->schema([
+                                                        TextInput::make('hero_greeting.en')
+                                                            ->label('Greeting (English)')
+                                                            ->default('Hi, I\'m a')
+                                                            ->required(),
+                                                        TextInput::make('availability_status.en')
+                                                            ->label('Availability Status (English)')
+                                                            ->default('Available for new opportunities')
+                                                            ->required(),
+                                                    ]),
+                                                Textarea::make('hero_description.en')
+                                                    ->label('Description (English)')
+                                                    ->rows(3)
+                                                    ->required(),
+                                            ]),
 
-                        Section::make('Tech Stack Section')
-                            ->description('Manage your tools and technologies.')
-                            ->icon('heroicon-o-cpu-chip')
-                            ->schema([
-                                Grid::make(2)
-                                    ->schema([
-                                        TextInput::make('tech_stack_title')
-                                            ->label('Title')
-                                            ->default('Tech Stack')
-                                            ->required(),
-                                        TextInput::make('tech_stack_description')
-                                            ->label('Description')
-                                            ->default('Tools and technologies I work with daily')
-                                            ->required(),
+                                        Section::make('Sections Title & CTA (EN)')
+                                            ->schema([
+                                                Grid::make(2)
+                                                    ->schema([
+                                                        TextInput::make('tech_stack_title.en')
+                                                            ->label('Tech Stack Title (EN)')
+                                                            ->default('Tech Stack'),
+                                                        TextInput::make('featured_projects_title.en')
+                                                            ->label('Featured Projects Title (EN)')
+                                                            ->default('Featured Projects'),
+                                                    ]),
+                                                Grid::make(2)
+                                                    ->schema([
+                                                        TextInput::make('cta_title.en')
+                                                            ->label('CTA Title (EN)')
+                                                            ->default('Let\'s Build Something Together'),
+                                                        TextInput::make('cta_primary_button_text.en')
+                                                            ->label('Primary Button Text (EN)')
+                                                            ->default('Get In Touch'),
+                                                    ]),
+                                                Textarea::make('cta_description.en')
+                                                    ->label('CTA Description (EN)')
+                                                    ->rows(3),
+                                            ]),
                                     ]),
-                            ]),
 
-                        Section::make('Featured Projects Section')
-                            ->description('Highlight your best work.')
-                            ->icon('heroicon-o-briefcase')
-                            ->schema([
-                                Grid::make(2)
+                                Tabs\Tab::make('🇮🇩 Bahasa Indonesia (ID)')
                                     ->schema([
-                                        TextInput::make('featured_projects_title')
-                                            ->label('Title')
-                                            ->default('Featured Projects')
-                                            ->required(),
-                                        TextInput::make('featured_projects_description')
-                                            ->label('Description')
-                                            ->default('Infrastructure and automation work I\'m proud of')
-                                            ->required(),
-                                    ]),
-                            ]),
+                                        Section::make('Hero Section (ID)')
+                                            ->schema([
+                                                Grid::make(2)
+                                                    ->schema([
+                                                        TextInput::make('hero_greeting.id')
+                                                            ->label('Greeting (Bahasa Indonesia)')
+                                                            ->placeholder('Halo, saya seorang'),
+                                                        TextInput::make('availability_status.id')
+                                                            ->label('Status Ketersediaan (ID)')
+                                                            ->placeholder('Tersedia untuk peluang baru'),
+                                                    ]),
+                                                Textarea::make('hero_description.id')
+                                                    ->label('Deskripsi (Bahasa Indonesia)')
+                                                    ->rows(3),
+                                            ]),
 
-                        Section::make('CTA Section')
-                            ->description('Configure the call to action at the bottom of the page.')
-                            ->icon('heroicon-o-megaphone')
-                            ->schema([
-                                Grid::make(2)
-                                    ->schema([
-                                        TextInput::make('cta_title')
-                                            ->label('Title')
-                                            ->default('Let\'s Build Something Together')
-                                            ->required(),
-                                        TextInput::make('cta_primary_button_text')
-                                            ->label('Primary Button Text')
-                                            ->default('Get In Touch')
-                                            ->required(),
+                                        Section::make('Judul Seksi & CTA (ID)')
+                                            ->schema([
+                                                Grid::make(2)
+                                                    ->schema([
+                                                        TextInput::make('tech_stack_title.id')
+                                                            ->label('Judul Tech Stack (ID)')
+                                                            ->placeholder('Keahlian Teknologi'),
+                                                        TextInput::make('featured_projects_title.id')
+                                                            ->label('Judul Proyek Unggulan (ID)')
+                                                            ->placeholder('Proyek Unggulan'),
+                                                    ]),
+                                                Grid::make(2)
+                                                    ->schema([
+                                                        TextInput::make('cta_title.id')
+                                                            ->label('Judul CTA (ID)')
+                                                            ->placeholder('Mari Bekerja Sama'),
+                                                        TextInput::make('cta_primary_button_text.id')
+                                                            ->label('Teks Tombol Kontak (ID)')
+                                                            ->placeholder('Hubungi Saya'),
+                                                    ]),
+                                                Textarea::make('cta_description.id')
+                                                    ->label('Deskripsi CTA (ID)')
+                                                    ->rows(3),
+                                            ]),
                                     ]),
-                                Textarea::make('cta_description')
-                                    ->label('Description')
-                                    ->rows(3)
-                                    ->required(),
-                                TextInput::make('cta_secondary_button_text')
-                                    ->label('Secondary Button Text')
-                                    ->default('Download CV')
-                                    ->required(),
-                            ]),
+                            ])
+                            ->columnSpanFull(),
                     ]),
 
                 Group::make()

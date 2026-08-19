@@ -6,10 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Translatable\HasTranslations;
 
 class Post extends Model implements HasMedia
 {
-    use InteractsWithMedia;
+    use HasTranslations, InteractsWithMedia;
+
+    public array $translatable = [
+        'title',
+        'excerpt',
+        'content',
+        'meta_title',
+        'meta_description',
+    ];
 
     protected static function booted(): void
     {
