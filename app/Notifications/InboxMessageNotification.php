@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Mail\InboxMessageMail;
 use App\Models\Inbox;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -29,7 +28,7 @@ class InboxMessageNotification extends Notification implements ShouldQueue
             ->greeting("New message from {$this->inbox->name}")
             ->line("**From:** {$this->inbox->name} ({$this->inbox->email})")
             ->line("**Subject:** {$this->inbox->subject}")
-            ->line("**Message:**")
+            ->line('**Message:**')
             ->line($this->inbox->message)
             ->action('View in Dashboard', url('/admin/inboxes'))
             ->line("Received: {$this->inbox->created_at->format('M d, Y H:i')}");

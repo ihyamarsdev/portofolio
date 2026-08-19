@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreInboxRequest;
-use App\Mail\ContactMessageReceived;
 use App\Models\Inbox;
-use App\Models\User;
 use App\Notifications\InboxMessageNotification;
 use Illuminate\Support\Facades\Notification;
 

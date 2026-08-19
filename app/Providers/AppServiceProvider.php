@@ -3,11 +3,11 @@
 namespace App\Providers;
 
 use App\Ai\Gateway\CvOpenAiCompatibleGateway;
-use App\Models\Project;
+use App\Mail\Transports\MailtrapSdkTransport;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Mail;
 use Laravel\Ai\Ai;
 use Laravel\Ai\Providers\OpenAiProvider;
 
@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
         ));
 
         Mail::extend('mailtrap', function (array $config) {
-            return new \App\Mail\Transports\MailtrapSdkTransport(
+            return new MailtrapSdkTransport(
                 $config['api_key'] ?? env('MAILTRAP_API_TOKEN', '')
             );
         });
@@ -43,4 +43,3 @@ class AppServiceProvider extends ServiceProvider
         }
     }
 }
-

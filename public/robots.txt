@@ -1,2 +1,13 @@
+# Robots.txt for https://ihyamars.my.id
 User-agent: *
-Disallow:
+Allow: /
+
+# Disallow admin panel and internal endpoints
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /livewire/
+Disallow: /livewire-*
+Disallow: /cv/download*
+
+# Sitemap Location
+Sitemap: https://ihyamars.my.id/sitemap.xml

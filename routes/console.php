@@ -15,14 +15,13 @@ Artisan::command('send-mail', function () {
     $apiKey = env('MAILTRAP_API_TOKEN') ?: '<YOUR_API_TOKEN>';
     $fromAddress = config('mail.from.address') ?: env('MAIL_FROM_ADDRESS', 'hello@demomailtrap.co');
     $fromName = config('mail.from.name') ?: env('MAIL_FROM_NAME', 'Mailtrap Test');
-    
-    $email = (new MailtrapEmail())
+
+    $email = (new MailtrapEmail)
         ->from(new Address($fromAddress, $fromName))
         ->to(new Address('ihyamars@gmail.com'))
         ->subject('You are awesome!')
         ->category('Integration Test')
-        ->text('Congrats for sending test email with Mailtrap!')
-    ;
+        ->text('Congrats for sending test email with Mailtrap!');
 
     $response = MailtrapClient::initSendingEmails(
         apiKey: $apiKey
@@ -30,4 +29,3 @@ Artisan::command('send-mail', function () {
 
     var_dump(ResponseHelper::toArray($response));
 })->purpose('Send Mail');
-

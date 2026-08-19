@@ -6,10 +6,6 @@ use App\Models\Profile;
 use App\Services\CVGeneratorService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\View;
 
 class CVController extends Controller
 {

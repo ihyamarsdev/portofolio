@@ -9,7 +9,9 @@ use Livewire\Component;
 class SvgIconPicker extends Component
 {
     public string $search = '';
+
     public int $perPage = 48;
+
     public bool $showModal = false;
 
     public function getIconsProperty(): array
@@ -24,10 +26,11 @@ class SvgIconPicker extends Component
             } catch (\Exception $e) {
                 // Return empty array on failure
             }
+
             return [];
         });
 
-        if (!is_array($icons)) {
+        if (! is_array($icons)) {
             $icons = [];
         }
 

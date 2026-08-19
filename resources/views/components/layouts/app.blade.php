@@ -1,10 +1,18 @@
 @php
-    if (!isset($homeSettings)) {
+    if (!isset($homeSettings) || !$homeSettings) {
         $homeSettings = \App\Models\HomeSettings::getSettings();
     }
-    if (!isset($profile)) {
+    if (!isset($profile) || !$profile) {
         $profile = \App\Models\Profile::where('is_primary', true)->first();
     }
+    $currentUrl = preg_replace('/^http:\/\/[^\/]+/', 'https://ihyamars.my.id', url()->current());
+    $siteBrand = $homeSettings?->site_brand ?? 'ihyamars';
+    $siteTitle = $homeSettings?->site_title ?? 'DevOps Engineer';
+    $siteDesc = $homeSettings?->meta_description ?? 'DevOps & Cloud Infrastructure Portfolio';
+    $footerText = $homeSettings?->footer_text ?? 'ihyamars';
+    $pageTitle = ($title ?? config('app.name', 'DevOps Portfolio')) . ' | ' . $siteTitle;
+    $metaDesc = $description ?? $siteDesc;
+    $ogImg = $ogImage ?? 'https://s3.ihyamars.my.id/portofolio/project/CIVA%20%28CLI%20Interactive%20VPS%20Automation.jpeg';
 @endphp
 
 <!DOCTYPE html>
@@ -15,23 +23,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? config('app.name', 'DevOps Portfolio') }} | {{ $homeSettings->site_title }}</title>
-    <meta name="description" content="{{ $description ?? $homeSettings->meta_description }}">
+    <!-- SEO Primary Meta Tags -->
+    <title>{{ $pageTitle }}</title>
+    <meta name="title" content="{{ $pageTitle }}">
+    <meta name="description" content="{{ $metaDesc }}">
+    <meta name="keywords" content="DevOps, Cloud Infrastructure Engineer, Kubernetes, Helm, Ansible, Docker, Terraform, CI/CD, GitOps, Ihya Muhammad Adam Rakasurya, ihyamars">
+    <meta name="author" content="Ihya Muhammad Adam Rakasurya">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="{{ $currentUrl }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="{{ $ogType ?? 'website' }}">
+    <meta property="og:url" content="{{ $currentUrl }}">
+    <meta property="og:title" content="{{ $pageTitle }}">
+    <meta property="og:description" content="{{ $metaDesc }}">
+    <meta property="og:image" content="{{ $ogImg }}">
+    <meta property="og:site_name" content="{{ $siteBrand }}">
+    <meta property="og:locale" content="{{ app()->getLocale() === 'id' ? 'id_ID' : 'en_US' }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ $currentUrl }}">
+    <meta name="twitter:title" content="{{ $pageTitle }}">
+    <meta name="twitter:description" content="{{ $metaDesc }}">
+    <meta name="twitter:image" content="{{ $ogImg }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
 
-    <!-- Fonts -->
+    <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <!-- Devicon -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
 
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <!-- JSON-LD Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@graph": [
+            {
+                "@@type": "Person",
+                "@@id": "https://ihyamars.my.id/#person",
+                "name": "Ihya Muhammad Adam Rakasurya",
+                "alternateName": "ihyamars",
+                "url": "https://ihyamars.my.id",
+                "jobTitle": "DevOps & Cloud Infrastructure Engineer",
+                "worksFor": {
+                    "@@type": "Organization",
+                    "name": "Universitas Amikom Yogyakarta"
+                },
+                "sameAs": [
+                    "https://github.com/ihyamarsdev",
+                    "https://linkedin.com/in/ihyamars"
+                ]
+            },
+            {
+                "@@type": "WebSite",
+                "@@id": "https://ihyamars.my.id/#website",
+                "url": "https://ihyamars.my.id",
+                "name": "{{ e($siteBrand) }}",
+                "description": "{{ e($siteDesc) }}",
+                "publisher": {
+                    "@@id": "https://ihyamars.my.id/#person"
+                },
+                "inLanguage": "{{ app()->getLocale() }}"
+            }
+        ]
+    }
+    </script>
 
     @livewireStyles
     <script>

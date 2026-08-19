@@ -4,9 +4,11 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CVController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
-// Language Switcher
+// SEO & Language Routes
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/lang/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');
 
 // Public Pages
