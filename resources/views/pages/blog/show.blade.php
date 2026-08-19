@@ -10,7 +10,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
                         </svg>
-                        Back to Blog
+                        {{ __('messages.blog.back_to') }}
                     </a>
 
                     <h1 class="text-3xl sm:text-4xl font-bold text-[--color-text-primary] mb-4">{{ $post->title }}</h1>
@@ -23,7 +23,7 @@
                             </time>
                             <span>•</span>
                         @endif
-                        <span>{{ ceil(str_word_count(strip_tags($post->content)) / 200) }} min read</span>
+                        <span>{{ ceil(str_word_count(strip_tags($post->content)) / 200) }} {{ __('messages.blog.min_read') }}</span>
                     </div>
                 </header>
 
@@ -44,8 +44,8 @@
                 <footer class="mt-12 pt-8 border-t border-[--color-border]">
                     <div class="flex flex-wrap justify-between items-center gap-4">
                         <div class="text-sm text-[--color-text-muted]">
-                            Thanks for reading! Have questions? <a href="{{ route('contact') }}"
-                                class="text-[--color-accent-emerald] hover:underline">Get in touch</a>.
+                            {{ __('messages.blog.thanks') }} <a href="{{ route('contact') }}"
+                                class="text-[--color-accent-emerald] hover:underline">{{ __('messages.blog.get_in_touch') }}</a>.
                         </div>
                         <div class="flex gap-3 share-buttons">
                             <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($post->title) }}"

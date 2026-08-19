@@ -15,17 +15,17 @@
                         <h1 class="mt-5 text-2xl font-semibold tracking-[-.04em] text-text-primary">{{ $profile?->name ?? 'DevOps Engineer' }}</h1>
                         <p class="mt-2 text-sm text-text-secondary">{{ $profile?->title ?? 'Building scalable infrastructure' }}</p>
                         <div class="mt-6 space-y-3 text-left text-sm text-text-secondary">
-                            <p class="rounded-xl bg-bg-secondary p-3">📍 {{ $profile?->location ?? 'Indonesia' }}</p>
-                            <p class="rounded-xl bg-bg-secondary p-3">⚡ Open for opportunities</p>
+                            <p class="rounded-xl bg-bg-secondary p-3">📍 {{ $profile?->location ?? __('Indonesia') }}</p>
+                            <p class="rounded-xl bg-bg-secondary p-3">⚡ {{ __('messages.about.open_opportunities') }}</p>
                         </div>
-                        <a href="{{ route('contact') }}" class="mt-6 inline-flex w-full justify-center rounded-lg bg-text-primary px-4 py-3 text-sm font-semibold text-bg-primary">Get in touch</a>
+                        <a href="{{ route('contact') }}" class="mt-6 inline-flex w-full justify-center rounded-lg bg-text-primary px-4 py-3 text-sm font-semibold text-bg-primary">{{ __('messages.about.get_in_touch') }}</a>
                     </div>
                 </aside>
 
                 <div class="space-y-10">
                     <div>
-                        <p class="font-mono text-xs uppercase tracking-widest text-accent-sky">About</p>
-                        <h2 class="mt-2 text-4xl font-semibold tracking-[-.05em] text-text-primary sm:text-6xl">Engineer focused on resilient systems.</h2>
+                        <p class="font-mono text-xs uppercase tracking-widest text-accent-sky">{{ __('messages.about.eyebrow') }}</p>
+                        <h2 class="mt-2 text-4xl font-semibold tracking-[-.05em] text-text-primary sm:text-6xl">{{ __('messages.about.heading') }}</h2>
                         <div class="prose mt-6 max-w-none text-text-secondary dark:prose-invert prose-p:leading-8">
                             @if($profile?->biography)
                                 {!! Str::markdown($profile->biography) !!}
@@ -37,7 +37,7 @@
                     </div>
 
                     <div>
-                        <h3 class="mb-5 text-2xl font-semibold tracking-[-.04em] text-text-primary">Skills matrix</h3>
+                        <h3 class="mb-5 text-2xl font-semibold tracking-[-.04em] text-text-primary">{{ __('messages.about.skills_matrix') }}</h3>
                         <div class="grid gap-5 md:grid-cols-2">
                             @forelse($skillsByCategory as $category => $skills)
                                 <section class="rounded-2xl bg-bg-card p-5 shadow-[0_0_0_1px_rgba(0,0,0,.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">
@@ -52,13 +52,13 @@
                                     </div>
                                 </section>
                             @empty
-                                <div class="rounded-2xl bg-bg-card p-8 text-text-secondary shadow-[0_0_0_1px_rgba(0,0,0,.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">Skills will appear here.</div>
+                                <div class="rounded-2xl bg-bg-card p-8 text-text-secondary shadow-[0_0_0_1px_rgba(0,0,0,.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">{{ __('messages.about.skills_empty') }}</div>
                             @endforelse
                         </div>
                     </div>
 
                     <div>
-                        <h3 class="mb-5 text-2xl font-semibold tracking-[-.04em] text-text-primary">Experience</h3>
+                        <h3 class="mb-5 text-2xl font-semibold tracking-[-.04em] text-text-primary">{{ __('messages.about.experience') }}</h3>
                         <div class="space-y-6">
                             @php
                                 $experiences = \App\Models\Experience::orderBy('order', 'asc')
@@ -97,7 +97,7 @@
                                     </div>
                                 </div>
                             @empty
-                                <div class="rounded-2xl bg-bg-card p-8 text-text-secondary text-center shadow-[0_0_0_1px_rgba(0,0,0,.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">No experiences added yet.</div>
+                                <div class="rounded-2xl bg-bg-card p-8 text-text-secondary text-center shadow-[0_0_0_1px_rgba(0,0,0,.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">{{ __('messages.about.experience_empty') }}</div>
                             @endforelse
                         </div>
                     </div>
