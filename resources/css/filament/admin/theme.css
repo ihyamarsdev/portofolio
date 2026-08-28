@@ -1205,6 +1205,24 @@ html:not(.dark) .cv-workspace-container .text-fuchsia-400 { color: #c026d3 !impo
 html:not(.dark) .cv-workspace-container .text-purple-400 { color: #7e22ce !important; }
 html:not(.dark) .cv-workspace-container .text-orange-400 { color: #c2410c !important; }
 
+/* CV Generator — solid -950 badge backgrounds (history table, modals) */
+html:not(.dark) .cv-workspace-container .bg-emerald-950 { background: #ecfdf5 !important; border-color: #a7f3d0 !important; }
+html:not(.dark) .cv-workspace-container .bg-amber-950 { background: #fffbeb !important; border-color: #fde68a !important; }
+html:not(.dark) .cv-workspace-container .bg-rose-950 { background: #fff1f2 !important; border-color: #fecdd3 !important; }
+html:not(.dark) .cv-workspace-container .bg-cyan-950 { background: #ecfeff !important; border-color: #a5f3fc !important; }
+
+/* CV Generator — hover variants on light-remapped surfaces */
+html:not(.dark) .cv-workspace-container .hover\:bg-slate-700:hover { background: #e2e8f0 !important; }
+html:not(.dark) .cv-workspace-container .hover\:bg-rose-950:hover { background: #fff1f2 !important; }
+html:not(.dark) .cv-workspace-container .hover\:bg-slate-800\/20:hover { background: #f1f5f9 !important; }
+html:not(.dark) .cv-workspace-container .hover\:border-slate-600:hover { border-color: #cbd5e1 !important; }
+html:not(.dark) .cv-workspace-container .hover\:text-white:hover { color: #0f172a !important; }
+
+/* CV Generator — dark borders and dividers */
+html:not(.dark) .cv-workspace-container .border-slate-700 { border-color: #cbd5e1 !important; }
+html:not(.dark) .cv-workspace-container .border-slate-600 { border-color: #cbd5e1 !important; }
+html:not(.dark) .cv-workspace-container .divide-\[\#1e1e2d\] > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0 !important; }
+
 /* CV Generator — AI analysis console keeps its dark terminal look in light mode */
 html:not(.dark) .cv-analysis-console .text-cyan-400 { color: #22d3ee !important; }
 html:not(.dark) .cv-analysis-console .text-amber-400 { color: #fbbf24 !important; }
