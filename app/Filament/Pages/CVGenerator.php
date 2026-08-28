@@ -144,7 +144,7 @@ class CVGenerator extends Page
 
     public ?int $skill_category_id = null;
 
-    public int $skill_proficiency = 80;
+    public int $skill_proficiency = 3;
 
     public float $skill_years_experience = 0.0;
 
@@ -592,12 +592,12 @@ class CVGenerator extends Page
             $skill = Skill::findOrFail($id);
             $this->skill_name = $skill->name;
             $this->skill_category_id = $skill->category_id;
-            $this->skill_proficiency = $skill->proficiency ?? 80;
+            $this->skill_proficiency = (int) ($skill->proficiency ?? 3);
             $this->skill_years_experience = (float) ($skill->years_experience ?? 0.0);
         } else {
             $this->skill_name = '';
             $this->skill_category_id = $this->categories->first()?->id;
-            $this->skill_proficiency = 80;
+            $this->skill_proficiency = 3;
             $this->skill_years_experience = 0.0;
         }
 
@@ -609,7 +609,7 @@ class CVGenerator extends Page
         $this->validate([
             'skill_name' => 'required|string|max:255',
             'skill_category_id' => 'required|exists:categories,id',
-            'skill_proficiency' => 'required|integer|min:0|max:100',
+            'skill_proficiency' => 'required|integer|min:1|max:5',
             'skill_years_experience' => 'required|numeric|min:0',
         ]);
 

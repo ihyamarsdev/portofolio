@@ -568,13 +568,24 @@
 
                                 <div class="space-y-3.5">
                                     @foreach($categorySkills as $skill)
+                                        @php
+                                            $pct = max(5, min(100, (int) round($skill->proficiency * 20)));
+                                            $profText = match((int) $skill->proficiency) {
+                                                1 => 'Beginner',
+                                                2 => 'Developing',
+                                                3 => 'Intermediate',
+                                                4 => 'Advanced',
+                                                5 => 'Expert',
+                                                default => (string) $skill->proficiency,
+                                            };
+                                        @endphp
                                         <div class="group relative pr-16">
                                             <div class="flex justify-between items-center text-xs font-semibold mb-1">
                                                 <span class="text-slate-200 group-hover:text-cyan-400 transition-colors">{{ $skill->name }}</span>
-                                                <span class="text-slate-400 font-mono">{{ $skill->years_experience }} yrs exp <span class="text-slate-600">|</span> {{ $skill->proficiency }}%</span>
+                                                <span class="text-slate-400 font-mono">{{ $skill->years_experience }} yrs exp <span class="text-slate-600">|</span> {{ $profText }}</span>
                                             </div>
                                             <div class="w-full bg-[#1e1e2d] h-2 rounded-full overflow-hidden border border-[#2d2d3a]/40">
-                                                <div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-full rounded-full" style="width: {{ $skill->proficiency }}%"></div>
+                                                <div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-full rounded-full" style="width: {{ $pct }}%"></div>
                                             </div>
                                             
                                             <div class="absolute right-0 top-0 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -1218,12 +1229,22 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase">Proficiency Level ({{ $skill_proficiency }}%)</label>
-                        <input type="range" wire:model="skill_proficiency" min="0" max="100" class="w-full accent-cyan-500 cursor-pointer h-2 bg-[#1e1e2d] border border-[#2d2d3a] rounded-full" />
+                        @php
+                            $profModalText = match((int) $skill_proficiency) {
+                                1 => '1 — Beginner',
+                                2 => '2 — Developing',
+                                3 => '3 — Intermediate',
+                                4 => '4 — Advanced',
+                                5 => '5 — Expert',
+                                default => (string) $skill_proficiency,
+                            };
+                        @endphp
+                        <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase">Proficiency Level: <span class="text-cyan-400 font-mono font-bold">{{ $profModalText }}</span></label>
+                        <input type="range" wire:model.live="skill_proficiency" min="1" max="5" step="1" class="w-full accent-cyan-500 cursor-pointer h-2 bg-[#1e1e2d] border border-[#2d2d3a] rounded-full" />
                         <div class="flex justify-between text-[10px] text-slate-500 font-mono mt-1 uppercase font-bold">
-                            <span>Beginner</span>
-                            <span>Intermediate</span>
-                            <span>Expert</span>
+                            <span>1 (Beginner)</span>
+                            <span>3 (Intermediate)</span>
+                            <span>5 (Expert)</span>
                         </div>
                     </div>
 
