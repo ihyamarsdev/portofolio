@@ -1141,6 +1141,37 @@ html:not(.dark) ::-webkit-scrollbar-thumb:hover {
     background: #0ea5e9;
 }
 
+/* Dashboard Custom — Slate Variatif Light */
+html:not(.dark) .glass-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 20px rgba(15,23,42,0.06) !important;
+    backdrop-filter: blur(12px) !important;
+}
+html:not(.dark) .glass-card:nth-child(even) { background: #f8fafc !important; }
+html:not(.dark) .glass-card h3, html:not(.dark) .glass-card h4 { color: #0f172a !important; border-color: #e2e8f0 !important; }
+html:not(.dark) .glass-card p, html:not(.dark) .glass-card label { color: #475569 !important; }
+html:not(.dark) .glass-card h3.text-white, html:not(.dark) .glass-card h4.text-white, html:not(.dark) .glass-card .text-white:not(.bg-\[\#2563EB\]):not(.bg-\[\#3B82F6\]):not([class*="bg-gradient"]):not(.bg-black) { color: #0f172a !important; }
+html:not(.dark) .glass-card .text-slate-400, html:not(.dark) .glass-card .text-slate-300, html:not(.dark) .glass-card .text-slate-200 { color: #475569 !important; }
+html:not(.dark) .cyber-input, html:not(.dark) .cyber-textarea, html:not(.dark) .cyber-select {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+}
+html:not(.dark) .cyber-input:focus, html:not(.dark) .cyber-textarea:focus { border-color: #0ea5e9 !important; box-shadow: 0 0 0 3px rgba(14,165,233,0.12) !important; }
+html:not(.dark) .workspace-tabs { background: #f1f5f9 !important; border: 1px solid #e2e8f0 !important; box-shadow: none !important; }
+html:not(.dark) .tab-btn { color: #64748b !important; }
+html:not(.dark) .tab-btn.active { color: #0ea5e9 !important; background: #e0f2fe !important; border-color: #7dd3fc !important; text-shadow: none !important; box-shadow: none !important; }
+html:not(.dark) .bg-\[\#0b0b10\], html:not(.dark) .bg-\[\#08080c\], html:not(.dark) .bg-\[\#12121a\], html:not(.dark) .bg-\[\#050508\], html:not(.dark) .bg-\[\#0e0e13\], html:not(.dark) .bg-\[\#111119\], html:not(.dark) .bg-\[\#111119\]\/40, html:not(.dark) .bg-slate-800, html:not(.dark) .bg-slate-800\/50, html:not(.dark) .bg-\[\#1e1e2d\], html:not(.dark) .bg-\[\#1a1a24\], html:not(.dark) .bg-\[\#1a1a24\]\/40, html:not(.dark) .bg-\[\#1a1a24\]\/30, html:not(.dark) .bg-\[\#181824\], html:not(.dark) .bg-\[\#181824\]\/50, html:not(.dark) .bg-\[\#181824\]\/60, html:not(.dark) .bg-\[\#181824\]\/40 {
+    background: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+}
+html:not(.dark) .border-\[\#2d2d3a\] { border-color: #e2e8f0 !important; }
+html:not(.dark) .before\:bg-\[\#2d2d3a\]::before { background-color: #e2e8f0 !important; }
+html:not(.dark) .bg-\[\#2d2d3a\] { background-color: #e2e8f0 !important; }
+html:not(.dark) .home-settings-container, html:not(.dark) .cv-workspace-container { color: #334155 !important; }
+html:not(.dark) .home-settings-container .text-slate-300, html:not(.dark) .cv-workspace-container .text-slate-300 { color: #475569 !important; }
+
 /* Responsive */
 @media (max-width: 768px) {
     .fi-stats-card {

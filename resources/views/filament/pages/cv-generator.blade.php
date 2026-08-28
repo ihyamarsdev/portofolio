@@ -23,14 +23,14 @@
         </defs>
     </svg>
 
-    <div class="cv-workspace-container space-y-8 font-space-grotesk">
+    <div class="cv-workspace-container space-y-8 font-space-grotesk text-slate-700 dark:text-slate-300">
         
         {{-- Unified Header --}}
         <div class="glass-card premium-workspace-header p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <div class="flex items-center gap-2">
                     <span class="pulse-dot"></span>
-                    <h2 class="text-2xl font-bold text-white tracking-wide">CV Workspace</h2>
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-wide">CV Workspace</h2>
                 </div>
                 <p class="text-sm text-slate-400 mt-1">Manage, design, preview, and optimize your professional CV with AI</p>
             </div>
@@ -98,42 +98,42 @@
                         <div class="glass-card stat-meter-card p-5 text-center flex flex-col items-center">
                             <div class="score-circle-container mb-3">
                                 <svg viewBox="0 0 120 120" class="w-24 h-24">
-                                    <circle class="stroke-slate-700/40 fill-none" stroke-width="5" cx="60" cy="60" r="50" />
+                                    <circle class="stroke-slate-300 dark:stroke-slate-700/40 fill-none" stroke-width="5" cx="60" cy="60" r="50" />
                                     <circle class="stroke-cyan-500 fill-none transition-all duration-1000" stroke-linecap="round" stroke-width="5" stroke-dasharray="314.159" stroke-dashoffset="{{ 314.159 - (314.159 * $analysisResult['ats_score']) / 100 }}" cx="60" cy="60" r="50" transform="rotate(-90 60 60)" style="stroke: url(#atsGradient);" />
-                                    <text x="60" y="60" text-anchor="middle" dominant-baseline="central" class="fill-white font-bold text-xl font-mono">{{ $analysisResult['ats_score'] }}%</text>
+                                    <text x="60" y="60" text-anchor="middle" dominant-baseline="central" class="fill-slate-900 dark:fill-white font-bold text-xl font-mono">{{ $analysisResult['ats_score'] }}%</text>
                                 </svg>
                             </div>
-                            <span class="text-xs tracking-wider text-slate-400 font-bold uppercase">ATS Score</span>
+                            <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400 font-bold uppercase">ATS Score</span>
                         </div>
 
                         <div class="glass-card stat-meter-card p-5 text-center flex flex-col items-center">
                             <div class="score-circle-container mb-3">
                                 <svg viewBox="0 0 120 120" class="w-24 h-24">
-                                    <circle class="stroke-slate-700/40 fill-none" stroke-width="5" cx="60" cy="60" r="50" />
+                                    <circle class="stroke-slate-300 dark:stroke-slate-700/40 fill-none" stroke-width="5" cx="60" cy="60" r="50" />
                                     <circle class="stroke-blue-500 fill-none transition-all duration-1000" stroke-linecap="round" stroke-width="5" stroke-dasharray="314.159" stroke-dashoffset="{{ 314.159 - (314.159 * $analysisResult['format_score']) / 100 }}" cx="60" cy="60" r="50" transform="rotate(-90 60 60)" style="stroke: url(#formatGradient);" />
-                                    <text x="60" y="60" text-anchor="middle" dominant-baseline="central" class="fill-white font-bold text-xl font-mono">{{ $analysisResult['format_score'] }}%</text>
+                                    <text x="60" y="60" text-anchor="middle" dominant-baseline="central" class="fill-slate-900 dark:fill-white font-bold text-xl font-mono">{{ $analysisResult['format_score'] }}%</text>
                                 </svg>
                             </div>
-                            <span class="text-xs tracking-wider text-slate-400 font-bold uppercase">Format Score</span>
+                            <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400 font-bold uppercase">Format Score</span>
                         </div>
 
                         <div class="glass-card stat-meter-card p-5 text-center flex flex-col items-center">
                             <div class="score-circle-container mb-3">
                                 <svg viewBox="0 0 120 120" class="w-24 h-24">
-                                    <circle class="stroke-slate-700/40 fill-none" stroke-width="5" cx="60" cy="60" r="50" />
+                                    <circle class="stroke-slate-300 dark:stroke-slate-700/40 fill-none" stroke-width="5" cx="60" cy="60" r="50" />
                                     <circle class="stroke-purple-500 fill-none transition-all duration-1000" stroke-linecap="round" stroke-width="5" stroke-dasharray="314.159" stroke-dashoffset="{{ 314.159 - (314.159 * ($analysisResult['about_me_score'] ?? 0)) / 100 }}" cx="60" cy="60" r="50" transform="rotate(-90 60 60)" style="stroke: url(#aboutmeGradient);" />
-                                    <text x="60" y="60" text-anchor="middle" dominant-baseline="central" class="fill-white font-bold text-xl font-mono">{{ $analysisResult['about_me_score'] ?? 0 }}%</text>
+                                    <text x="60" y="60" text-anchor="middle" dominant-baseline="central" class="fill-slate-900 dark:fill-white font-bold text-xl font-mono">{{ $analysisResult['about_me_score'] ?? 0 }}%</text>
                                 </svg>
                             </div>
-                            <span class="text-xs tracking-wider text-slate-400 font-bold uppercase">About Me Score</span>
+                            <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400 font-bold uppercase">About Me Score</span>
                         </div>
 
                         <div class="glass-card stat-meter-card p-5 text-center flex flex-col items-center">
                             <div class="score-circle-container mb-3">
                                 <svg viewBox="0 0 120 120" class="w-24 h-24">
-                                    <circle class="stroke-slate-700/40 fill-none" stroke-width="5" cx="60" cy="60" r="50" />
+                                    <circle class="stroke-slate-300 dark:stroke-slate-700/40 fill-none" stroke-width="5" cx="60" cy="60" r="50" />
                                     <circle class="stroke-amber-500 fill-none transition-all duration-1000" stroke-linecap="round" stroke-width="5" stroke-dasharray="314.159" stroke-dashoffset="{{ 314.159 - (314.159 * ($analysisResult['job_match_score'] ?? 0)) / 100 }}" cx="60" cy="60" r="50" transform="rotate(-90 60 60)" style="stroke: url(#jobmatchGradient);" />
-                                    <text x="60" y="60" text-anchor="middle" dominant-baseline="central" class="fill-white font-bold text-xl font-mono">{{ $analysisResult['job_match_score'] ?? 0 }}%</text>
+                                    <text x="60" y="60" text-anchor="middle" dominant-baseline="central" class="fill-slate-900 dark:fill-white font-bold text-xl font-mono">{{ $analysisResult['job_match_score'] ?? 0 }}%</text>
                                 </svg>
                             </div>
                             <span class="text-xs tracking-wider text-slate-400 font-bold uppercase">Job Match Score</span>
@@ -142,7 +142,7 @@
                 @else
                     <div class="glass-card p-8 text-center">
                         <x-heroicon-o-chart-pie class="w-12 h-12 text-slate-500 mx-auto mb-3" />
-                        <h4 class="text-lg font-bold text-white">No CV Analysis Executed Yet</h4>
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-white">No CV Analysis Executed Yet</h4>
                         <p class="text-sm text-slate-400 mt-1 max-w-md mx-auto">Fill in your professional profile and run the AI analyzer to generate your resume scoring trends and recommendations.</p>
                         <x-filament::button wire:click="switchTab('profile')" color="primary" class="mt-4">
                             Start Building CV
@@ -164,7 +164,7 @@
                 @if($history && count(is_countable($history) ? $history : []) > 0)
                     <div class="glass-card p-6">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                 <x-heroicon-o-clock class="w-5 h-5 text-cyan-400" />
                                 <span>Historical Runs</span>
                             </h3>
@@ -189,7 +189,7 @@
                                 <tbody class="divide-y divide-[#1e1e2d]">
                                     @foreach($history as $item)
                                         <tr class="hover:bg-slate-800/20 group">
-                                            <td class="py-3 px-4 text-white font-medium">{{ $item->created_at->format('M j, Y H:i') }}</td>
+                                            <td class="py-3 px-4 text-slate-900 dark:text-white font-medium">{{ $item->created_at->format('M j, Y H:i') }}</td>
                                             <td class="py-3 px-4">
                                                 <span class="px-2.5 py-0.5 rounded text-xs font-bold font-mono {{ $item->ats_score >= 80 ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/30' : ($item->ats_score >= 50 ? 'bg-amber-950 text-amber-400 border border-amber-500/30' : 'bg-rose-950 text-rose-400 border border-rose-500/30') }}">
                                                     {{ $item->ats_score }}%
@@ -248,7 +248,7 @@
                     
                     <div class="lg:col-span-2 space-y-6">
                         <div class="glass-card p-6 space-y-4">
-                            <h3 class="text-lg font-bold text-white border-b border-[#2d2d3a] pb-3 flex items-center gap-2">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white border-b border-[#2d2d3a] pb-3 flex items-center gap-2">
                                 <x-heroicon-o-user class="w-5 h-5 text-cyan-400" />
                                 <span>Basic Biography</span>
                             </h3>
@@ -270,7 +270,7 @@
                         </div>
 
                         <div class="glass-card p-6 space-y-4">
-                            <h3 class="text-lg font-bold text-white border-b border-[#2d2d3a] pb-3 flex items-center gap-2">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white border-b border-[#2d2d3a] pb-3 flex items-center gap-2">
                                 <x-heroicon-o-envelope class="w-5 h-5 text-cyan-400" />
                                 <span>Contact Details</span>
                             </h3>
@@ -292,7 +292,7 @@
                         </div>
 
                         <div class="glass-card p-6 space-y-4">
-                            <h3 class="text-lg font-bold text-white border-b border-[#2d2d3a] pb-3 flex items-center gap-2">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white border-b border-[#2d2d3a] pb-3 flex items-center gap-2">
                                 <x-heroicon-o-link class="w-5 h-5 text-cyan-400" />
                                 <span>Social & Web Links</span>
                             </h3>
@@ -320,7 +320,7 @@
 
                     <div class="space-y-6">
                         <div class="glass-card p-6 space-y-5">
-                            <h3 class="text-lg font-bold text-white border-b border-[#2d2d3a] pb-3">Avatar Profile</h3>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white border-b border-[#2d2d3a] pb-3">Avatar Profile</h3>
                             
                             <div class="flex flex-col items-center text-center">
                                 @if($profile_avatar)
@@ -346,7 +346,7 @@
                         </div>
 
                         <div class="glass-card p-6 space-y-4">
-                            <h3 class="text-lg font-bold text-white border-b border-[#2d2d3a] pb-3">Design Config</h3>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white border-b border-[#2d2d3a] pb-3">Design Config</h3>
 
                             <div>
                                 <label class="block text-sm font-medium text-slate-300 mb-1.5">CV Output Template</label>
@@ -376,7 +376,7 @@
         @if($activeTab === 'experience')
             <div class="tab-pane-content space-y-6 animate-fade-in">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <x-heroicon-o-briefcase class="w-5 h-5 text-cyan-400" />
                         <span>Work History Timeline</span>
                     </h3>
@@ -408,7 +408,7 @@
                                 
                                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-[#2d2d3a]/50 pb-3 mb-3">
                                     <div>
-                                        <h4 class="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors">{{ $exp->position }}</h4>
+                                        <h4 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-cyan-400 transition-colors">{{ $exp->position }}</h4>
                                         <p class="text-sm font-semibold text-slate-300 mt-0.5">{{ $exp->company }} <span class="text-slate-500">•</span> <span class="text-slate-400 text-xs font-normal font-mono">{{ $exp->employment_type }}</span></p>
                                     </div>
                                     <div class="flex items-center gap-3">
@@ -473,7 +473,7 @@
         @if($activeTab === 'education')
             <div class="tab-pane-content space-y-6 animate-fade-in">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <x-heroicon-o-academic-cap class="w-5 h-5 text-cyan-400" />
                         <span>Academic Timeline</span>
                     </h3>
@@ -491,7 +491,7 @@
 
                                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
                                     <div>
-                                        <h4 class="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors">{{ $edu->degree }} in {{ $edu->field_of_study }}</h4>
+                                        <h4 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-cyan-400 transition-colors">{{ $edu->degree }} in {{ $edu->field_of_study }}</h4>
                                         <p class="text-sm font-semibold text-slate-300 mt-0.5">{{ $edu->institution }}</p>
                                     </div>
                                     <div class="flex items-center gap-3">
@@ -544,7 +544,7 @@
         @if($activeTab === 'skills')
             <div class="tab-pane-content space-y-6 animate-fade-in">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <x-heroicon-o-bolt class="w-5 h-5 text-cyan-400" />
                         <span>Core Capabilities & Tooling</span>
                     </h3>
@@ -561,7 +561,7 @@
                                 $categoryName = $categorySkills->first()?->category?->name ?? 'Uncategorized';
                             @endphp
                             <div class="glass-card p-5 space-y-4">
-                                <h4 class="text-md font-bold text-white flex items-center gap-2 border-b border-[#2d2d3a]/50 pb-2">
+                                <h4 class="text-md font-bold text-slate-900 dark:text-white flex items-center gap-2 border-b border-[#2d2d3a]/50 pb-2">
                                     <span class="w-1.5 h-4 bg-cyan-400 rounded-sm"></span>
                                     <span>{{ $categoryName }}</span>
                                 </h4>
@@ -609,7 +609,7 @@
         @if($activeTab === 'certificates')
             <div class="tab-pane-content space-y-6 animate-fade-in">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <x-heroicon-o-trophy class="w-5 h-5 text-cyan-400" />
                         <span>Professional Certifications</span>
                     </h3>
@@ -628,7 +628,7 @@
                                         <x-heroicon-o-academic-cap class="w-7 h-7" />
                                     </div>
                                     <div>
-                                        <h4 class="text-md font-bold text-white group-hover:text-cyan-400 transition-colors">{{ $cert->name }}</h4>
+                                        <h4 class="text-md font-bold text-slate-900 dark:text-white group-hover:text-cyan-400 transition-colors">{{ $cert->name }}</h4>
                                         <p class="text-xs font-semibold text-slate-300 mt-0.5">{{ $cert->issuer }}</p>
                                         
                                         @if($cert->credential_id)
@@ -719,7 +719,7 @@
                         @if(!$isAnalyzing && $analysisResult)
                             <div class="glass-card p-6 space-y-6">
                                 <div class="flex items-center justify-between border-b border-[#2d2d3a] pb-4">
-                                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                         <x-heroicon-o-document-text class="w-5 h-5 text-cyan-400" />
                                         <span>AI Fitment Insights</span>
                                     </h3>
@@ -1011,7 +1011,7 @@
             
             <div class="glass-card relative w-full max-w-2xl bg-[#12121a] border border-[#2d2d3a] rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 <div class="px-6 py-4 border-b border-[#2d2d3a] flex items-center justify-between bg-[#181824]/50">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <x-heroicon-o-briefcase class="w-5 h-5 text-cyan-400" />
                         <span>{{ $editingExperienceId ? 'Edit Work Experience' : 'Add Work Experience' }}</span>
                     </h3>
@@ -1122,7 +1122,7 @@
             
             <div class="glass-card relative w-full max-w-xl bg-[#12121a] border border-[#2d2d3a] rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 <div class="px-6 py-4 border-b border-[#2d2d3a] flex items-center justify-between bg-[#181824]/50">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <x-heroicon-o-academic-cap class="w-5 h-5 text-cyan-400" />
                         <span>{{ $editingEducationId ? 'Edit Academic Qualification' : 'Add Academic Qualification' }}</span>
                     </h3>
@@ -1193,7 +1193,7 @@
             
             <div class="glass-card relative w-full max-w-md bg-[#12121a] border border-[#2d2d3a] rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 <div class="px-6 py-4 border-b border-[#2d2d3a] flex items-center justify-between bg-[#181824]/50">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <x-heroicon-o-bolt class="w-5 h-5 text-cyan-400" />
                         <span>{{ $editingSkillId ? 'Edit Skill Profile' : 'Add Skill Profile' }}</span>
                     </h3>
@@ -1250,7 +1250,7 @@
             
             <div class="glass-card relative w-full max-w-lg bg-[#12121a] border border-[#2d2d3a] rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 <div class="px-6 py-4 border-b border-[#2d2d3a] flex items-center justify-between bg-[#181824]/50">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <x-heroicon-o-trophy class="w-5 h-5 text-cyan-400" />
                         <span>{{ $editingCertificateId ? 'Edit Certificate Record' : 'Add Certificate Record' }}</span>
                     </h3>
@@ -1317,7 +1317,7 @@
             
             <div class="glass-card relative w-full max-w-4xl bg-[#12121a] border border-[#2d2d3a] rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 <div class="px-6 py-4 border-b border-[#2d2d3a] flex items-center justify-between bg-[#181824]/50">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <x-heroicon-o-document-text class="w-5 h-5 text-cyan-400" />
                         <span>AI Analysis Audit Report</span>
                     </h3>

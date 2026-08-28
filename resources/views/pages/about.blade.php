@@ -1,32 +1,32 @@
 <x-layouts.app title="About">
     @php
-        $skillsByCategory = \App\Models\Skill::with(['category', 'stacks'])->orderBy('years_experience', 'desc')->orderBy('name')->get()->groupBy(fn ($skill) => $skill->category?->name ?? 'Other');
+        $skillsByCategory = \App\Models\Skill::with(['category', 'stacks'])->orderByDesc('proficiency')->orderByDesc('years_experience')->orderBy('name')->get()->groupBy(fn ($skill) => $skill->category?->name ?? 'Other');
     @endphp
-    <section class="bg-bg-primary">
-        <div class="section-container py-16 sm:py-24">
+    <section class="bg-[#FFFBF0] dark:bg-[#0F172A]">
+        <div class="section-container py-10 sm:py-14">
             <div class="grid gap-8 lg:grid-cols-[22rem_1fr]">
-                <aside class="lg:sticky lg:top-24 lg:self-start">
-                    <div class="rounded-3xl bg-bg-card p-6 text-center shadow-[0_0_0_1px_rgba(0,0,0,.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">
-                        <div class="mx-auto h-32 w-32 overflow-hidden rounded-full bg-gradient-to-br from-sky-500 via-violet-500 to-emerald-500 p-1">
-                            <div class="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-bg-primary text-5xl">
+                <aside class="lg:sticky lg:top-[84px] lg:self-start">
+                    <div class="brutal-card p-6 text-center bg-white dark:bg-[#1E293B]">
+                        <div class="mx-auto h-32 w-32 overflow-hidden rounded-full border-[3px] border-black dark:border-[#CBD5E1] shadow-[4px_4px_0_0_#111] dark:shadow-[4px_4px_0_0_rgba(203,213,225,0.9)] bg-[#2563EB] p-1">
+                            <div class="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-[#FFFBF0] dark:bg-[#1E293B] text-5xl">
                                 @if($profile?->avatar)<img src="{{ Storage::url($profile->avatar) }}" alt="{{ $profile->name }}" class="h-full w-full object-cover">@else 👨‍💻 @endif
                             </div>
                         </div>
-                        <h1 class="mt-5 text-2xl font-semibold tracking-[-.04em] text-text-primary">{{ $profile?->name ?? 'DevOps Engineer' }}</h1>
-                        <p class="mt-2 text-sm text-text-secondary">{{ $profile?->title ?? 'Building scalable infrastructure' }}</p>
-                        <div class="mt-6 space-y-3 text-left text-sm text-text-secondary">
-                            <p class="rounded-xl bg-bg-secondary p-3">📍 {{ $profile?->location ?? 'Indonesia' }}</p>
-                            <p class="rounded-xl bg-bg-secondary p-3">⚡ Open for opportunities</p>
+                        <h1 class="mt-4 text-2xl font-black tracking-[-0.04em] text-black dark:text-white leading-none">{{ $profile?->name ?? 'DevOps Engineer' }}</h1>
+                        <p class="mt-1.5 inline-flex font-mono text-[11px] font-black uppercase tracking-widest bg-black dark:bg-[#3B82F6] text-white dark:text-white px-2.5 py-1 rounded-full border-2 border-black">{{ $profile?->title ?? 'Building scalable infra' }}</p>
+                        <div class="mt-5 space-y-2.5 text-left">
+                            <p class="brutal-card brutal-card--flat p-3 text-sm font-bold flex items-center gap-2 !shadow-[3px_3px_0_0_#111] dark:!shadow-[3px_3px_0_0_rgba(203,213,225,0.9)]"><span class="w-8 h-8 inline-flex items-center justify-center bg-[#2563EB] border-2 border-black rounded-full text-sm">📍</span> {{ $profile?->location ?? 'Indonesia' }}</p>
+                            <p class="brutal-card brutal-card--flat p-3 text-sm font-bold flex items-center gap-2 !shadow-[3px_3px_0_0_#111] dark:!shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] bg-[#B8FF66] dark:bg-[#1E293B]"><span class="w-2 h-2 bg-black dark:bg-[#B8FF66] rounded-full animate-pulse"></span> Open for opportunities</p>
                         </div>
-                        <a href="{{ route('contact') }}" class="mt-6 inline-flex w-full justify-center rounded-lg bg-text-primary px-4 py-3 text-sm font-semibold text-bg-primary">Get in touch</a>
+                        <a href="{{ route('contact') }}" class="mt-5 brutal-btn brutal-btn--primary w-full">Get in touch →</a>
                     </div>
                 </aside>
 
-                <div class="space-y-10">
-                    <div>
-                        <p class="font-mono text-xs uppercase tracking-widest text-accent-sky">About</p>
-                        <h2 class="mt-2 text-4xl font-semibold tracking-[-.05em] text-text-primary sm:text-6xl">Engineer focused on resilient systems.</h2>
-                        <div class="prose mt-6 max-w-none text-text-secondary dark:prose-invert prose-p:leading-8">
+                <div class="space-y-8">
+                    <div class="brutal-card p-6 sm:p-8">
+                        <span class="inline-flex font-mono text-[11px] font-black uppercase tracking-[0.16em] bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">About — 01</span>
+                        <h2 class="mt-3 text-3xl sm:text-5xl font-black tracking-[-0.06em] leading-[0.9] text-black dark:text-white">Engineer focused<br><span class="bg-[#2563EB] text-white px-2 border-[3px] border-black shadow-[4px_4px_0_0_#111] inline-block rotate-[-0.5deg]">on resilient</span><br>systems.</h2>
+                        <div class="prose mt-6 max-w-none">
                             @if($profile?->biography)
                                 {!! Str::markdown($profile->biography) !!}
                             @else
@@ -37,58 +37,104 @@
                     </div>
 
                     <div>
-                        <h3 class="mb-5 text-2xl font-semibold tracking-[-.04em] text-text-primary">Skills matrix</h3>
-                        <div class="grid gap-5 md:grid-cols-2">
+                        @php
+                            $proficiencyLabels = [
+                                1 => 'Beginner', 2 => 'Developing', 3 => 'Intermediate',
+                                4 => 'Advanced', 5 => 'Expert',
+                            ];
+                            $totalSkills = $skillsByCategory->flatten()->count();
+                        @endphp
+                        <div class="flex flex-wrap items-end justify-between gap-3 mb-5">
+                            <h3 class="text-2xl font-black tracking-[-0.04em] text-black dark:text-white flex items-center gap-2"><span class="w-1.5 h-7 bg-[#00D1FF] border-2 border-black rounded-full"></span> Skills matrix</h3>
+                            <div class="flex gap-2">
+                                <span class="font-mono text-xs font-black uppercase bg-[#2563EB] text-white border-2 border-black px-2 py-1 rounded-full">{{ $skillsByCategory->count() }} categories</span>
+                                <span class="font-mono text-xs font-black uppercase bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] px-2 py-1 rounded-full">{{ $totalSkills }} skills</span>
+                            </div>
+                        </div>
+                        <div class="grid gap-4 md:grid-cols-2">
                             @forelse($skillsByCategory as $category => $skills)
-                                <section class="rounded-2xl bg-bg-card p-5 shadow-[0_0_0_1px_rgba(0,0,0,.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">
-                                    <div class="mb-4 flex items-center justify-between gap-3">
-                                        <h4 class="font-semibold text-text-primary">{{ $category }}</h4>
-                                        <span class="rounded-full bg-sky-500/10 px-2 py-1 text-xs text-accent-sky">{{ $skills->count() }}</span>
+                                @php
+                                    $cat = $skills->first()?->category;
+                                    $catColor = $cat?->color ?? '#2563EB';
+                                    $sorted = $skills->sortByDesc(fn ($s) => $s->proficiency)->values();
+                                @endphp
+                                <section class="brutal-card p-5">
+                                    <div class="mb-4 flex items-center justify-between gap-3 border-b-2 border-black dark:border-[#CBD5E1] pb-3">
+                                        <h4 class="font-black tracking-tight text-black dark:text-white uppercase text-sm flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 border-2 border-black rounded-full shrink-0" style="background: {{ $catColor }}"></span>
+                                            {{ $category }}
+                                        </h4>
+                                        <span class="brutal-badge brutal-badge--cyan text-[11px]">{{ $sorted->count() }}</span>
                                     </div>
-                                    <div class="flex flex-wrap gap-2">
-                                        @foreach($skills as $skill)
-                                            <span class="rounded-full bg-bg-secondary px-3 py-1 text-sm text-text-secondary">{{ $skill->name }}</span>
+                                    <div class="space-y-3.5">
+                                        @foreach($sorted as $skill)
+                                            @php
+                                                $pct = max(5, min(100, (int) round($skill->proficiency * 20)));
+                                            @endphp
+                                            <div>
+                                                <div class="flex items-center justify-between gap-3 mb-1">
+                                                    <span class="text-sm font-black uppercase tracking-tight text-black dark:text-white">{{ $skill->name }}</span>
+                                                    <span class="flex items-center gap-2 shrink-0">
+                                                        <span class="font-mono text-[11px] font-bold text-[#2a2a2a] dark:text-[#d6d6d6]">{{ number_format((float) $skill->years_experience, 1) }}y</span>
+                                                        <span class="font-mono text-[10px] font-black uppercase px-1.5 py-0.5 rounded border-2 border-black" style="background: {{ $catColor }}; color: #fff">{{ $proficiencyLabels[$skill->proficiency] ?? $skill->proficiency }}</span>
+                                                    </span>
+                                                </div>
+                                                <div class="h-3 w-full border-2 border-black dark:border-[#CBD5E1] rounded-sm bg-white dark:bg-[#111] overflow-hidden">
+                                                    <div class="h-full transition-all" style="width: {{ $pct }}%; background: {{ $catColor }}"></div>
+                                                </div>
+                                                @if($skill->stacks->isNotEmpty())
+                                                    <div class="mt-1.5 flex flex-wrap gap-1">
+                                                        @foreach($skill->stacks->take(4) as $stack)
+                                                            <span class="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-tight bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-full px-1.5 py-0.5">
+                                                                @if(filter_var($stack->icon, FILTER_VALIDATE_URL))
+                                                                    <img src="{{ $stack->icon }}" class="w-3 h-3 object-contain" alt="">
+                                                                @elseif(str_starts_with($stack->icon ?? '', 'devicon-'))
+                                                                    <i class="{{ $stack->icon }} text-[10px]"></i>
+                                                                @endif
+                                                                {{ $stack->name }}
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                            </div>
                                         @endforeach
                                     </div>
                                 </section>
                             @empty
-                                <div class="rounded-2xl bg-bg-card p-8 text-text-secondary shadow-[0_0_0_1px_rgba(0,0,0,.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">Skills will appear here.</div>
+                                <div class="brutal-card p-8 text-center font-black uppercase text-[#6b6b6b] md:col-span-2">Skills will appear here.</div>
                             @endforelse
                         </div>
                     </div>
 
                     <div>
-                        <h3 class="mb-5 text-2xl font-semibold tracking-[-.04em] text-text-primary">Experience</h3>
-                        <div class="space-y-6">
+                        <h3 class="mb-4 text-2xl font-black tracking-[-0.04em] text-black dark:text-white flex items-center gap-2"><span class="w-1.5 h-7 bg-[#FF90E8] border-2 border-black rounded-full"></span> Experience</h3>
+                        <div class="space-y-5">
                             @php
-                                $experiences = \App\Models\Experience::orderBy('order', 'asc')
-                                    ->orderByDesc('start_date')
-                                    ->get();
+                                $experiences = \App\Models\Experience::orderBy('order', 'asc')->orderByDesc('start_date')->get();
                             @endphp
                             @forelse($experiences as $index => $experience)
-                                <div class="relative pl-8 border-l-2 {{ $index === 0 ? 'border-sky-500' : 'border-slate-200 dark:border-slate-800' }}">
-                                    <div class="absolute left-0 top-1.5 w-4 h-4 -translate-x-[9px] {{ $index === 0 ? 'bg-sky-500 ring-4 ring-sky-500/10' : 'bg-slate-200 dark:bg-slate-800' }} rounded-full"></div>
-                                    <div class="rounded-2xl bg-bg-card p-6 shadow-[0_0_0_1px_rgba(0,0,0,.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">
+                                <div class="relative pl-7 border-l-[3px] {{ $index === 0 ? 'border-black dark:border-[#2563EB]' : 'border-black/20 dark:border-white/20' }}">
+                                    <div class="absolute left-0 top-2 w-4 h-4 -translate-x-[9px] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-full {{ $index === 0 ? 'bg-[#2563EB] shadow-[2px_2px_0_0_#111]' : 'bg-white dark:bg-[#1E293B]' }}"></div>
+                                    <div class="brutal-card p-5 sm:p-6 {{ $index === 0 ? 'bg-[#2563EB] dark:bg-[#1E293B]' : '' }}">
                                         <div class="flex flex-wrap justify-between gap-2 mb-2">
                                             <div>
-                                                <h4 class="font-semibold text-text-primary text-lg">{{ $experience->position }}</h4>
-                                                <p class="text-sm text-text-secondary font-medium">{{ $experience->company }}</p>
+                                                <h4 class="font-black text-black dark:text-white text-lg leading-none tracking-tight">{{ $experience->position }}</h4>
+                                                <p class="text-sm font-bold text-[#2a2a2a] dark:text-[#d6d6d6]">{{ $experience->company }}</p>
                                             </div>
                                             <div class="text-left sm:text-right">
-                                                <span class="text-xs font-mono text-accent-sky bg-sky-500/10 px-2 py-1 rounded-md">
-                                                    {{ $experience->start_date->format('M Y') }} —
-                                                    {{ $experience->end_date ? $experience->end_date->format('M Y') : 'Present' }}
+                                                <span class="inline-flex font-mono text-[11px] font-black uppercase tracking-widest bg-black dark:bg-white text-white dark:text-black px-2 py-1 rounded border-2 border-black">
+                                                    {{ $experience->start_date->format('M Y') }} — {{ $experience->end_date ? $experience->end_date->format('M Y') : 'Present' }}
                                                 </span>
                                                 @if($experience->location)
-                                                    <p class="text-xs text-text-secondary mt-2">📍 {{ $experience->location }}</p>
+                                                    <p class="text-xs font-bold mt-1.5">📍 {{ $experience->location }}</p>
                                                 @endif
                                             </div>
                                         </div>
                                         @if($experience->description)
-                                            <p class="text-text-secondary text-sm mb-3 leading-relaxed">{{ $experience->description }}</p>
+                                            <p class="text-sm leading-6 font-medium text-[#2a2a2a] dark:text-[#d6d6d6]">{{ $experience->description }}</p>
                                         @endif
                                         @if($experience->achievements && count($experience->achievements) > 0)
-                                            <ul class="text-sm text-text-secondary space-y-1.5 list-disc pl-4 mb-3">
+                                            <ul class="mt-3 space-y-1.5 text-sm font-medium list-disc pl-4 marker:font-black">
                                                 @foreach($experience->achievements as $achievement)
                                                     <li>{{ $achievement }}</li>
                                                 @endforeach
@@ -97,7 +143,7 @@
                                     </div>
                                 </div>
                             @empty
-                                <div class="rounded-2xl bg-bg-card p-8 text-text-secondary text-center shadow-[0_0_0_1px_rgba(0,0,0,.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">No experiences added yet.</div>
+                                <div class="brutal-card p-8 text-center font-black uppercase">No experiences added yet.</div>
                             @endforelse
                         </div>
                     </div>

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\HomeSettings\Schemas;
 
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -132,33 +131,6 @@ class HomeSettingsForm
                                     ->required(),
                             ])
                             ->collapsible(),
-
-                        Section::make('Infrastructure Section')
-                            ->description('Status of live services.')
-                            ->icon('heroicon-o-server')
-                            ->schema([
-                                TextInput::make('infrastructure_title')
-                                    ->label('Title')
-                                    ->default('Live Infrastructure')
-                                    ->required(),
-                                TextInput::make('infrastructure_description')
-                                    ->label('Description')
-                                    ->default('How this portfolio is deployed and monitored')
-                                    ->required(),
-                                TextInput::make('infrastructure_status_text')
-                                    ->label('Status Text')
-                                    ->default('All services running')
-                                    ->required(),
-                                Select::make('infrastructure_status')
-                                    ->label('Status')
-                                    ->options([
-                                        'operational' => 'Operational',
-                                        'degraded' => 'Degraded',
-                                        'down' => 'Down',
-                                    ])
-                                    ->default('operational')
-                                    ->required(),
-                            ]),
 
                         Section::make('Branding')
                             ->description('Site identity and SEO details.')

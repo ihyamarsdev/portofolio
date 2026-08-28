@@ -34,8 +34,6 @@ class EditHomeSettings extends Page
 
     public array $terminal_commands = [];
 
-    public string $new_command = '';
-
     public ?string $tech_stack_title = '';
 
     public ?string $tech_stack_description = '';
@@ -52,17 +50,7 @@ class EditHomeSettings extends Page
 
     public ?string $cta_secondary_button_text = '';
 
-    public ?string $infrastructure_title = '';
-
-    public ?string $infrastructure_description = '';
-
-    public ?string $infrastructure_status_text = '';
-
-    public string $infrastructure_status = 'operational';
-
-    public array $infrastructure_services = [];
-
-    public string $activeTab = 'branding'; // Options: branding, hero, section_copy, infrastructure, preview
+    public string $activeTab = 'content'; // Options: content, system, preview
 
     public function mount(): void
     {
@@ -94,32 +82,12 @@ class EditHomeSettings extends Page
         $this->cta_primary_button_text = $settings->cta_primary_button_text;
         $this->cta_secondary_button_text = $settings->cta_secondary_button_text;
 
-        // Infrastructure
-        $this->infrastructure_title = $settings->infrastructure_title;
-        $this->infrastructure_description = $settings->infrastructure_description;
-        $this->infrastructure_status_text = $settings->infrastructure_status_text;
-        $this->infrastructure_status = $settings->infrastructure_status ?? 'operational';
-        $this->infrastructure_services = $settings->infrastructure_services ?? [];
     }
 
     public function switchTab(string $tab): void
     {
-        $this->activeTab = $tab;
-    }
-
-    public function addCommand(): void
-    {
-        if (trim($this->new_command) !== '') {
-            $this->terminal_commands[] = trim($this->new_command);
-            $this->new_command = '';
-        }
-    }
-
-    public function removeCommand(int $index): void
-    {
-        if (isset($this->terminal_commands[$index])) {
-            unset($this->terminal_commands[$index]);
-            $this->terminal_commands = array_values($this->terminal_commands);
+        if (in_array($tab, ['content', 'system', 'preview'], true)) {
+            $this->activeTab = $tab;
         }
     }
 
@@ -163,11 +131,7 @@ class EditHomeSettings extends Page
             'cta_description' => $this->cta_description,
             'cta_primary_button_text' => $this->cta_primary_button_text,
             'cta_secondary_button_text' => $this->cta_secondary_button_text,
-            'infrastructure_title' => $this->infrastructure_title,
-            'infrastructure_description' => $this->infrastructure_description,
-            'infrastructure_status_text' => $this->infrastructure_status_text,
-            'infrastructure_status' => $this->infrastructure_status,
-            'infrastructure_services' => $this->infrastructure_services,
+
         ]);
 
         $settings->save();

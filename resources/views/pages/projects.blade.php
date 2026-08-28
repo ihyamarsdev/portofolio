@@ -1,37 +1,45 @@
 <x-layouts.app title="{{ __('messages.projects.title') }}">
     @php($projects = \App\Models\Project::with('skills')->orderBy('order')->latest()->get())
-    <section class="bg-bg-primary">
-        <div class="section-container py-16 sm:py-24">
-            <div class="mb-10 max-w-3xl">
-                <p class="font-mono text-xs uppercase tracking-widest text-accent-sky">{{ __('messages.nav.projects') }}</p>
-                <h1 class="mt-2 text-4xl font-semibold tracking-[-.05em] text-text-primary sm:text-6xl">{{ __('messages.projects.title') }}</h1>
-                <p class="mt-5 text-base leading-8 text-text-secondary sm:text-lg">{{ __('messages.projects.subtitle') }}</p>
+    <section class="bg-[#FFFBF0] dark:bg-[#0F172A]">
+        <div class="section-container py-12 sm:py-16">
+            <div class="mb-8 max-w-3xl">
+                <span class="inline-flex font-mono text-[11px] font-black uppercase tracking-[0.16em] bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">Index — {{ str_pad($projects->count(), 2, '0', STR_PAD_LEFT) }}</span>
+                <h1 class="mt-3 text-4xl font-black tracking-[-0.06em] leading-none text-black dark:text-[#FFFBF0] sm:text-6xl">
+                    {{ __('messages.projects.title') }}
+                    <span class="inline-block bg-[#2563EB] border-[3px] border-black px-2 py-1 shadow-[5px_5px_0_0_#111] rotate-[-0.5deg] ml-1 text-3xl sm:text-5xl">.</span>
+                </h1>
+                <p class="mt-4 text-base leading-7 text-[#2a2a2a] dark:text-[#d6d6d6] font-medium border-l-[4px] border-black dark:border-[#CBD5E1] pl-4 sm:text-lg">{{ __('messages.projects.subtitle') }}</p>
             </div>
-            <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 @forelse($projects as $project)
-                    <article class="group relative overflow-hidden rounded-2xl bg-bg-card shadow-[0_0_0_1px_rgba(0,0,0,.08)] transition hover:-translate-y-1 hover:shadow-[0_0_0_1px_rgba(0,0,0,.08),0_18px_45px_rgba(0,0,0,.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)]">
+                    <article class="group relative brutal-card overflow-hidden flex flex-col p-0">
                         <a href="{{ route('projects.show', $project->slug) }}" class="absolute inset-0 z-10" aria-label="Open {{ $project->title }}"></a>
                         @if($project->image_url || $project->getFirstMediaUrl('images'))
-                            <img src="{{ $project->image_url ?: $project->getFirstMediaUrl('images') }}" alt="{{ $project->title }}" class="aspect-video w-full bg-sky-50 object-contain p-3 dark:bg-slate-950/40">
-                        @else
-                            <div class="aspect-video bg-gradient-to-br from-sky-500/20 via-violet-500/20 to-emerald-500/20"></div>
-                        @endif
-                        <div class="p-5">
-                            <div class="mb-3 flex flex-wrap gap-2">
-                                @if($project->is_featured)<span class="rounded-full bg-sky-500/10 px-3 py-1 text-xs font-medium text-accent-sky">{{ __('messages.projects.featured') }}</span>@endif
-                                @if($project->architecture_diagram)<span class="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-500">{{ __('messages.projects.architecture_diagram') }}</span>@endif
+                            <div class="aspect-video w-full bg-white dark:bg-[#1E293B] border-b-[3px] border-black dark:border-[#CBD5E1] overflow-hidden p-2">
+                                <img src="{{ $project->image_url ?: $project->getFirstMediaUrl('images') }}" alt="{{ $project->title }}" class="h-full w-full object-contain">
                             </div>
-                            <h2 class="text-xl font-semibold tracking-[-.03em] text-text-primary group-hover:text-accent-sky">{{ $project->title }}</h2>
-                            <p class="mt-3 line-clamp-3 text-sm leading-6 text-text-secondary">{{ Str::limit(strip_tags($project->description), 160) }}</p>
-                            <div class="relative z-20 mt-5 flex flex-wrap items-center gap-3 text-sm">
-                                <span class="font-semibold text-accent-sky">Details →</span>
-                                @if($project->repository_url)<a href="{{ $project->repository_url }}" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-text-primary">{{ __('messages.projects.view_repository') }}</a>@endif
-                                @if($project->live_url)<a href="{{ $project->live_url }}" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-text-primary">{{ __('messages.projects.live_demo') }}</a>@endif
+                        @else
+                            <div class="aspect-video w-full border-b-[3px] border-black dark:border-[#CBD5E1] bg-[#2563EB] flex items-center justify-center">
+                                <span class="font-black text-3xl tracking-tighter">{{ Str::substr($project->title,0,2) }}</span>
+                            </div>
+                        @endif
+                        <div class="p-5 flex flex-col flex-grow">
+                            <div class="mb-3 flex flex-wrap gap-2">
+                                @if($project->is_featured)<span class="brutal-badge">★ {{ __('messages.projects.featured') }}</span>@endif
+                                @if($project->architecture_diagram)<span class="brutal-badge brutal-badge--cyan">{{ __('messages.projects.architecture_diagram') }}</span>@endif
+                                <span class="brutal-badge brutal-badge--white font-mono">#{{ str_pad($loop->iteration,2,'0',STR_PAD_LEFT) }}</span>
+                            </div>
+                            <h2 class="text-xl font-black tracking-[-0.03em] leading-tight text-black dark:text-white group-hover:underline decoration-[3px] underline-offset-4">{{ $project->title }}</h2>
+                            <p class="mt-2 line-clamp-3 text-sm leading-6 text-[#2a2a2a] dark:text-[#d6d6d6] font-medium">{{ Str::limit(strip_tags($project->description), 160) }}</p>
+                            <div class="relative z-20 mt-4 flex flex-wrap items-center gap-2 text-sm font-black uppercase tracking-tight">
+                                <span class="inline-flex items-center gap-1 bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-3 py-1 rounded-[8px] border-2 border-black">Details <span class="group-hover:translate-x-1 transition-transform">→</span></span>
+                                @if($project->repository_url)<a href="{{ $project->repository_url }}" target="_blank" rel="noopener noreferrer" class="underline decoration-2 underline-offset-4 hover:bg-[#2563EB] hover:text-white px-1">Repo</a>@endif
+                                @if($project->live_url)<a href="{{ $project->live_url }}" target="_blank" rel="noopener noreferrer" class="underline decoration-2 underline-offset-4 hover:bg-[#00D1FF] hover:text-black px-1">Live</a>@endif
                             </div>
                         </div>
                     </article>
                 @empty
-                    <div class="rounded-2xl bg-bg-card p-10 text-center text-text-secondary shadow-[0_0_0_1px_rgba(0,0,0,.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,.08)] sm:col-span-2 xl:col-span-3">{{ __('messages.projects.no_projects_found') }}</div>
+                    <div class="brutal-card p-10 text-center font-black uppercase tracking-tight sm:col-span-2 xl:col-span-3">{{ __('messages.projects.no_projects_found') }}</div>
                 @endforelse
             </div>
         </div>
