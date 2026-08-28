@@ -15,17 +15,17 @@
                         <h1 class="mt-4 text-2xl font-black tracking-[-0.04em] text-black dark:text-white leading-none">{{ $profile?->name ?? 'DevOps Engineer' }}</h1>
                         <p class="mt-1.5 inline-flex font-mono text-[11px] font-black uppercase tracking-widest bg-black dark:bg-[#3B82F6] text-white dark:text-white px-2.5 py-1 rounded-full border-2 border-black">{{ $profile?->title ?? 'Building scalable infra' }}</p>
                         <div class="mt-5 space-y-2.5 text-left">
-                            <p class="brutal-card brutal-card--flat p-3 text-sm font-bold flex items-center gap-2 !shadow-[3px_3px_0_0_#111] dark:!shadow-[3px_3px_0_0_rgba(203,213,225,0.9)]"><span class="w-8 h-8 inline-flex items-center justify-center bg-[#2563EB] border-2 border-black rounded-full text-sm">📍</span> {{ $profile?->location ?? 'Indonesia' }}</p>
-                            <p class="brutal-card brutal-card--flat p-3 text-sm font-bold flex items-center gap-2 !shadow-[3px_3px_0_0_#111] dark:!shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] bg-[#B8FF66] dark:bg-[#1E293B]"><span class="w-2 h-2 bg-black dark:bg-[#B8FF66] rounded-full animate-pulse"></span> Open for opportunities</p>
+                            <p class="brutal-card brutal-card--flat p-3 text-sm font-bold flex items-center gap-2 !shadow-[3px_3px_0_0_#111] dark:!shadow-[3px_3px_0_0_rgba(203,213,225,0.9)]"><span class="w-8 h-8 inline-flex items-center justify-center bg-[#2563EB] border-2 border-black rounded-full text-sm">📍</span> {{ $profile?->location ?? __('Indonesia') }}</p>
+                            <p class="brutal-card brutal-card--flat p-3 text-sm font-bold flex items-center gap-2 !shadow-[3px_3px_0_0_#111] dark:!shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] bg-[#B8FF66] dark:bg-[#1E293B]"><span class="w-2 h-2 bg-black dark:bg-[#B8FF66] rounded-full animate-pulse"></span> {{ __('messages.about.open_opportunities') }}</p>
                         </div>
-                        <a href="{{ route('contact') }}" class="mt-5 brutal-btn brutal-btn--primary w-full">Get in touch →</a>
+                        <a href="{{ route('contact') }}" class="mt-5 brutal-btn brutal-btn--primary w-full">{{ __('messages.about.get_in_touch') }} →</a>
                     </div>
                 </aside>
 
                 <div class="space-y-8">
                     <div class="brutal-card p-6 sm:p-8">
-                        <span class="inline-flex font-mono text-[11px] font-black uppercase tracking-[0.16em] bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">About — 01</span>
-                        <h2 class="mt-3 text-3xl sm:text-5xl font-black tracking-[-0.06em] leading-[0.9] text-black dark:text-white">Engineer focused<br><span class="bg-[#2563EB] text-white px-2 border-[3px] border-black shadow-[4px_4px_0_0_#111] inline-block rotate-[-0.5deg]">on resilient</span><br>systems.</h2>
+                        <span class="inline-flex font-mono text-[11px] font-black uppercase tracking-[0.16em] bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">{{ __('messages.about.eyebrow') }} — 01</span>
+                        <h2 class="mt-3 text-3xl sm:text-5xl font-black tracking-[-0.06em] leading-[0.9] text-black dark:text-white">{{ __('messages.about.heading') }}</h2>
                         <div class="prose mt-6 max-w-none">
                             @if($profile?->biography)
                                 {!! Str::markdown($profile->biography) !!}
@@ -45,7 +45,7 @@
                             $totalSkills = $skillsByCategory->flatten()->count();
                         @endphp
                         <div class="flex flex-wrap items-end justify-between gap-3 mb-5">
-                            <h3 class="text-2xl font-black tracking-[-0.04em] text-black dark:text-white flex items-center gap-2"><span class="w-1.5 h-7 bg-[#00D1FF] border-2 border-black rounded-full"></span> Skills matrix</h3>
+                            <h3 class="text-2xl font-black tracking-[-0.04em] text-black dark:text-white flex items-center gap-2"><span class="w-1.5 h-7 bg-[#00D1FF] border-2 border-black rounded-full"></span> {{ __('messages.about.skills_matrix') }}</h3>
                             <div class="flex gap-2">
                                 <span class="font-mono text-xs font-black uppercase bg-[#2563EB] text-white border-2 border-black px-2 py-1 rounded-full">{{ $skillsByCategory->count() }} categories</span>
                                 <span class="font-mono text-xs font-black uppercase bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] px-2 py-1 rounded-full">{{ $totalSkills }} skills</span>
@@ -101,13 +101,13 @@
                                     </div>
                                 </section>
                             @empty
-                                <div class="brutal-card p-8 text-center font-black uppercase text-[#6b6b6b] md:col-span-2">Skills will appear here.</div>
+                                <div class="brutal-card p-8 text-center font-black uppercase text-[#6b6b6b] md:col-span-2">{{ __('messages.about.skills_empty') }}</div>
                             @endforelse
                         </div>
                     </div>
 
                     <div>
-                        <h3 class="mb-4 text-2xl font-black tracking-[-0.04em] text-black dark:text-white flex items-center gap-2"><span class="w-1.5 h-7 bg-[#FF90E8] border-2 border-black rounded-full"></span> Experience</h3>
+                        <h3 class="mb-4 text-2xl font-black tracking-[-0.04em] text-black dark:text-white flex items-center gap-2"><span class="w-1.5 h-7 bg-[#FF90E8] border-2 border-black rounded-full"></span> {{ __('messages.about.experience') }}</h3>
                         <div class="space-y-5">
                             @php
                                 $experiences = \App\Models\Experience::orderBy('order', 'asc')->orderByDesc('start_date')->get();
@@ -143,7 +143,7 @@
                                     </div>
                                 </div>
                             @empty
-                                <div class="brutal-card p-8 text-center font-black uppercase">No experiences added yet.</div>
+                                <div class="brutal-card p-8 text-center font-black uppercase md:col-span-2">{{ __('messages.about.experience_empty') }}</div>
                             @endforelse
                         </div>
                     </div>
