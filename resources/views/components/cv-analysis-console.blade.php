@@ -3,7 +3,7 @@
     'jobDescription' => ''
 ])
 
-<div class="glass-card p-6 space-y-4 font-mono text-xs text-slate-300 border border-cyan-500/30 shadow-lg shadow-cyan-500/5 mb-6"
+<div class="cv-analysis-console glass-card p-6 space-y-4 font-mono text-xs text-slate-300 border border-cyan-500/30 shadow-lg shadow-cyan-500/5 mb-6"
      x-data="{
          isAnalyzing: $wire.entangle('isAnalyzing'),
          logs: [],
