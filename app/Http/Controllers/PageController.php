@@ -20,11 +20,7 @@ class PageController extends Controller
     {
         $profile = $this->getProfile();
         $homeSettings = HomeSettings::getSettings();
-        $stacks = Stack::query()
-            ->whereIn('id', Skill::whereNotNull('stack_id')->pluck('stack_id'))
-            ->orWhereHas('skills')
-            ->orderBy('name')
-            ->get();
+        $stacks = Stack::orderBy('name')->get();
 
         return view('pages.home', compact('profile', 'homeSettings', 'stacks'));
     }

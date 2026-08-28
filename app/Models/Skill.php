@@ -16,6 +16,7 @@ class Skill extends Model
         'category_id',
         'proficiency',
         'years_experience',
+        'stack_id',
     ];
 
     protected $casts = [
@@ -26,6 +27,11 @@ class Skill extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function stack(): BelongsTo
+    {
+        return $this->belongsTo(Stack::class);
     }
 
     public function stacks(): BelongsToMany
