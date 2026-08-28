@@ -133,7 +133,7 @@
                                 <svg viewBox="0 0 120 120" class="w-24 h-24">
                                     <circle class="stroke-slate-300 dark:stroke-slate-700/40 fill-none" stroke-width="5" cx="60" cy="60" r="50" />
                                     <circle class="stroke-amber-500 fill-none transition-all duration-1000" stroke-linecap="round" stroke-width="5" stroke-dasharray="314.159" stroke-dashoffset="{{ 314.159 - (314.159 * ($analysisResult['job_match_score'] ?? 0)) / 100 }}" cx="60" cy="60" r="50" transform="rotate(-90 60 60)" style="stroke: url(#jobmatchGradient);" />
-                                    <text x="60" y="60" text-anchor="middle" dominant-baseline="central" class="fill-slate-900 dark:fill-white font-bold text-xl font-mono">{{ $analysisResult['job_match_score'] ?? 0 }}%</text>
+                                    <text x="60" y="60" text-anchor="middle" dominant-baseline="central" class="fill-slate-900 dark:fill-white font-bold text-xl font-mono">{{ ($analysisResult['job_match_score'] ?? null) === null ? 'N/A' : $analysisResult['job_match_score'].'%' }}</text>
                                 </svg>
                             </div>
                             <span class="text-xs tracking-wider text-slate-400 font-bold uppercase">Job Match Score</span>
@@ -706,6 +706,7 @@
                                 <label class="block text-sm font-medium text-slate-300 mb-1.5">Target Role</label>
                                 <select wire:model.live="targetRole" class="cyber-input w-full text-xs font-semibold bg-[#12121a] text-slate-200 border border-[#2d2d3a] rounded-lg p-2.5 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/20">
                                     <option value="Devops Engineer">DevOps Engineer</option>
+                                    <option value="Devsecops Engineer">DevSecOps Engineer</option>
                                     <option value="Cloud Engineer">Cloud Engineer</option>
                                     <option value="Site Reliability Engineer">Site Reliability Engineer</option>
                                 </select>
@@ -753,13 +754,13 @@
                                             ['label' => 'Security', 'value' => $analysisResult['security_score'] ?? '-', 'color' => 'text-rose-400'],
                                             ['label' => 'Reliability', 'value' => $analysisResult['reliability_score'] ?? '-', 'color' => 'text-orange-400'],
                                             ['label' => 'Cloud', 'value' => $analysisResult['cloud_score'] ?? '-', 'color' => 'text-sky-400'],
-                                            ['label' => 'Job Match', 'value' => $analysisResult['job_match_score'] ?? '-', 'color' => 'text-amber-400'],
+                                            ['label' => 'Job Match', 'value' => $analysisResult['job_match_score'] ?? 'N/A', 'color' => 'text-amber-400'],
                                         ];
                                     @endphp
 
                                     @foreach($scoreCards as $card)
                                         <div class="bg-[#1e1e2d]/60 border border-[#2d2d3a]/50 p-4 rounded-xl text-center">
-                                            <p class="text-2xl font-bold font-mono {{ $card['color'] }}">{{ $card['value'] }}%</p>
+                                            <p class="text-2xl font-bold font-mono {{ $card['color'] }}">{{ is_numeric($card['value']) ? $card['value'].'%' : $card['value'] }}</p>
                                             <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{{ $card['label'] }}</span>
                                         </div>
                                     @endforeach
@@ -770,6 +771,111 @@
                                         <span class="bg-fuchsia-950/30 text-fuchsia-300 border border-fuchsia-500/20 px-3 py-1 rounded-full font-semibold">
                                             Seniority: {{ $analysisResult['target_seniority'] }}
                                         </span>
+                                    </div>
+                                @endif
+
+                                {{-- Evidence-Based Job Match Breakdown --}}
+                                @if(!empty($analysisResult['job_match_detail']) && is_array($analysisResult['job_match_detail']))
+                                    @php($detail = $analysisResult['job_match_detail'])
+                                    <div class="space-y-4 border border-cyan-500/20 bg-cyan-950/5 p-4 rounded-xl">
+                                        <div class="flex items-center justify-between flex-wrap gap-2">
+                                            <h4 class="text-sm font-bold text-cyan-300 flex items-center gap-2">
+                                                <x-heroicon-o-clipboard-document-check class="w-4.5 h-4.5" />
+                                                <span>Job Match Requirements (Evidence-Based)</span>
+                                            </h4>
+                                            <span class="text-[10px] font-mono text-slate-500">formula: {{ $detail['formula_version'] ?? '-' }}</span>
+                                        </div>
+
+                                        {{-- Component scores --}}
+                                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                            <div class="bg-[#12121a]/60 border border-[#2d2d3a]/30 p-3 rounded-lg text-center">
+                                                <p class="text-lg font-bold font-mono text-emerald-400">{{ $detail['overall'] ?? 0 }}%</p>
+                                                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Overall Match</span>
+                                            </div>
+                                            <div class="bg-[#12121a]/60 border border-[#2d2d3a]/30 p-3 rounded-lg text-center">
+                                                <p class="text-lg font-bold font-mono text-cyan-400">{{ $detail['must_have_coverage'] ?? 0 }}%</p>
+                                                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Must-Have Coverage</span>
+                                            </div>
+                                            <div class="bg-[#12121a]/60 border border-[#2d2d3a]/30 p-3 rounded-lg text-center">
+                                                <p class="text-lg font-bold font-mono text-blue-400">{{ $detail['nice_to_have_coverage'] ?? 0 }}%</p>
+                                                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Nice-to-Have Coverage</span>
+                                            </div>
+                                            <div class="bg-[#12121a]/60 border border-[#2d2d3a]/30 p-3 rounded-lg text-center">
+                                                <p class="text-lg font-bold font-mono text-amber-400">{{ $detail['evidence_quality'] ?? 0 }}%</p>
+                                                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Evidence Quality</span>
+                                            </div>
+                                        </div>
+
+                                        {{-- Anchored band (BARS-style definition) --}}
+                                        @if(!empty($detail['band']))
+                                            <div class="bg-[#12121a]/60 border border-[#2d2d3a]/30 p-3 rounded-lg">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-xs font-bold text-white">{{ $detail['band']['label'] ?? '' }}</span>
+                                                    <span class="text-[10px] text-slate-500 uppercase tracking-wider">anchored band</span>
+                                                </div>
+                                                <p class="text-xs text-slate-400 mt-1">{{ $detail['band']['definition'] ?? '' }}</p>
+                                            </div>
+                                        @endif
+
+                                        {{-- Requirement checklist with evidence --}}
+                                        @if(!empty($detail['requirements']) && is_array($detail['requirements']))
+                                            <div class="space-y-2">
+                                                <h5 class="text-xs font-bold text-slate-300 uppercase tracking-wide">Requirement Checklist</h5>
+                                                @foreach($detail['requirements'] as $req)
+                                                    @php
+                                                        $status = $req['status'] ?? 'missing';
+                                                        $statusStyles = [
+                                                            'verified' => 'bg-emerald-950/40 text-emerald-300 border border-emerald-500/30',
+                                                            'claimed' => 'bg-amber-950/40 text-amber-300 border border-amber-500/30',
+                                                            'missing' => 'bg-rose-950/40 text-rose-300 border border-rose-500/30',
+                                                        ];
+                                                        $statusLabels = ['verified' => '✓ Verified', 'claimed' => '~ Claimed', 'missing' => '✗ Missing'];
+                                                    @endphp
+                                                    <div class="bg-[#12121a]/70 border border-[#2d2d3a]/50 p-3 rounded-lg space-y-1.5">
+                                                        <div class="flex items-center justify-between gap-2 flex-wrap">
+                                                            <span class="text-sm font-semibold text-white">{{ $req['requirement'] ?? '' }}</span>
+                                                            <div class="flex items-center gap-1.5">
+                                                                <span class="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide {{ ($req['type'] ?? '') === 'nice_to_have' ? 'bg-blue-950/40 text-blue-300 border border-blue-500/30' : 'bg-cyan-950/40 text-cyan-300 border border-cyan-500/30' }}">
+                                                                    {{ ($req['type'] ?? 'must_have') === 'nice_to_have' ? 'nice-to-have' : 'must-have' }}
+                                                                </span>
+                                                                <span class="text-[10px] px-2 py-0.5 rounded-full font-bold {{ $statusStyles[$status] ?? $statusStyles['missing'] }}">
+                                                                    {{ $statusLabels[$status] ?? $statusLabels['missing'] }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        @if(!empty($req['evidence_quote']))
+                                                            <div class="text-xs text-slate-400 font-mono bg-black/30 border-l-2 border-slate-600 pl-2 py-1 rounded-r">
+                                                                “{{ $req['evidence_quote'] }}”
+                                                            </div>
+                                                        @endif
+                                                        @if(!empty($req['reasoning']))
+                                                            <div class="text-[11px] text-slate-500">{{ $req['reasoning'] }}</div>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+
+                                        {{-- Formula transparency --}}
+                                        <details class="bg-[#12121a]/60 border border-[#2d2d3a]/30 rounded-lg">
+                                            <summary class="cursor-pointer px-3 py-2 text-xs font-bold text-slate-300 hover:text-white select-none">
+                                                How this score is computed (objective formula)
+                                            </summary>
+                                            <div class="px-3 pb-3 space-y-2 text-[11px] text-slate-400 font-mono">
+                                                <p>overall = 0.6 × must_have_coverage + 0.2 × nice_to_have_coverage + 0.2 × evidence_quality</p>
+                                                <p>status points: verified = 1.0 · claimed = 0.4 · missing = 0.0</p>
+                                                <p>evidence_quality = verified / (verified + claimed)</p>
+                                                <div class="pt-1 border-t border-[#2d2d3a]/50 space-y-1 font-sans">
+                                                    <p><span class="text-emerald-400 font-bold">85–100 Strong:</span> majority of must-haves verified with quantified evidence.</p>
+                                                    <p><span class="text-cyan-400 font-bold">70–84 Good:</span> must-haves covered, several only claimed.</p>
+                                                    <p><span class="text-amber-400 font-bold">50–69 Partial:</span> gaps in must-haves or weak evidence.</p>
+                                                    <p><span class="text-rose-400 font-bold">0–49 Weak:</span> critical must-haves missing.</p>
+                                                </div>
+                                                <p class="font-sans text-slate-500 pt-1">Scores are computed deterministically from evidence verified against the CV text — the AI never assigns the numeric score.</p>
+                                            </div>
+                                        </details>
+
+
                                     </div>
                                 @endif
 

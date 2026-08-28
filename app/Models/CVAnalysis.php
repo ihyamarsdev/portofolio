@@ -33,6 +33,8 @@ class CVAnalysis extends Model
         'job_title_targeted',
         'target_seniority',
         'job_match_score',
+        'job_match_detail',
+        'job_match_formula_version',
     ];
 
     protected $casts = [
@@ -55,6 +57,7 @@ class CVAnalysis extends Model
         'reliability_score' => 'integer',
         'cloud_score' => 'integer',
         'job_match_score' => 'integer',
+        'job_match_detail' => 'array',
     ];
 
     public function profile(): BelongsTo

@@ -52,7 +52,20 @@ class CVGeneratorAiSdkTest extends TestCase
                 'sre' => 78,
             ],
             'summary' => 'Strong CV for DevOps and cloud roles with moderate security depth.',
-            'job_match_score' => 80,
+            'job_match_verification' => [
+                [
+                    'requirement' => 'Docker',
+                    'status' => 'verified',
+                    'evidence_quote' => 'Built CI/CD pipelines with Docker',
+                    'reasoning' => 'Docker usage is demonstrated with pipeline context.',
+                ],
+                [
+                    'requirement' => 'Kubernetes',
+                    'status' => 'missing',
+                    'evidence_quote' => '',
+                    'reasoning' => 'Not present in the CV.',
+                ],
+            ],
             'job_title_targeted' => 'DevOps Engineer',
             'target_seniority' => 'Mid-Senior',
         ]]);
@@ -71,6 +84,8 @@ class CVGeneratorAiSdkTest extends TestCase
         $this->assertSame(['AWS'], $result['keywords']['weak_evidence']);
         $this->assertSame('Mid-Senior', $result['target_seniority']);
         $this->assertSame(76, $result['industry_match']['devsecops']);
+        $this->assertArrayNotHasKey('job_match_score', $result);
+        $this->assertCount(2, $result['job_match_verification']);
 
         Ai::assertAgentWasPrompted(
             ComprehensiveCVAnalysisAgent::class,
@@ -100,5 +115,42 @@ class CVGeneratorAiSdkTest extends TestCase
         $this->assertStringContainsString('weak_evidence', $instructions);
         $this->assertStringContainsString('experience_review', $instructions);
         $this->assertStringContainsString('target_seniority', $instructions);
+        $this->assertStringContainsString('JOB MATCH SCORING POLICY', $instructions);
+    }
+
+    public function test_agent_includes_job_match_verification_instructions_when_requirements_present(): void
+    {
+        $agent = new ComprehensiveCVAnalysisAgent(
+            'Deployed Kubernetes clusters with 99.9% uptime for 50 microservices.',
+            'Hiring a Senior DevOps Engineer with Kubernetes and Terraform.',
+            'DevOps Engineer',
+            [
+                [
+                    'requirement' => 'Kubernetes',
+                    'type' => 'must_have',
+                    'weight' => 5,
+                    'status' => 'verified',
+                    'evidence_quote' => 'Deployed Kubernetes clusters',
+                    'reasoning' => '',
+                ],
+                [
+                    'requirement' => 'Terraform',
+                    'type' => 'must_have',
+                    'weight' => 4,
+                    'status' => 'missing',
+                    'evidence_quote' => '',
+                    'reasoning' => '',
+                ],
+            ]
+        );
+
+        $instructions = (string) $agent->instructions();
+
+        $this->assertStringContainsString('JOB MATCH VERIFICATION (EVIDENCE-BASED)', $instructions);
+        $this->assertStringContainsString('REQUIREMENTS EXTRACTED FROM THE JOB DESCRIPTION', $instructions);
+        $this->assertStringContainsString('[must_have] (weight 5) Kubernetes', $instructions);
+        $this->assertStringContainsString('[must_have] (weight 4) Terraform', $instructions);
+        $this->assertStringContainsString('evidence_quote copied VERBATIM', $instructions);
+        $this->assertStringContainsString('Do NOT output any numeric match score', $instructions);
     }
 }

@@ -19,6 +19,7 @@ class ComprehensiveCVAnalysisAgent implements Agent, HasStructuredOutput
         public string $cvContent,
         public ?string $jobDescription = null,
         public ?string $targetRole = null,
+        protected array $jobRequirementMatches = [],
         protected ?KeywordService $keywordService = null
     ) {
         $this->keywordService = $keywordService ?? app(KeywordService::class);
@@ -80,7 +81,10 @@ SCORING RUBRIC (0-100 each):
 - Security Score: DevSecOps/security maturity, secure SDLC, IAM, secrets handling, vulnerability management, container/cloud security.
 - Reliability Score: SRE maturity, SLI/SLO awareness, incident response, observability, MTTR/availability, resilience engineering.
 - Cloud Score: cloud architecture depth, provider-native services, networking, HA/DR, scalability, cost-awareness.
-- Job Match Score: explicit fit against the provided job description. If no job description exists, set to 0.
+
+JOB MATCH SCORING POLICY:
+- You must NEVER output a numeric job match score. The objective match score is computed
+  deterministically in application code from the requirement verification results below.
 
 TARGET ROLES TO EVALUATE:
 - DevOps
@@ -126,10 +130,12 @@ PROMPT;
         }
 
         if ($this->jobDescription) {
-            $instructions .= "\nJOB DESCRIPTION PROVIDED: infer target role and seniority, then compute Job Match Score against the JD.";
+            $instructions .= "\nJOB DESCRIPTION PROVIDED: infer target role and seniority, then verify each extracted requirement against the CV (see JOB MATCH VERIFICATION below).";
         } else {
-            $instructions .= "\nNO JOB DESCRIPTION PROVIDED: set job_match_score to 0 and infer the most likely target role from the CV itself.";
+            $instructions .= "\nNO JOB DESCRIPTION PROVIDED: return an empty job_match_verification array and infer the most likely target role from the CV itself.";
         }
+
+        $instructions .= $this->buildJobMatchVerificationSection();
 
         $instructions .= "\n\nCV Content:\n".$this->cvContent;
 
@@ -166,6 +172,45 @@ PROMPT;
         $reference .= "- Do not inflate scores without evidence.\n";
 
         return $reference;
+    }
+
+    /**
+     * Build the job match verification section for AI instructions.
+     *
+     * The AI verifies evidence per requirement with mandatory citations, but
+     * never produces the numeric score — that is computed deterministically
+     * in JobMatchService.
+     */
+    protected function buildJobMatchVerificationSection(): string
+    {
+        if ($this->jobRequirementMatches === []) {
+            return '';
+        }
+
+        $section = "\n\nJOB MATCH VERIFICATION (EVIDENCE-BASED):\n";
+        $section .= "For EACH requirement below, assign exactly one status based ONLY on the CV content:\n";
+        $section .= "- \"verified\": the requirement is demonstrated WITH quantified evidence (metrics, percentages, scale, outcomes).\n";
+        $section .= "- \"claimed\": the skill/requirement is mentioned but without measurable proof.\n";
+        $section .= "- \"missing\": not present in the CV.\n\n";
+        $section .= "STRICT CITATION RULES:\n";
+        $section .= "1. For \"verified\" and \"claimed\" you MUST provide evidence_quote copied VERBATIM from the CV content. Never fabricate or paraphrase quotes.\n";
+        $section .= "2. If you cannot quote the CV verbatim, you must use status \"missing\" with an empty evidence_quote.\n";
+        $section .= "3. reasoning must explain, in one sentence, why the status was assigned.\n";
+        $section .= "4. Do NOT output any numeric match score.\n\n";
+        $section .= "REQUIREMENTS EXTRACTED FROM THE JOB DESCRIPTION:\n";
+
+        foreach ($this->jobRequirementMatches as $index => $match) {
+            $section .= sprintf(
+                "%d. [%s] (weight %d) %s — preliminary status: %s\n",
+                $index + 1,
+                $match['type'] ?? 'must_have',
+                $match['weight'] ?? 3,
+                $match['requirement'] ?? '',
+                $match['status'] ?? 'missing'
+            );
+        }
+
+        return $section;
     }
 
     /**
@@ -207,7 +252,14 @@ PROMPT;
                 'cloud_engineer' => $schema->integer()->min(0)->max(100)->required(),
             ])->required(),
             'summary' => $schema->string()->required(),
-            'job_match_score' => $schema->integer()->min(0)->max(100)->required(),
+            'job_match_verification' => $schema->array()->items(
+                $schema->object([
+                    'requirement' => $schema->string()->required(),
+                    'status' => $schema->string()->required(),
+                    'evidence_quote' => $schema->string()->required(),
+                    'reasoning' => $schema->string()->required(),
+                ])
+            )->required(),
             'job_title_targeted' => $schema->string()->required(),
             'target_seniority' => $schema->string()->required(),
         ];

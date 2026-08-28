@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Ai\Agents\ComprehensiveCVAnalysisAgent;
+use App\Ai\Agents\JobRequirementExtractionAgent;
 use App\Models\Category;
 use App\Models\Certificate;
 use App\Models\CVAnalysis;
@@ -11,6 +12,7 @@ use App\Models\Experience;
 use App\Models\Profile;
 use App\Models\Skill;
 use App\Services\CVGeneratorService;
+use App\Services\JobMatchService;
 use BackedEnum;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
@@ -241,6 +243,7 @@ class CVGenerator extends Page
                     'industry_match' => $analysis->industry_match ?? [],
                     'summary' => $analysis->summary,
                     'job_match_score' => $analysis->job_match_score,
+                    'job_match_detail' => $analysis->job_match_detail,
                     'job_title_targeted' => $analysis->job_title_targeted,
                     'target_seniority' => $analysis->target_seniority,
                 ];
@@ -315,6 +318,7 @@ class CVGenerator extends Page
                     'industry_match' => $this->currentAnalysis->industry_match ?? [],
                     'summary' => $this->currentAnalysis->summary,
                     'job_match_score' => $this->currentAnalysis->job_match_score,
+                    'job_match_detail' => $this->currentAnalysis->job_match_detail,
                     'job_title_targeted' => $this->currentAnalysis->job_title_targeted,
                     'target_seniority' => $this->currentAnalysis->target_seniority,
                 ];
@@ -780,11 +784,46 @@ class CVGenerator extends Page
 
             $cvContent = $this->buildCVContent($profile);
 
-            $agent = new ComprehensiveCVAnalysisAgent($cvContent, $this->jobDescription, $this->targetRole);
+            $jobMatchService = app(JobMatchService::class);
+
+            // Stage 1a: extract structured requirements from the job description.
+            $extracted = null;
+            if (! empty($this->jobDescription)) {
+                $extracted = $this->extractJobRequirements();
+
+                if (empty($extracted['requirements'])) {
+                    // Deterministic fallback when AI extraction is unavailable.
+                    $extracted = $jobMatchService->extractRequirementsDeterministic($this->jobDescription, $this->targetRole);
+                }
+            }
+
+            // Stage 1b: deterministic preliminary evidence matching (STAR-based).
+            $preliminaryMatches = [];
+            if (! empty($extracted['requirements'])) {
+                $preliminaryMatches = $jobMatchService->matchRequirements($extracted['requirements'], $cvContent);
+            }
+
+            // Stage 2: AI qualitative analysis + evidence verification (citations required).
+            $agent = new ComprehensiveCVAnalysisAgent($cvContent, $this->jobDescription, $this->targetRole, $preliminaryMatches);
             $result = $this->analyzeWithLaravelAi($agent);
 
             if ($result === [] || ($result['error'] ?? false) === true) {
                 return;
+            }
+
+            // Stage 3: reconcile AI verification against the CV text and compute
+            // the objective score deterministically (the LLM never scores).
+            $jobMatchDetail = null;
+            $jobMatchScore = null;
+            if ($preliminaryMatches !== []) {
+                $reconciled = $jobMatchService->reconcile(
+                    $preliminaryMatches,
+                    $result['job_match_verification'] ?? [],
+                    $cvContent
+                );
+
+                $jobMatchDetail = $jobMatchService->computeScore($reconciled);
+                $jobMatchScore = $jobMatchDetail['overall'];
             }
 
             $targetedJobTitle = $result['job_title_targeted'] ?? null;
@@ -810,7 +849,8 @@ class CVGenerator extends Page
                 'experience_review' => $result['experience_review'] ?? [],
                 'industry_match' => $result['industry_match'] ?? [],
                 'summary' => $result['summary'] ?? null,
-                'job_match_score' => $result['job_match_score'] ?? null,
+                'job_match_score' => $jobMatchScore,
+                'job_match_detail' => $jobMatchDetail,
                 'job_title_targeted' => $targetedJobTitle,
                 'target_seniority' => $result['target_seniority'] ?? null,
             ];
@@ -834,7 +874,9 @@ class CVGenerator extends Page
                 'rewrite_priorities' => $result['rewrite_priorities'] ?? [],
                 'experience_review' => $result['experience_review'] ?? [],
                 'industry_match' => $result['industry_match'] ?? [],
-                'job_match_score' => $result['job_match_score'] ?? null,
+                'job_match_score' => $jobMatchScore,
+                'job_match_detail' => $jobMatchDetail,
+                'job_match_formula_version' => $jobMatchDetail['formula_version'] ?? null,
                 'summary' => $result['summary'] ?? null,
                 'job_title_targeted' => $targetedJobTitle,
                 'target_seniority' => $result['target_seniority'] ?? null,
@@ -902,7 +944,7 @@ class CVGenerator extends Page
             ->send();
     }
 
-    protected function analyzeWithLaravelAi(ComprehensiveCVAnalysisAgent $agent): array
+    protected function analyzeWithLaravelAi(object $agent): array
     {
         try {
             $response = $agent->prompt(
@@ -922,6 +964,31 @@ class CVGenerator extends Page
         }
 
         return json_decode($response->text, true, flags: JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * Extract structured requirements from the pasted job description using
+     * the extraction agent. Returns null when the AI call fails so the caller
+     * can fall back to deterministic extraction.
+     */
+    protected function extractJobRequirements(): ?array
+    {
+        try {
+            $agent = new JobRequirementExtractionAgent($this->jobDescription ?? '', $this->targetRole);
+            $result = $this->analyzeWithLaravelAi($agent);
+        } catch (Throwable $e) {
+            Log::warning('Job requirement extraction failed, falling back to deterministic extraction: '.$e->getMessage());
+
+            return null;
+        }
+
+        if ($result === [] || ($result['error'] ?? false) === true || empty($result['requirements'])) {
+            return null;
+        }
+
+        $result['source'] = 'ai';
+
+        return $result;
     }
 
     protected function notifyAnalysisFailure(Throwable $exception): void
@@ -999,6 +1066,7 @@ class CVGenerator extends Page
             'industry_match' => $analysis->industry_match ?? [],
             'summary' => $analysis->summary,
             'job_match_score' => $analysis->job_match_score,
+            'job_match_detail' => $analysis->job_match_detail,
             'job_title_targeted' => $analysis->job_title_targeted,
             'target_seniority' => $analysis->target_seniority,
         ];
@@ -1045,7 +1113,8 @@ class CVGenerator extends Page
             'security_score' => $analysis->security_score ?? 0,
             'reliability_score' => $analysis->reliability_score ?? 0,
             'cloud_score' => $analysis->cloud_score ?? 0,
-            'job_match_score' => $analysis->job_match_score ?? 0,
+            'job_match_score' => $analysis->job_match_score,
+            'job_match_detail' => $analysis->job_match_detail,
             'job_title_targeted' => $analysis->job_title_targeted ?? 'General CV Analysis',
             'target_seniority' => $analysis->target_seniority ?? 'Not Clear',
             'summary' => $analysis->summary,

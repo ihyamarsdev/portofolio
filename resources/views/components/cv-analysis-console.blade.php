@@ -14,7 +14,8 @@
              { type: 'info', text: 'Fetching and compiling skills & technologies...' },
              { type: 'info', text: 'Target role selected: {{ $targetRole }}' },
              @if(!empty($jobDescription))
-             { type: 'info', text: 'Analyzing custom job description requirements ({{ strlen($jobDescription) }} bytes)...' },
+             { type: 'info', text: 'Parsing job description into structured requirements ({{ strlen($jobDescription) }} bytes)...' },
+             { type: 'info', text: 'Matching requirements against CV evidence (STAR-based)...' },
              @endif
              { type: 'info', text: 'Analyzing resume text matching against reference concepts...' },
              { type: 'warning', text: 'Sending prompt payloads to AI model gateway ({{ config('cv.provider', 'cv') }}/{{ config('cv.model', 'cv') }})...' },
@@ -62,7 +63,8 @@
                          if (result) {
                              this.logs.push(`[${time}] [INFO] Response received from AI model gateway.`);
                              this.logs.push(`[${time}] [INFO] Parsed structured JSON schema successfully.`);
-                             this.logs.push(`[${time}] [INFO] Scores computed - ATS: ${result.ats_score}% | Format: ${result.format_score}% | Job Match: ${result.job_match_score ?? 0}%.`);
+                             this.logs.push(`[${time}] [INFO] Verifying requirement evidence and computing objective score deterministically.`);
+                             this.logs.push(`[${time}] [INFO] Scores computed - ATS: ${result.ats_score}% | Format: ${result.format_score}% | Job Match: ${result.job_match_score == null ? 'N/A' : result.job_match_score + '%'}.`);
                              this.logs.push(`[${time}] [INFO] Saving analysis record to Database.`);
                              this.logs.push(`[${time}] [SUCCESS] Analysis completed successfully!`);
                          } else {
