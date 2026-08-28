@@ -776,7 +776,9 @@
 
                                 {{-- Evidence-Based Job Match Breakdown --}}
                                 @if(!empty($analysisResult['job_match_detail']) && is_array($analysisResult['job_match_detail']))
-                                    @php($detail = $analysisResult['job_match_detail'])
+                                    @php
+                                        $detail = $analysisResult['job_match_detail'];
+                                    @endphp
                                     <div class="space-y-4 border border-cyan-500/20 bg-cyan-950/5 p-4 rounded-xl">
                                         <div class="flex items-center justify-between flex-wrap gap-2">
                                             <h4 class="text-sm font-bold text-cyan-300 flex items-center gap-2">
