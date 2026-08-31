@@ -27,6 +27,18 @@ class InboxResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'subject';
 
+    public static function getNavigationBadge(): ?string
+    {
+        $unread = Inbox::where('is_read', false)->count();
+
+        return $unread > 0 ? (string) $unread : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'danger';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return InboxForm::configure($schema);

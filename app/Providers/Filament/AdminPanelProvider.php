@@ -17,7 +17,9 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Livewire\Livewire;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -51,14 +53,6 @@ class AdminPanelProvider extends PanelProvider
                 in: app_path('Filament/Widgets'),
                 for: 'App\\Filament\\Widgets',
             )
-            ->widgets([
-                // \App\Filament\Widgets\StatsOverview::class,
-                // \App\Filament\Widgets\LatestProjectsWidget::class,
-                // \App\Filament\Widgets\ATSScoreChartWidget::class,
-                // \App\Filament\Widgets\FormatScoreChartWidget::class,
-                // \App\Filament\Widgets\JobMatchChartWidget::class,
-                // \App\Filament\Widgets\AboutMeScoreChartWidget::class,
-            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -72,8 +66,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->renderHook(
                 'panels::topbar.end',
-                fn (): \Illuminate\Support\HtmlString => new \Illuminate\Support\HtmlString(
-                    (string) \Livewire\Livewire::mount(LanguageSwitcher::class)
+                fn (): HtmlString => new HtmlString(
+                    (string) Livewire::mount(LanguageSwitcher::class)
                 ),
             )
             ->authMiddleware([Authenticate::class]);
