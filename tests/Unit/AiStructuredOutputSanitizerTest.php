@@ -117,4 +117,72 @@ class AiStructuredOutputSanitizerTest extends TestCase
         $this->assertSame('', $clean['experience_review'][0]['gap']);
         $this->assertSame(80, $clean['industry_match']['devops']);
     }
+
+    public function test_normalize_converts_markdown_table_rows_to_objects(): void
+    {
+        $dirty = [
+            '',
+            '| Section | Strength | Gap | Rewrite Hint |',
+            '|---------|----------|-----|--------------|',
+            '| DevOps Engineer at Digital Sekuriti Indonesia | Strong ownership of infrastructure modernization | Missing deployment frequency, MTTR | Add concrete metrics with placeholders |',
+            '| Cloud Computing Cohort at Bangkit Academy | Good foundation with GCP, Terraform | Lacks scale context | Reframe to highlight production-like outcomes |',
+            '',
+        ];
+
+        $clean = AiStructuredOutputSanitizer::normalizeReviewList($dirty);
+
+        $this->assertCount(2, $clean);
+        $this->assertSame('DevOps Engineer at Digital Sekuriti Indonesia', $clean[0]['section']);
+        $this->assertSame('Strong ownership of infrastructure modernization', $clean[0]['strength']);
+        $this->assertSame('Missing deployment frequency, MTTR', $clean[0]['gap']);
+        $this->assertSame('Add concrete metrics with placeholders', $clean[0]['rewrite_hint']);
+        $this->assertSame('Cloud Computing Cohort at Bangkit Academy', $clean[1]['section']);
+    }
+
+    public function test_normalize_converts_associative_comments_to_objects(): void
+    {
+        $dirty = [
+            'senior_role' => 'Good role scope; add incident and cost metrics.',
+            'security_role' => 'Add vulnerability scanning, secrets management, and compliance outcomes.',
+        ];
+
+        $clean = AiStructuredOutputSanitizer::normalizeReviewList($dirty);
+
+        $this->assertCount(2, $clean);
+        $this->assertSame('Senior Role', $clean[0]['section']);
+        $this->assertSame('Good role scope; add incident and cost metrics.', $clean[0]['rewrite_hint']);
+        $this->assertSame('Security Role', $clean[1]['section']);
+        $this->assertSame('', $clean[0]['strength']);
+        $this->assertSame('', $clean[0]['gap']);
+    }
+
+    public function test_normalize_keeps_valid_objects_and_drops_empty_items(): void
+    {
+        $dirty = [
+            '',
+            ['section' => 'AI-Care Platform', 'strength' => 'Designed production cluster', 'gap' => 'No cluster size', 'rewrite_hint' => 'Add node count'],
+            ['section' => '', 'strength' => '', 'gap' => '', 'rewrite_hint' => ''],
+        ];
+
+        $clean = AiStructuredOutputSanitizer::normalizeReviewList($dirty);
+
+        $this->assertCount(1, $clean);
+        $this->assertSame('AI-Care Platform', $clean[0]['section']);
+        $this->assertSame('No cluster size', $clean[0]['gap']);
+    }
+
+    public function test_sanitize_normalizes_experience_review_key(): void
+    {
+        $payload = [
+            'experience_review' => [
+                'automation_role' => 'Python and scripting should be tied to measurable time savings.',
+            ],
+        ];
+
+        $clean = AiStructuredOutputSanitizer::sanitize($payload);
+
+        $this->assertCount(1, $clean['experience_review']);
+        $this->assertSame('Automation Role', $clean['experience_review'][0]['section']);
+        $this->assertArrayHasKey('rewrite_hint', $clean['experience_review'][0]);
+    }
 }

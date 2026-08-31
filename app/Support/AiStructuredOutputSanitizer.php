@@ -43,12 +43,147 @@ class AiStructuredOutputSanitizer
     public static function sanitize(array $payload): array
     {
         foreach ($payload as $key => $value) {
+            if ($key === 'experience_review') {
+                $payload[$key] = self::normalizeReviewList($value);
+
+                continue;
+            }
+
             $payload[$key] = is_array($value)
                 ? self::sanitizeValue($value)
                 : (is_string($value) ? self::cleanText($value) : $value);
         }
 
         return $payload;
+    }
+
+    /**
+     * Normalize an experience_review payload into the schema shape — a list
+     * of objects with section/strength/gap/rewrite_hint keys — regardless of
+     * what the provider produced:
+     *
+     *  - a markdown table (header row, separator row, `|`-delimited rows)
+     *  - an associative map like {senior_role: "comment", ...}
+     *  - a list of plain strings (rendered as review notes)
+     *  - a list of already-correct objects
+     */
+    public static function normalizeReviewList(mixed $items): array
+    {
+        if (! is_array($items)) {
+            return [];
+        }
+
+        // Associative shape: {role_key: comment, ...} -> one entry per key.
+        if (self::isAssociative($items)) {
+            $normalized = [];
+
+            foreach ($items as $key => $value) {
+                $comment = is_string($value) ? self::cleanText($value) : '';
+
+                if ($comment === '') {
+                    continue;
+                }
+
+                $normalized[] = [
+                    'section' => self::humanizeKey((string) $key),
+                    'strength' => '',
+                    'gap' => '',
+                    'rewrite_hint' => $comment,
+                ];
+            }
+
+            return $normalized;
+        }
+
+        $normalized = [];
+        $headers = null;
+
+        foreach ($items as $item) {
+            if (is_array($item)) {
+                if (self::isAssociative($item)) {
+                    $row = [];
+
+                    foreach (['section', 'strength', 'gap', 'rewrite_hint'] as $key) {
+                        $row[$key] = self::cleanText((string) ($item[$key] ?? ''));
+                    }
+
+                    if (trim(implode('', $row)) !== '') {
+                        $normalized[] = $row;
+                    }
+                }
+
+                continue;
+            }
+
+            if (! is_string($item)) {
+                continue;
+            }
+
+            $line = self::cleanText($item);
+
+            if ($line === '' || self::isJunk($line)) {
+                continue;
+            }
+
+            // Markdown table row: | a | b | c | d |
+            if (str_starts_with($line, '|')) {
+                $cells = array_map('trim', explode('|', trim($line, '|')));
+
+                if ($cells === [] || $cells === ['']) {
+                    continue;
+                }
+
+                // Separator row like |---|---|
+                if (preg_match('/^[-:]+$/', str_replace(' ', '', $cells[0]))) {
+                    continue;
+                }
+
+                if ($headers === null) {
+                    $candidates = array_map(
+                        fn ($cell) => str_replace(' ', '_', strtolower($cell)),
+                        $cells
+                    );
+
+                    if (count(array_intersect($candidates, ['section', 'strength', 'gap', 'rewrite_hint'])) > 0) {
+                        $headers = $candidates;
+
+                        continue;
+                    }
+
+                    // No recognizable header row: fall back to positional mapping.
+                    $headers = ['section', 'strength', 'gap', 'rewrite_hint'];
+                }
+
+                $row = [];
+
+                foreach ($headers as $index => $header) {
+                    $key = in_array($header, ['section', 'strength', 'gap', 'rewrite_hint'], true)
+                        ? $header
+                        : 'section';
+                    $row[$key] = self::cleanText($cells[$index] ?? '');
+                }
+
+                foreach (['section', 'strength', 'gap', 'rewrite_hint'] as $key) {
+                    $row[$key] = self::cleanText($row[$key] ?? '');
+                }
+
+                if (trim(implode('', $row)) !== '') {
+                    $normalized[] = $row;
+                }
+
+                continue;
+            }
+
+            // Plain string line: keep it as a single review note.
+            $normalized[] = [
+                'section' => '',
+                'strength' => '',
+                'gap' => '',
+                'rewrite_hint' => $line,
+            ];
+        }
+
+        return $normalized;
     }
 
     /**
@@ -193,5 +328,14 @@ class AiStructuredOutputSanitizer
     protected static function isAssociative(array $array): bool
     {
         return $array !== [] && array_keys($array) !== range(0, count($array) - 1);
+    }
+
+    /**
+     * Convert a snake_case key like "senior_role" into a readable section
+     * title like "Senior Role".
+     */
+    protected static function humanizeKey(string $key): string
+    {
+        return ucwords(str_replace('_', ' ', trim($key)));
     }
 }

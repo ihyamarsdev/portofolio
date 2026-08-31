@@ -1007,12 +1007,24 @@
                                         <h4 class="text-sm font-bold text-slate-200">Experience Evidence Review</h4>
                                         <div class="space-y-3">
                                             @foreach((is_array($analysisResult['experience_review'] ?? null) ? $analysisResult['experience_review'] : []) as $review)
-                                                <div class="bg-[#12121a]/80 border border-[#2d2d3a]/50 p-4 rounded-xl space-y-2">
-                                                    <div class="text-sm font-semibold text-white">{{ $review['section'] ?? 'Experience' }}</div>
-                                                    <div class="text-xs text-emerald-300">Strength: {{ $review['strength'] ?? '-' }}</div>
-                                                    <div class="text-xs text-rose-300">Gap: {{ $review['gap'] ?? '-' }}</div>
-                                                    <div class="text-xs text-sky-300">Rewrite Hint: {{ $review['rewrite_hint'] ?? '-' }}</div>
-                                                </div>
+                                                @if(is_string($review))
+                                                    <div class="bg-[#12121a]/80 border border-[#2d2d3a]/50 p-4 rounded-xl">
+                                                        <p class="text-xs text-slate-300 leading-relaxed">{{ $review }}</p>
+                                                    </div>
+                                                @elseif(is_array($review))
+                                                    <div class="bg-[#12121a]/80 border border-[#2d2d3a]/50 p-4 rounded-xl space-y-2">
+                                                        <div class="text-sm font-semibold text-white">{{ $review['section'] ?? 'Experience' }}</div>
+                                                        @if(!empty($review['strength']))
+                                                            <div class="text-xs text-emerald-300">Strength: {{ $review['strength'] }}</div>
+                                                        @endif
+                                                        @if(!empty($review['gap']))
+                                                            <div class="text-xs text-rose-300">Gap: {{ $review['gap'] }}</div>
+                                                        @endif
+                                                        @if(!empty($review['rewrite_hint']))
+                                                            <div class="text-xs text-sky-300">Rewrite Hint: {{ $review['rewrite_hint'] }}</div>
+                                                        @endif
+                                                    </div>
+                                                @endif
                                             @endforeach
                                         </div>
                                     </div>
@@ -1659,12 +1671,24 @@
                                  </h4>
                                  <div class="space-y-2.5">
                                      @foreach($selectedAnalysisDetail['experience_review'] as $review)
-                                         <div class="p-4 bg-[#181824]/40 border border-[#2d2d3a]/50 rounded-lg space-y-2">
-                                             <div class="text-sm font-semibold text-white">{{ $review['section'] ?? 'Experience' }}</div>
-                                             <div class="text-xs text-emerald-300">Strength: {{ $review['strength'] ?? '-' }}</div>
-                                             <div class="text-xs text-rose-300">Gap: {{ $review['gap'] ?? '-' }}</div>
-                                             <div class="text-xs text-sky-300">Rewrite Hint: {{ $review['rewrite_hint'] ?? '-' }}</div>
-                                         </div>
+                                         @if(is_string($review))
+                                             <div class="p-4 bg-[#181824]/40 border border-[#2d2d3a]/50 rounded-lg">
+                                                 <p class="text-xs text-slate-300 leading-relaxed">{{ $review }}</p>
+                                             </div>
+                                         @elseif(is_array($review))
+                                             <div class="p-4 bg-[#181824]/40 border border-[#2d2d3a]/50 rounded-lg space-y-2">
+                                                 <div class="text-sm font-semibold text-white">{{ $review['section'] ?? 'Experience' }}</div>
+                                                 @if(!empty($review['strength']))
+                                                     <div class="text-xs text-emerald-300">Strength: {{ $review['strength'] }}</div>
+                                                 @endif
+                                                 @if(!empty($review['gap']))
+                                                     <div class="text-xs text-rose-300">Gap: {{ $review['gap'] }}</div>
+                                                 @endif
+                                                 @if(!empty($review['rewrite_hint']))
+                                                     <div class="text-xs text-sky-300">Rewrite Hint: {{ $review['rewrite_hint'] }}</div>
+                                                 @endif
+                                             </div>
+                                         @endif
                                      @endforeach
                                  </div>
                              </div>
