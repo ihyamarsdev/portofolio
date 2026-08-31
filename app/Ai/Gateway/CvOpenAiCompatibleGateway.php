@@ -3,6 +3,7 @@
 namespace App\Ai\Gateway;
 
 use App\Support\AiNotification;
+use App\Support\AiStructuredOutputSanitizer;
 use Generator;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\JsonSchema\Types\ArrayType;
@@ -97,7 +98,7 @@ class CvOpenAiCompatibleGateway extends OpenAiGateway
         $meta = new Meta($provider->name(), $data['model'] ?? $model);
 
         if (filled($schema)) {
-            $cleanContent = trim($content);
+            $cleanContent = AiStructuredOutputSanitizer::stripReasoningBlocks(trim($content));
             if (str_starts_with($cleanContent, '```')) {
                 $cleanContent = preg_replace('/^```(?:json)?\n?/i', '', $cleanContent);
                 $cleanContent = preg_replace('/```$/', '', $cleanContent);
@@ -106,12 +107,10 @@ class CvOpenAiCompatibleGateway extends OpenAiGateway
 
             $structured = json_decode($cleanContent, true);
 
-            // Fallback 1: Extract JSON between the first '{' and last '}'
+            // Fallback 1: Extract the first balanced JSON object from the content
             if (! is_array($structured)) {
-                $firstBrace = strpos($cleanContent, '{');
-                $lastBrace = strrpos($cleanContent, '}');
-                if ($firstBrace !== false && $lastBrace !== false && $lastBrace > $firstBrace) {
-                    $jsonCandidate = substr($cleanContent, $firstBrace, $lastBrace - $firstBrace + 1);
+                $jsonCandidate = $this->extractJsonCandidate($cleanContent);
+                if ($jsonCandidate !== null) {
                     $structured = json_decode($jsonCandidate, true);
                 }
             }
@@ -210,7 +209,9 @@ class CvOpenAiCompatibleGateway extends OpenAiGateway
                                             $items[] = $line;
                                         }
                                     }
-                                    $structured[$requiredKey] = count($items) > 0 ? $items : [$val];
+                                    $structured[$requiredKey] = AiStructuredOutputSanitizer::cleanList(
+                                        count($items) > 0 ? $items : [$val]
+                                    );
                                 }
                             } elseif (! is_array($val)) {
                                 $structured[$requiredKey] = (array) $val;
@@ -261,6 +262,9 @@ class CvOpenAiCompatibleGateway extends OpenAiGateway
                 }
             }
 
+            // Remove any reasoning/markdown artifacts that survived parsing.
+            $structured = AiStructuredOutputSanitizer::sanitize($structured);
+
             if (! is_array($structured) || count(array_filter($structured)) === 0) {
                 throw new AiException('CV AI provider returned invalid structured JSON. Raw response: '.substr($content, 0, 200));
             }
@@ -302,6 +306,60 @@ class CvOpenAiCompatibleGateway extends OpenAiGateway
         $data = json_decode(substr($body, 0, $jsonEnd), true);
 
         return is_array($data) ? $data : null;
+    }
+
+    /**
+     * Extract the first balanced JSON object from free-form AI content,
+     * honoring string literals so braces inside quotes do not skew depth.
+     * Falls back to the first-'{' to last-'}' span when unbalanced.
+     */
+    protected function extractJsonCandidate(string $text): ?string
+    {
+        $start = strpos($text, '{');
+
+        if ($start === false) {
+            return null;
+        }
+
+        $depth = 0;
+        $inString = false;
+        $escaped = false;
+
+        for ($i = $start, $length = strlen($text); $i < $length; $i++) {
+            $char = $text[$i];
+
+            if ($inString) {
+                if ($escaped) {
+                    $escaped = false;
+                } elseif ($char === '\\') {
+                    $escaped = true;
+                } elseif ($char === '"') {
+                    $inString = false;
+                }
+
+                continue;
+            }
+
+            if ($char === '"') {
+                $inString = true;
+            } elseif ($char === '{') {
+                $depth++;
+            } elseif ($char === '}') {
+                $depth--;
+
+                if ($depth === 0) {
+                    return substr($text, $start, $i - $start + 1);
+                }
+            }
+        }
+
+        $lastBrace = strrpos($text, '}');
+
+        if ($lastBrace !== false && $lastBrace > $start) {
+            return substr($text, $start, $lastBrace - $start + 1);
+        }
+
+        return null;
     }
 
     protected function buildChatCompletionsBody(
