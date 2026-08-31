@@ -153,10 +153,10 @@
                 {{-- Visual Trend Charts --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="glass-card p-5">
-                        <livewire:is :key="'ats-score-chart'" :component="'App\\Filament\\Widgets\\ATSScoreChartWidget'" />
+                        <livewire:is :key="'cv-scores-trend'" :component="'App\\Filament\\Widgets\\CvScoresTrendChartWidget'" />
                     </div>
                     <div class="glass-card p-5">
-                        <livewire:is :key="'job-match-chart'" :component="'App\\Filament\\Widgets\\JobMatchChartWidget'" />
+                        <livewire:is :key="'cv-requirement-status'" :component="'App\\Filament\\Widgets\\CvRequirementStatusWidget'" />
                     </div>
                 </div>
 
