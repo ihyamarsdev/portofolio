@@ -31,6 +31,8 @@ class AiStructuredOutputSanitizer
         '/^keywords\.(found|missing|weak_?evidence)\s*:?$/i', // "**keywords.weak_evidence:**"
         '/[✓✔]\s*$/u',                                        // rubric confirmation lines
         '/^\W*reasoning\s+process/iu',                        // ">🔍 Reasoning Process"
+        '/^(?:[^,\n]*\s*,){9,}/',                             // keyword dumps (10+ comma-separated tokens)
+        '/^"[^"]{0,160}"\s*[—–-]\s*/u',                       // quoted weak-evidence claims ("X" — reason)
     ];
 
     /**

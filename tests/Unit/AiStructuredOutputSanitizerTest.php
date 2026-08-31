@@ -79,6 +79,20 @@ class AiStructuredOutputSanitizerTest extends TestCase
         $this->assertSame('', AiStructuredOutputSanitizer::stripReasoningBlocks($dangling));
     }
 
+    public function test_clean_list_drops_keyword_dumps_and_quoted_claims(): void
+    {
+        $dirty = [
+            'Add quantified metrics to experience bullets',
+            'DevOps, Continuous Integration, CI/CD, GitLab CI/CD, GitHub Actions, Infrastructure as Code, IaC, Terraform, Ansible, Containerization, Docker, Kubernetes, K8s, Helm, Google Cloud Platform, GCP',
+            '"99.9% availability" — stated for AI services but lacks context on measurement method and time period',
+        ];
+
+        $this->assertSame(
+            ['Add quantified metrics to experience bullets'],
+            AiStructuredOutputSanitizer::cleanList($dirty)
+        );
+    }
+
     public function test_sanitize_processes_nested_structures(): void
     {
         $payload = [
