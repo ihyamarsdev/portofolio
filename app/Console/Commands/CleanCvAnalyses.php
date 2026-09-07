@@ -57,9 +57,13 @@ class CleanCvAnalyses extends Command
             }
 
             foreach (self::STRUCTURED_FIELDS as $field) {
-                if (is_array($analysis->{$field})) {
-                    $analysis->{$field} = AiStructuredOutputSanitizer::sanitize($analysis->{$field});
+                if (! is_array($analysis->{$field})) {
+                    continue;
                 }
+
+                $analysis->{$field} = $field === 'experience_review'
+                    ? AiStructuredOutputSanitizer::normalizeReviewList($analysis->{$field})
+                    : AiStructuredOutputSanitizer::sanitize($analysis->{$field});
             }
 
             foreach (['summary', 'job_title_targeted', 'target_seniority'] as $field) {
