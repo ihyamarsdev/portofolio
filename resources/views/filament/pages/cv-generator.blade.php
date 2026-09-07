@@ -1003,26 +1003,70 @@
                                 </div>
 
                                 @if(!empty($analysisResult['experience_review']) && is_array($analysisResult['experience_review']))
+                                    @php
+                                        $experienceReviewItems = array_values(array_filter($analysisResult['experience_review']));
+                                    @endphp
                                     <div class="space-y-3">
-                                        <h4 class="text-sm font-bold text-slate-200">Experience Evidence Review</h4>
+                                        <h4 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                                            <x-heroicon-o-clipboard-document-check class="w-4.5 h-4.5 text-cyan-400" />
+                                            <span>Experience Evidence Review</span>
+                                            <span class="text-[10px] font-mono bg-[#181824] border border-[#2d2d3a] text-slate-400 px-2 py-0.5 rounded-full">{{ count($experienceReviewItems) }} sections</span>
+                                        </h4>
                                         <div class="space-y-3">
-                                            @foreach((is_array($analysisResult['experience_review'] ?? null) ? $analysisResult['experience_review'] : []) as $review)
+                                            @php $experienceReviewIndex = 0; @endphp
+                                            @foreach($experienceReviewItems as $review)
                                                 @if(is_string($review))
-                                                    <div class="bg-[#12121a]/80 border border-[#2d2d3a]/50 p-4 rounded-xl">
-                                                        <p class="text-xs text-slate-300 leading-relaxed">{{ $review }}</p>
+                                                    {{-- Legacy plain-note item: render as a single annotated row --}}
+                                                    <div class="bg-[#12121a]/80 border-l-2 border-cyan-500/50 border-y border-r border-[#2d2d3a]/50 rounded-lg p-3.5">
+                                                        <div class="flex items-start gap-2.5">
+                                                            <x-heroicon-o-information-circle class="w-3.5 h-3.5 text-cyan-400 mt-0.5 flex-shrink-0" />
+                                                            <p class="text-xs text-slate-300 leading-relaxed">{{ $review }}</p>
+                                                        </div>
                                                     </div>
                                                 @elseif(is_array($review))
-                                                    <div class="bg-[#12121a]/80 border border-[#2d2d3a]/50 p-4 rounded-xl space-y-2">
-                                                        <div class="text-sm font-semibold text-white">{{ $review['section'] ?? 'Experience' }}</div>
-                                                        @if(!empty($review['strength']))
-                                                            <div class="text-xs text-emerald-300">Strength: {{ $review['strength'] }}</div>
-                                                        @endif
-                                                        @if(!empty($review['gap']))
-                                                            <div class="text-xs text-rose-300">Gap: {{ $review['gap'] }}</div>
-                                                        @endif
-                                                        @if(!empty($review['rewrite_hint']))
-                                                            <div class="text-xs text-sky-300">Rewrite Hint: {{ $review['rewrite_hint'] }}</div>
-                                                        @endif
+                                                    @php
+                                                        $reviewSection = trim((string) ($review['section'] ?? ''));
+                                                        $reviewStrength = trim((string) ($review['strength'] ?? ''));
+                                                        $reviewGap = trim((string) ($review['gap'] ?? ''));
+                                                        $reviewHint = trim((string) ($review['rewrite_hint'] ?? ''));
+                                                        $experienceReviewIndex++;
+                                                    @endphp
+                                                    <div class="bg-[#12121a]/80 border border-[#2d2d3a]/50 rounded-xl overflow-hidden">
+                                                        {{-- Section header --}}
+                                                        <div class="flex items-center gap-2.5 px-4 py-2.5 bg-[#181824]/60 border-b border-[#2d2d3a]/50">
+                                                            <span class="w-6 h-6 rounded-md bg-cyan-950/60 border border-cyan-500/20 text-cyan-400 text-[10px] font-bold font-mono flex items-center justify-center flex-shrink-0">{{ $experienceReviewIndex }}</span>
+                                                            <h5 class="text-sm font-bold text-white truncate">{{ $reviewSection !== '' ? $reviewSection : 'Experience Review' }}</h5>
+                                                        </div>
+                                                        {{-- Evidence rows --}}
+                                                        <div class="p-4 space-y-3">
+                                                            @if($reviewStrength !== '')
+                                                                <div class="flex items-start gap-2.5">
+                                                                    <x-heroicon-o-check-circle class="w-3.5 h-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                                                                    <div class="min-w-0">
+                                                                        <span class="block text-[10px] uppercase font-bold tracking-wider text-emerald-400 mb-0.5">Strength</span>
+                                                                        <p class="text-xs text-slate-300 leading-relaxed">{{ $reviewStrength }}</p>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                            @if($reviewGap !== '')
+                                                                <div class="flex items-start gap-2.5">
+                                                                    <x-heroicon-o-x-circle class="w-3.5 h-3.5 text-rose-400 mt-0.5 flex-shrink-0" />
+                                                                    <div class="min-w-0">
+                                                                        <span class="block text-[10px] uppercase font-bold tracking-wider text-rose-400 mb-0.5">Gap</span>
+                                                                        <p class="text-xs text-slate-300 leading-relaxed">{{ $reviewGap }}</p>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                            @if($reviewHint !== '')
+                                                                <div class="flex items-start gap-2.5 bg-sky-950/20 border border-sky-500/10 rounded-lg p-2.5">
+                                                                    <x-heroicon-o-pencil-square class="w-3.5 h-3.5 text-sky-400 mt-0.5 flex-shrink-0" />
+                                                                    <div class="min-w-0">
+                                                                        <span class="block text-[10px] uppercase font-bold tracking-wider text-sky-400 mb-0.5">Rewrite Hint</span>
+                                                                        <p class="text-xs text-slate-300 leading-relaxed">{{ $reviewHint }}</p>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 @endif
                                             @endforeach
@@ -1670,23 +1714,57 @@
                                      <span>Experience Evidence Review</span>
                                  </h4>
                                  <div class="space-y-2.5">
+                                     @php $historyReviewIndex = 0; @endphp
                                      @foreach($selectedAnalysisDetail['experience_review'] as $review)
                                          @if(is_string($review))
-                                             <div class="p-4 bg-[#181824]/40 border border-[#2d2d3a]/50 rounded-lg">
-                                                 <p class="text-xs text-slate-300 leading-relaxed">{{ $review }}</p>
+                                             <div class="p-3.5 bg-[#181824]/40 border-l-2 border-cyan-500/50 border-y border-r border-[#2d2d3a]/50 rounded-lg">
+                                                 <div class="flex items-start gap-2.5">
+                                                     <x-heroicon-o-information-circle class="w-3.5 h-3.5 text-cyan-400 mt-0.5 flex-shrink-0" />
+                                                     <p class="text-xs text-slate-300 leading-relaxed">{{ $review }}</p>
+                                                 </div>
                                              </div>
                                          @elseif(is_array($review))
-                                             <div class="p-4 bg-[#181824]/40 border border-[#2d2d3a]/50 rounded-lg space-y-2">
-                                                 <div class="text-sm font-semibold text-white">{{ $review['section'] ?? 'Experience' }}</div>
-                                                 @if(!empty($review['strength']))
-                                                     <div class="text-xs text-emerald-300">Strength: {{ $review['strength'] }}</div>
-                                                 @endif
-                                                 @if(!empty($review['gap']))
-                                                     <div class="text-xs text-rose-300">Gap: {{ $review['gap'] }}</div>
-                                                 @endif
-                                                 @if(!empty($review['rewrite_hint']))
-                                                     <div class="text-xs text-sky-300">Rewrite Hint: {{ $review['rewrite_hint'] }}</div>
-                                                 @endif
+                                             @php
+                                                 $reviewSection = trim((string) ($review['section'] ?? ''));
+                                                 $reviewStrength = trim((string) ($review['strength'] ?? ''));
+                                                 $reviewGap = trim((string) ($review['gap'] ?? ''));
+                                                 $reviewHint = trim((string) ($review['rewrite_hint'] ?? ''));
+                                                 $historyReviewIndex++;
+                                             @endphp
+                                             <div class="bg-[#181824]/40 border border-[#2d2d3a]/50 rounded-xl overflow-hidden">
+                                                 <div class="flex items-center gap-2.5 px-4 py-2.5 bg-[#1c1c2a]/60 border-b border-[#2d2d3a]/50">
+                                                     <span class="w-6 h-6 rounded-md bg-cyan-950/60 border border-cyan-500/20 text-cyan-400 text-[10px] font-bold font-mono flex items-center justify-center flex-shrink-0">{{ $historyReviewIndex }}</span>
+                                                     <h5 class="text-sm font-bold text-white truncate">{{ $reviewSection !== '' ? $reviewSection : 'Experience Review' }}</h5>
+                                                 </div>
+                                                 <div class="p-4 space-y-3">
+                                                     @if($reviewStrength !== '')
+                                                         <div class="flex items-start gap-2.5">
+                                                             <x-heroicon-o-check-circle class="w-3.5 h-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                                                             <div class="min-w-0">
+                                                                 <span class="block text-[10px] uppercase font-bold tracking-wider text-emerald-400 mb-0.5">Strength</span>
+                                                                 <p class="text-xs text-slate-300 leading-relaxed">{{ $reviewStrength }}</p>
+                                                             </div>
+                                                         </div>
+                                                     @endif
+                                                     @if($reviewGap !== '')
+                                                         <div class="flex items-start gap-2.5">
+                                                             <x-heroicon-o-x-circle class="w-3.5 h-3.5 text-rose-400 mt-0.5 flex-shrink-0" />
+                                                             <div class="min-w-0">
+                                                                 <span class="block text-[10px] uppercase font-bold tracking-wider text-rose-400 mb-0.5">Gap</span>
+                                                                 <p class="text-xs text-slate-300 leading-relaxed">{{ $reviewGap }}</p>
+                                                             </div>
+                                                         </div>
+                                                     @endif
+                                                     @if($reviewHint !== '')
+                                                         <div class="flex items-start gap-2.5 bg-sky-950/20 border border-sky-500/10 rounded-lg p-2.5">
+                                                             <x-heroicon-o-pencil-square class="w-3.5 h-3.5 text-sky-400 mt-0.5 flex-shrink-0" />
+                                                             <div class="min-w-0">
+                                                                 <span class="block text-[10px] uppercase font-bold tracking-wider text-sky-400 mb-0.5">Rewrite Hint</span>
+                                                                 <p class="text-xs text-slate-300 leading-relaxed">{{ $reviewHint }}</p>
+                                                             </div>
+                                                         </div>
+                                                     @endif
+                                                 </div>
                                              </div>
                                          @endif
                                      @endforeach
