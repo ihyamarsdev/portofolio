@@ -273,7 +273,15 @@ class AiStructuredOutputSanitizer
             $cleaned[] = $value;
         }
 
-        return array_values(array_unique($cleaned));
+        // array_unique() casts every element to a string for comparison, which
+        // triggers "Array to string conversion" when the provider returned a
+        // list of objects (e.g. [{...}, {...}]). Deduplicate only when every
+        // element is a scalar; otherwise keep the cleaned items as-is.
+        $hasArrayItems = array_filter($cleaned, 'is_array') !== [];
+
+        return $hasArrayItems
+            ? array_values($cleaned)
+            : array_values(array_unique($cleaned));
     }
 
     protected static function sanitizeValue(mixed $value): mixed

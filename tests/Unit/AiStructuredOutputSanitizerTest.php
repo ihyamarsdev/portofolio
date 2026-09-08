@@ -50,6 +50,58 @@ class AiStructuredOutputSanitizerTest extends TestCase
         $this->assertSame($items, AiStructuredOutputSanitizer::cleanList($items));
     }
 
+    /**
+     * Regression test: providers sometimes return a list of objects instead of
+     * strings. array_unique() used to trigger "Array to string conversion"
+     * here, which failed the whole CV analysis run (2026-09-08).
+     */
+    public function test_clean_list_handles_lists_of_objects_without_casting_to_string(): void
+    {
+        $items = [
+            ['title' => 'AWS Certified Solutions Architect', 'issuer' => 'Amazon Web Services', 'year' => 2025],
+            ['title' => 'HashiCorp Certified: Terraform Associate', 'issuer' => 'HashiCorp', 'year' => 2024],
+        ];
+
+        $clean = AiStructuredOutputSanitizer::cleanList($items);
+
+        $this->assertSame($items, $clean);
+    }
+
+    public function test_sanitize_handles_mixed_string_and_object_lists_in_nested_payload(): void
+    {
+        $payload = [
+            'certifications' => [
+                '**',
+                ['title' => 'CKA: Certified Kubernetes Administrator', 'issuer' => 'CNCF'],
+                'AWS Certified Solutions Architect',
+                ['title' => 'CKA: Certified Kubernetes Administrator', 'issuer' => 'CNCF'],
+            ],
+        ];
+
+        $clean = AiStructuredOutputSanitizer::sanitize($payload);
+
+        $this->assertCount(3, $clean['certifications']);
+        $this->assertSame(['title' => 'CKA: Certified Kubernetes Administrator', 'issuer' => 'CNCF'], $clean['certifications'][0]);
+        $this->assertSame('AWS Certified Solutions Architect', $clean['certifications'][1]);
+        $this->assertSame(['title' => 'CKA: Certified Kubernetes Administrator', 'issuer' => 'CNCF'], $clean['certifications'][2]);
+    }
+
+    public function test_clean_list_still_deduplicates_plain_string_lists(): void
+    {
+        $items = [
+            'Add quantified metrics to experience bullets',
+            'Add quantified metrics to experience bullets',
+            'Include deployment frequency and MTTR metrics',
+        ];
+
+        $clean = AiStructuredOutputSanitizer::cleanList($items);
+
+        $this->assertSame([
+            'Add quantified metrics to experience bullets',
+            'Include deployment frequency and MTTR metrics',
+        ], $clean);
+    }
+
     public function test_clean_text_strips_details_blocks_and_reasoning_lines(): void
     {
         $dirty = ">🔍 Reasoning Process</summary>\n\n".
