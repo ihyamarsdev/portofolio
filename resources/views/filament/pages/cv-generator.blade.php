@@ -743,34 +743,135 @@
                                 </div>
 
                                 {{-- Scores --}}
-                                <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
-                                    @php
-                                        $scoreCards = [
-                                            ['label' => 'ATS Score', 'value' => $analysisResult['ats_score'] ?? '-', 'color' => 'text-cyan-400'],
-                                            ['label' => 'Format', 'value' => $analysisResult['format_score'] ?? '-', 'color' => 'text-blue-400'],
-                                            ['label' => 'About Me', 'value' => $analysisResult['about_me_score'] ?? '-', 'color' => 'text-purple-400'],
-                                            ['label' => 'Impact', 'value' => $analysisResult['impact_score'] ?? '-', 'color' => 'text-emerald-400'],
-                                            ['label' => 'Role Align', 'value' => $analysisResult['role_alignment_score'] ?? '-', 'color' => 'text-fuchsia-400'],
-                                            ['label' => 'Security', 'value' => $analysisResult['security_score'] ?? '-', 'color' => 'text-rose-400'],
-                                            ['label' => 'Reliability', 'value' => $analysisResult['reliability_score'] ?? '-', 'color' => 'text-orange-400'],
-                                            ['label' => 'Cloud', 'value' => $analysisResult['cloud_score'] ?? '-', 'color' => 'text-sky-400'],
-                                            ['label' => 'Job Match', 'value' => $analysisResult['job_match_score'] ?? 'N/A', 'color' => 'text-amber-400'],
-                                        ];
-                                    @endphp
+                                @php
+                                    // Role profile: metric order, emphasis, and tagline follow the
+                                    // selected target role so the panel is never a generic wall of %.
+                                    $roleKey = strtolower(trim($analysisResult['job_title_targeted'] ?? $targetRole ?? ''));
+                                    $roleKey = str_contains($roleKey, 'devsecops') ? 'devsecops engineer'
+                                        : (str_contains($roleKey, 'reliability') ? 'site reliability engineer'
+                                        : (str_contains($roleKey, 'cloud') ? 'cloud engineer' : 'devops engineer'));
 
-                                    @foreach($scoreCards as $card)
-                                        <div class="bg-[#1e1e2d]/60 border border-[#2d2d3a]/50 p-4 rounded-xl text-center">
-                                            <p class="text-2xl font-bold font-mono {{ $card['color'] }}">{{ is_numeric($card['value']) ? $card['value'].'%' : $card['value'] }}</p>
-                                            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{{ $card['label'] }}</span>
+                                    $roleProfiles = [
+                                        'devops engineer' => [
+                                            'domain' => 'devops',
+                                            'tagline' => 'Balanced CI/CD delivery, infrastructure-as-code, and platform reliability.',
+                                            'core' => ['role_alignment_score', 'reliability_score', 'format_score'],
+                                        ],
+                                        'devsecops engineer' => [
+                                            'domain' => 'devsecops',
+                                            'tagline' => 'Security woven into the delivery pipeline: hardening, secrets management, and compliance.',
+                                            'core' => ['security_score', 'role_alignment_score'],
+                                        ],
+                                        'cloud engineer' => [
+                                            'domain' => 'cloud_engineer',
+                                            'tagline' => 'Cloud architecture depth, service selection, and cost-aware infrastructure.',
+                                            'core' => ['cloud_score', 'impact_score'],
+                                        ],
+                                        'site reliability engineer' => [
+                                            'domain' => 'sre',
+                                            'tagline' => 'Uptime engineering: SLOs, incident response, observability, and capacity planning.',
+                                            'core' => ['reliability_score', 'impact_score'],
+                                        ],
+                                    ];
+                                    $roleProfile = $roleProfiles[$roleKey];
+
+                                    $fitmentMetrics = [
+                                        'role_alignment_score' => ['label' => 'Role Align', 'desc' => 'Scope & skills match for the target role'],
+                                        'security_score' => ['label' => 'Security', 'desc' => 'Hardening, secrets & vulnerability practice'],
+                                        'reliability_score' => ['label' => 'Reliability', 'desc' => 'Uptime, incident response & SLO practice'],
+                                        'cloud_score' => ['label' => 'Cloud', 'desc' => 'Cloud services & architecture depth'],
+                                        'ats_score' => ['label' => 'ATS Score', 'desc' => 'Keyword & section parsing compatibility'],
+                                        'format_score' => ['label' => 'Format', 'desc' => 'Structure, headings & layout quality'],
+                                        'about_me_score' => ['label' => 'About Me', 'desc' => 'Summary strength & positioning'],
+                                        'impact_score' => ['label' => 'Impact', 'desc' => 'Quantified outcomes & achievements'],
+                                        'job_match_score' => ['label' => 'Job Match', 'desc' => 'Evidence-based match vs job description'],
+                                    ];
+
+                                    $orderedMetrics = collect($roleProfile['core'])
+                                        ->merge(collect($fitmentMetrics)->keys()->except($roleProfile['core']))
+                                        ->values();
+
+                                    $heroDomain = $analysisResult['industry_match'][$roleProfile['domain']] ?? null;
+                                    $heroPct = is_numeric($heroDomain) ? (int) $heroDomain : ($analysisResult['ats_score'] ?? null);
+
+                                    $focusAreas = collect($orderedMetrics)
+                                        ->reject(fn ($key) => $key === 'job_match_score')
+                                        ->map(fn ($key) => ['key' => $key] + $fitmentMetrics[$key] + ['value' => $analysisResult[$key] ?? null])
+                                        ->filter(fn ($metric) => is_numeric($metric['value']) && (int) $metric['value'] < 70)
+                                        ->sortBy('value')
+                                        ->take(3)
+                                        ->values();
+                                @endphp
+
+
+                                {{-- Hero: role fitment ring + context --}}
+                                <div class="grid grid-cols-1 lg:grid-cols-[auto,1fr] gap-5 items-center border border-cyan-500/20 bg-cyan-950/5 rounded-xl p-5">
+                                    <div class="flex flex-col items-center gap-2">
+                                        <x-score-ring :value="$heroPct" :size="118" :stroke-width="6.5" center-class="text-xl" />
+                                        <span class="text-[10px] uppercase font-bold text-cyan-400 tracking-wider">Role Fitment</span>
+                                    </div>
+                                    <div class="space-y-2.5">
+                                        <h4 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                                            <x-heroicon-o-briefcase class="w-4 h-4 text-cyan-400" />
+                                            <span>Insight untuk {{ $analysisResult['job_title_targeted'] ?? $targetRole }}</span>
+                                        </h4>
+                                        <p class="text-xs text-slate-400 leading-relaxed">{{ $roleProfile['tagline'] }}</p>
+                                        <div class="flex flex-wrap gap-2 text-xs">
+                                            @if(!empty($analysisResult['target_seniority']))
+                                                <span class="bg-fuchsia-950/30 text-fuchsia-300 border border-fuchsia-500/20 px-3 py-1 rounded-full font-semibold">
+                                                    Seniority: {{ $analysisResult['target_seniority'] }}
+                                                </span>
+                                            @endif
+                                            @if(is_numeric($heroDomain))
+                                                <span class="bg-cyan-950/30 text-cyan-300 border border-cyan-500/20 px-3 py-1 rounded-full font-semibold">
+                                                    Domain {{ strtoupper(str_replace('_', ' ', $roleProfile['domain'])) }}: {{ (int) $heroDomain }}%
+                                                </span>
+                                            @endif
+                                            @if(is_numeric($analysisResult['job_match_score'] ?? null))
+                                                <span class="bg-amber-950/10 text-amber-300 border border-amber-500/20 px-3 py-1 rounded-full font-semibold">
+                                                    Job Match: {{ (int) $analysisResult['job_match_score'] }}%
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Score rings: core metrics first, with meaning per metric --}}
+                                <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3">
+                                    @foreach($orderedMetrics as $metricKey)
+                                        @php
+                                            $metric = $fitmentMetrics[$metricKey];
+                                            $isCore = in_array($metricKey, $roleProfile['core']);
+                                        @endphp
+                                        <div class="bg-[#1e1e2d]/60 border {{ $isCore ? 'border-cyan-500/30' : 'border-[#2d2d3a]/50' }} p-3 rounded-xl flex flex-col items-center text-center gap-1.5">
+                                            <div class="w-full flex justify-center min-h-[14px]">
+                                                @if($isCore)
+                                                    <span class="text-[8px] uppercase tracking-widest font-bold text-cyan-400 bg-cyan-950/40 border border-cyan-500/20 px-1.5 py-0.5 rounded-full">Core</span>
+                                                @endif
+                                            </div>
+                                            <x-score-ring :value="$analysisResult[$metricKey] ?? null" :size="58" />
+                                            <span class="text-[10px] uppercase font-bold text-slate-300 tracking-wider">{{ $metric['label'] }}</span>
+                                            <span class="text-[10px] text-slate-500 leading-snug">{{ $metric['desc'] }}</span>
                                         </div>
                                     @endforeach
                                 </div>
 
-                                @if(!empty($analysisResult['target_seniority']))
-                                    <div class="flex flex-wrap items-center gap-2 text-xs">
-                                        <span class="bg-fuchsia-950/30 text-fuchsia-300 border border-fuchsia-500/20 px-3 py-1 rounded-full font-semibold">
-                                            Seniority: {{ $analysisResult['target_seniority'] }}
-                                        </span>
+                                {{-- Focus improvement: lowest scoring areas --}}
+                                @if($focusAreas->isNotEmpty())
+                                    <div class="border border-amber-500/20 bg-amber-950/10 p-4 rounded-xl space-y-2">
+                                        <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
+                                            <x-heroicon-o-exclamation-triangle class="w-4 h-4" />
+                                            <span>Focus Improvement — lowest scoring areas</span>
+                                        </h4>
+                                        <div class="flex flex-wrap gap-2">
+                                            @foreach($focusAreas as $area)
+                                                <span class="inline-flex items-center gap-1.5 text-xs bg-amber-950/30 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded-lg">
+                                                    <span class="font-bold font-mono">{{ (int) $area['value'] }}%</span>
+                                                    <span class="font-semibold">{{ $area['label'] }}</span>
+                                                    <span class="text-[10px] text-amber-400/70 hidden md:inline">— {{ $area['desc'] }}</span>
+                                                </span>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 @endif
 
@@ -887,9 +988,18 @@
                                         <h4 class="text-sm font-bold text-slate-200">Domain Match Details</h4>
                                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                                             @foreach((is_array($analysisResult['industry_match'] ?? null) ? $analysisResult['industry_match'] : []) as $domain => $score)
-                                                <div class="bg-[#12121a]/60 border border-[#2d2d3a]/30 p-3 rounded-lg flex items-center justify-between">
-                                                    <span class="text-xs text-slate-400 font-semibold">{{ strtoupper($domain) }}</span>
-                                                    <span class="text-xs font-mono font-bold text-cyan-400">{{ $score }}%</span>
+                                                @php($isTargetDomain = $domain === $roleProfile['domain'])
+                                                <div class="p-3 rounded-lg flex items-center justify-between {{ $isTargetDomain ? 'border border-cyan-500/40 bg-cyan-950/20' : 'bg-[#12121a]/60 border border-[#2d2d3a]/30' }}">
+                                                    <span class="text-xs font-semibold flex items-center gap-1.5 {{ $isTargetDomain ? 'text-cyan-300' : 'text-slate-400' }}">
+                                                        @if($isTargetDomain)
+                                                            <x-heroicon-o-check-circle class="w-3.5 h-3.5" />
+                                                        @endif
+                                                        {{ strtoupper($domain) }}
+                                                        @if($isTargetDomain)
+                                                            <span class="text-[9px] bg-cyan-500/20 text-cyan-300 px-1.5 py-0.5 rounded-full font-bold">TARGET</span>
+                                                        @endif
+                                                    </span>
+                                                    <span class="text-xs font-mono font-bold {{ $isTargetDomain ? 'text-cyan-400' : 'text-slate-500' }}">{{ $score }}%</span>
                                                 </div>
                                             @endforeach
                                         </div>
