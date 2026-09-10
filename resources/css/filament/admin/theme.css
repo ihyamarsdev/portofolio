@@ -1226,13 +1226,6 @@ html:not(.dark) .cv-workspace-container .border-slate-700 { border-color: #cbd5e
 html:not(.dark) .cv-workspace-container .border-slate-600 { border-color: #cbd5e1 !important; }
 html:not(.dark) .cv-workspace-container .divide-\[\#1e1e2d\] > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0 !important; }
 
-/* CV Generator — AI analysis console keeps its dark terminal look in light mode */
-html:not(.dark) .cv-analysis-console .text-cyan-400 { color: #22d3ee !important; }
-html:not(.dark) .cv-analysis-console .text-amber-400 { color: #fbbf24 !important; }
-html:not(.dark) .cv-analysis-console .text-emerald-400 { color: #34d399 !important; }
-html:not(.dark) .cv-analysis-console .text-rose-400 { color: #fb7185 !important; }
-html:not(.dark) .cv-analysis-console .text-slate-400, html:not(.dark) .cv-analysis-console .text-slate-500 { color: #94a3b8 !important; }
-
 /* Responsive */
 @media (max-width: 768px) {
     .fi-stats-card {

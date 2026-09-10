@@ -691,20 +691,23 @@
         {{-- TAB 7: AI JOB MATCH & ANALYSIS --}}
         {{-- ========================================================================= --}}
         @if($activeTab === 'aimatch')
-            <div class="tab-pane-content space-y-6 animate-fade-in">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    
-                    {{-- Input panel --}}
-                    <div class="lg:col-span-1 space-y-6">
-                        <div class="glass-card p-5 space-y-4">
-                            <h3 class="text-md font-bold text-white border-b border-[#2d2d3a] pb-2 flex items-center gap-2">
-                                <x-heroicon-o-briefcase class="w-5 h-5 text-cyan-400" />
-                                <span>Paste Target Role Info</span>
-                            </h3>
+            <div class="tab-pane-content animate-fade-in am-scope">
+                <div class="am-layout">
 
-                            <div>
-                                <label class="block text-sm font-medium text-slate-300 mb-1.5">Target Role</label>
-                                <select wire:model.live="targetRole" class="cyber-input w-full text-xs font-semibold bg-[#12121a] text-slate-200 border border-[#2d2d3a] rounded-lg p-2.5 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/20">
+                    {{-- Kolom input --}}
+                    <div class="am-col-input">
+                        <div class="am-card">
+                            <div class="am-card-head">
+                                <span class="am-ico"><x-heroicon-o-briefcase class="w-4.5 h-4.5" /></span>
+                                <div>
+                                    <h3 class="am-title">Target Pekerjaan</h3>
+                                    <p class="am-hint">Pilih role dan tempel deskripsi lowongan untuk analisis kecocokan.</p>
+                                </div>
+                            </div>
+
+                            <div class="am-field">
+                                <label class="am-label" for="am-target-role">Target Role</label>
+                                <select id="am-target-role" wire:model.live="targetRole" class="am-select">
                                     <option value="Devops Engineer">DevOps Engineer</option>
                                     <option value="Devsecops Engineer">DevSecOps Engineer</option>
                                     <option value="Cloud Engineer">Cloud Engineer</option>
@@ -712,522 +715,586 @@
                                 </select>
                             </div>
 
-                            <div>
-                                <label class="block text-sm font-medium text-slate-300 mb-1.5">Job Description (Optional)</label>
-                                <textarea wire:model="jobDescription" rows="8" class="cyber-textarea w-full text-xs font-mono" placeholder="Paste the target job requirements or description details here to perform deep-match analysis..."></textarea>
+                            <div class="am-field">
+                                <label class="am-label" for="am-jobdesc">
+                                    Job Description <span class="am-optional">opsional</span>
+                                </label>
+                                <textarea id="am-jobdesc" wire:model="jobDescription" rows="8" class="am-textarea"
+                                          placeholder="Tempel requirement atau deskripsi lowongan di sini..."></textarea>
+                                <p class="am-hint">Isi untuk mendapat skor Job Match berbasis bukti. Kosongkan jika hanya ingin menilai ATS, format, dan domain.</p>
                             </div>
 
-                            <x-filament::button wire:click="analyzeJobMatch" color="primary" class="w-full shadow-lg glow-cyan shadow-cyan-500/20" :loading="$isAnalyzing">
-                                <x-heroicon-o-bolt class="w-4 h-4 mr-1.5" />
-                                Run AI Analysis Match
+                            <x-filament::button wire:click="analyzeJobMatch" color="primary" class="w-full" :loading="$isAnalyzing">
+                                <x-heroicon-o-sparkles class="w-4 h-4 mr-1.5" />
+                                <span>Jalankan Analisis AI</span>
                             </x-filament::button>
                         </div>
 
-                        <x-cv-analysis-console :targetRole="$targetRole" :jobDescription="$jobDescription" />
-                    </div>
+                        <x-cv-analysis-progress />
 
-                    {{-- Output panel --}}
-                    <div class="lg:col-span-2">
-                        @if(!$isAnalyzing && $analysisResult)
-                            <div class="glass-card p-6 space-y-6">
-                                <div class="flex items-center justify-between border-b border-[#2d2d3a] pb-4">
-                                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                        <x-heroicon-o-document-text class="w-5 h-5 text-cyan-400" />
-                                        <span>AI Fitment Insights</span>
-                                    </h3>
-                                    @if(!empty($analysisResult['job_title_targeted']))
-                                        <span class="text-xs bg-cyan-950/40 text-cyan-400 border border-cyan-500/20 px-3 py-1 rounded-full font-bold">
-                                            Role: {{ $analysisResult['job_title_targeted'] }}
-                                        </span>
-                                    @endif
-                                </div>
-
-                                {{-- Scores --}}
-                                @php
-                                    // Role profile: metric order, emphasis, and tagline follow the
-                                    // selected target role so the panel is never a generic wall of %.
-                                    $roleKey = strtolower(trim($analysisResult['job_title_targeted'] ?? $targetRole ?? ''));
-                                    $roleKey = str_contains($roleKey, 'devsecops') ? 'devsecops engineer'
-                                        : (str_contains($roleKey, 'reliability') ? 'site reliability engineer'
-                                        : (str_contains($roleKey, 'cloud') ? 'cloud engineer' : 'devops engineer'));
-
-                                    $roleProfiles = [
-                                        'devops engineer' => [
-                                            'domain' => 'devops',
-                                            'tagline' => 'Balanced CI/CD delivery, infrastructure-as-code, and platform reliability.',
-                                            'core' => ['role_alignment_score', 'reliability_score', 'format_score'],
-                                        ],
-                                        'devsecops engineer' => [
-                                            'domain' => 'devsecops',
-                                            'tagline' => 'Security woven into the delivery pipeline: hardening, secrets management, and compliance.',
-                                            'core' => ['security_score', 'role_alignment_score'],
-                                        ],
-                                        'cloud engineer' => [
-                                            'domain' => 'cloud_engineer',
-                                            'tagline' => 'Cloud architecture depth, service selection, and cost-aware infrastructure.',
-                                            'core' => ['cloud_score', 'impact_score'],
-                                        ],
-                                        'site reliability engineer' => [
-                                            'domain' => 'sre',
-                                            'tagline' => 'Uptime engineering: SLOs, incident response, observability, and capacity planning.',
-                                            'core' => ['reliability_score', 'impact_score'],
-                                        ],
-                                    ];
-                                    $roleProfile = $roleProfiles[$roleKey];
-
-                                    $fitmentMetrics = [
-                                        'role_alignment_score' => ['label' => 'Role Align', 'desc' => 'Scope & skills match for the target role'],
-                                        'security_score' => ['label' => 'Security', 'desc' => 'Hardening, secrets & vulnerability practice'],
-                                        'reliability_score' => ['label' => 'Reliability', 'desc' => 'Uptime, incident response & SLO practice'],
-                                        'cloud_score' => ['label' => 'Cloud', 'desc' => 'Cloud services & architecture depth'],
-                                        'ats_score' => ['label' => 'ATS Score', 'desc' => 'Keyword & section parsing compatibility'],
-                                        'format_score' => ['label' => 'Format', 'desc' => 'Structure, headings & layout quality'],
-                                        'about_me_score' => ['label' => 'About Me', 'desc' => 'Summary strength & positioning'],
-                                        'impact_score' => ['label' => 'Impact', 'desc' => 'Quantified outcomes & achievements'],
-                                        'job_match_score' => ['label' => 'Job Match', 'desc' => 'Evidence-based match vs job description'],
-                                    ];
-
-                                    $orderedMetrics = collect($roleProfile['core'])
-                                        ->merge(collect($fitmentMetrics)->keys()->except($roleProfile['core']))
-                                        ->values();
-
-                                    $heroDomain = $analysisResult['industry_match'][$roleProfile['domain']] ?? null;
-                                    $heroPct = is_numeric($heroDomain) ? (int) $heroDomain : ($analysisResult['ats_score'] ?? null);
-
-                                    $focusAreas = collect($orderedMetrics)
-                                        ->reject(fn ($key) => $key === 'job_match_score')
-                                        ->map(fn ($key) => ['key' => $key] + $fitmentMetrics[$key] + ['value' => $analysisResult[$key] ?? null])
-                                        ->filter(fn ($metric) => is_numeric($metric['value']) && (int) $metric['value'] < 70)
-                                        ->sortBy('value')
-                                        ->take(3)
-                                        ->values();
-                                @endphp
-
-
-                                {{-- Hero: role fitment ring + context --}}
-                                <div class="grid grid-cols-1 lg:grid-cols-[auto,1fr] gap-5 items-center border border-cyan-500/20 bg-cyan-950/5 rounded-xl p-5">
-                                    <div class="flex flex-col items-center gap-2">
-                                        <x-score-ring :value="$heroPct" :size="118" :stroke-width="6.5" center-class="text-xl" />
-                                        <span class="text-[10px] uppercase font-bold text-cyan-400 tracking-wider">Role Fitment</span>
-                                    </div>
-                                    <div class="space-y-2.5">
-                                        <h4 class="text-sm font-bold text-slate-200 flex items-center gap-2">
-                                            <x-heroicon-o-briefcase class="w-4 h-4 text-cyan-400" />
-                                            <span>Insight untuk {{ $analysisResult['job_title_targeted'] ?? $targetRole }}</span>
-                                        </h4>
-                                        <p class="text-xs text-slate-400 leading-relaxed">{{ $roleProfile['tagline'] }}</p>
-                                        <div class="flex flex-wrap gap-2 text-xs">
-                                            @if(!empty($analysisResult['target_seniority']))
-                                                <span class="bg-fuchsia-950/30 text-fuchsia-300 border border-fuchsia-500/20 px-3 py-1 rounded-full font-semibold">
-                                                    Seniority: {{ $analysisResult['target_seniority'] }}
-                                                </span>
-                                            @endif
-                                            @if(is_numeric($heroDomain))
-                                                <span class="bg-cyan-950/30 text-cyan-300 border border-cyan-500/20 px-3 py-1 rounded-full font-semibold">
-                                                    Domain {{ strtoupper(str_replace('_', ' ', $roleProfile['domain'])) }}: {{ (int) $heroDomain }}%
-                                                </span>
-                                            @endif
-                                            @if(is_numeric($analysisResult['job_match_score'] ?? null))
-                                                <span class="bg-amber-950/10 text-amber-300 border border-amber-500/20 px-3 py-1 rounded-full font-semibold">
-                                                    Job Match: {{ (int) $analysisResult['job_match_score'] }}%
-                                                </span>
-                                            @endif
-                                        </div>
+                        @if($history && count(is_countable($history) ? $history : []) > 0)
+                            <div class="am-card">
+                                <div class="am-card-head">
+                                    <span class="am-ico"><x-heroicon-o-clock class="w-4.5 h-4.5" /></span>
+                                    <div>
+                                        <h3 class="am-title">Analisis Terakhir</h3>
+                                        <p class="am-hint">Klik untuk memuat hasil sebelumnya.</p>
                                     </div>
                                 </div>
-
-                                {{-- Score rings: core metrics first, with meaning per metric --}}
-                                <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3">
-                                    @foreach($orderedMetrics as $metricKey)
-                                        @php
-                                            $metric = $fitmentMetrics[$metricKey];
-                                            $isCore = in_array($metricKey, $roleProfile['core']);
-                                        @endphp
-                                        <div class="bg-[#1e1e2d]/60 border {{ $isCore ? 'border-cyan-500/30' : 'border-[#2d2d3a]/50' }} p-3 rounded-xl flex flex-col items-center text-center gap-1.5">
-                                            <div class="w-full flex justify-center min-h-[14px]">
-                                                @if($isCore)
-                                                    <span class="text-[8px] uppercase tracking-widest font-bold text-cyan-400 bg-cyan-950/40 border border-cyan-500/20 px-1.5 py-0.5 rounded-full">Core</span>
-                                                @endif
-                                            </div>
-                                            <x-score-ring :value="$analysisResult[$metricKey] ?? null" :size="58" />
-                                            <span class="text-[10px] uppercase font-bold text-slate-300 tracking-wider">{{ $metric['label'] }}</span>
-                                            <span class="text-[10px] text-slate-500 leading-snug">{{ $metric['desc'] }}</span>
-                                        </div>
+                                <div class="am-history">
+                                    @foreach($history as $item)
+                                        <button type="button" wire:key="am-hist-{{ $item->id }}"
+                                                wire:click="loadAnalysisIntoWorkspace({{ $item->id }})"
+                                                class="am-history-item {{ $currentAnalysis?->id === $item->id ? 'is-active' : '' }}">
+                                            <span class="am-history-main">
+                                                <span class="am-history-role">{{ $item->job_title_targeted ?? 'Analisis CV' }}</span>
+                                                <span class="am-history-date">{{ $item->created_at->format('d M Y, H:i') }}</span>
+                                            </span>
+                                            @if($item->job_match_score !== null)
+                                                <span class="am-chip {{ $item->job_match_score >= 70 ? 'am-chip--ok' : ($item->job_match_score >= 50 ? 'am-chip--warn' : 'am-chip--bad') }}">
+                                                    {{ $item->job_match_score }}%
+                                                </span>
+                                            @else
+                                                <span class="am-chip am-chip--neutral">ATS {{ $item->ats_score }}%</span>
+                                            @endif
+                                        </button>
                                     @endforeach
                                 </div>
+                            </div>
+                        @endif
+                    </div>
 
-                                {{-- Focus improvement: lowest scoring areas --}}
-                                @if($focusAreas->isNotEmpty())
-                                    <div class="border border-amber-500/20 bg-amber-950/10 p-4 rounded-xl space-y-2">
-                                        <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
-                                            <x-heroicon-o-exclamation-triangle class="w-4 h-4" />
-                                            <span>Focus Improvement — lowest scoring areas</span>
-                                        </h4>
-                                        <div class="flex flex-wrap gap-2">
-                                            @foreach($focusAreas as $area)
-                                                <span class="inline-flex items-center gap-1.5 text-xs bg-amber-950/30 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded-lg">
-                                                    <span class="font-bold font-mono">{{ (int) $area['value'] }}%</span>
-                                                    <span class="font-semibold">{{ $area['label'] }}</span>
-                                                    <span class="text-[10px] text-amber-400/70 hidden md:inline">— {{ $area['desc'] }}</span>
-                                                </span>
-                                            @endforeach
+                    {{-- Kolom hasil --}}
+                    <div class="am-col-result">
+                        @if(!$isAnalyzing && $analysisResult)
+                            @php
+                                // Profil metrik mengikuti role target agar panel tidak menjadi
+                                // daftar persentase generik.
+                                $roleKey = strtolower(trim($analysisResult['job_title_targeted'] ?? $targetRole ?? ''));
+                                $roleKey = str_contains($roleKey, 'devsecops') ? 'devsecops engineer'
+                                    : (str_contains($roleKey, 'reliability') ? 'site reliability engineer'
+                                    : (str_contains($roleKey, 'cloud') ? 'cloud engineer' : 'devops engineer'));
+
+                                $roleProfiles = [
+                                    'devops engineer' => [
+                                        'domain' => 'devops',
+                                        'tagline' => 'Keseimbangan delivery CI/CD, infrastructure-as-code, dan keandalan platform.',
+                                        'core' => ['role_alignment_score', 'reliability_score', 'format_score'],
+                                    ],
+                                    'devsecops engineer' => [
+                                        'domain' => 'devsecops',
+                                        'tagline' => 'Keamanan menyatu dalam pipeline: hardening, manajemen secret, dan compliance.',
+                                        'core' => ['security_score', 'role_alignment_score'],
+                                    ],
+                                    'cloud engineer' => [
+                                        'domain' => 'cloud_engineer',
+                                        'tagline' => 'Kedalaman arsitektur cloud, pemilihan layanan, dan infrastruktur hemat biaya.',
+                                        'core' => ['cloud_score', 'impact_score'],
+                                    ],
+                                    'site reliability engineer' => [
+                                        'domain' => 'sre',
+                                        'tagline' => 'Rekayasa uptime: SLO, incident response, observability, dan perencanaan kapasitas.',
+                                        'core' => ['reliability_score', 'impact_score'],
+                                    ],
+                                ];
+                                $roleProfile = $roleProfiles[$roleKey];
+
+                                $fitmentMetrics = [
+                                    'role_alignment_score' => ['label' => 'Kesesuaian Role', 'desc' => 'Cakupan skill & tanggung jawab terhadap role target'],
+                                    'security_score' => ['label' => 'Keamanan', 'desc' => 'Hardening, manajemen secret & praktik kerentanan'],
+                                    'reliability_score' => ['label' => 'Keandalan', 'desc' => 'Uptime, incident response & praktik SLO'],
+                                    'cloud_score' => ['label' => 'Cloud', 'desc' => 'Kedalaman layanan & arsitektur cloud'],
+                                    'ats_score' => ['label' => 'Skor ATS', 'desc' => 'Kompatibilitas parsing keyword & section'],
+                                    'format_score' => ['label' => 'Format', 'desc' => 'Kualitas struktur, heading & tata letak'],
+                                    'about_me_score' => ['label' => 'Ringkasan', 'desc' => 'Kekuatan & positioning summary'],
+                                    'impact_score' => ['label' => 'Dampak', 'desc' => 'Outcome terukur & pencapaian'],
+                                    'job_match_score' => ['label' => 'Job Match', 'desc' => 'Kecocokan berbasis bukti vs deskripsi lowongan'],
+                                ];
+
+                                $orderedMetrics = collect($roleProfile['core'])
+                                    ->merge(collect($fitmentMetrics)->keys()->except($roleProfile['core']))
+                                    ->values();
+
+                                $heroDomain = $analysisResult['industry_match'][$roleProfile['domain']] ?? null;
+                                $jobMatchValue = is_numeric($analysisResult['job_match_score'] ?? null) ? (int) $analysisResult['job_match_score'] : null;
+                                $heroPct = $jobMatchValue ?? (is_numeric($heroDomain) ? (int) $heroDomain : ($analysisResult['ats_score'] ?? null));
+
+                                $detail = $analysisResult['job_match_detail'] ?? null;
+                                $overall = is_array($detail) && isset($detail['overall']) ? (int) $detail['overall'] : null;
+
+                                $bandLabelMap = [
+                                    'Strong Match' => 'Kecocokan Kuat',
+                                    'Good Match' => 'Kecocokan Baik',
+                                    'Partial Match' => 'Kecocokan Sebagian',
+                                    'Weak Match' => 'Kecocokan Lemah',
+                                ];
+                                $bandLabel = $bandLabelMap[$detail['band']['label'] ?? ''] ?? ($detail['band']['label'] ?? null);
+                                $bandTone = $overall === null ? 'neutral' : ($overall >= 70 ? 'ok' : ($overall >= 50 ? 'warn' : 'bad'));
+
+                                $statusMeta = [
+                                    'verified' => ['label' => 'Terverifikasi', 'class' => 'am-chip--ok'],
+                                    'claimed' => ['label' => 'Terdaku', 'class' => 'am-chip--warn'],
+                                    'missing' => ['label' => 'Hilang', 'class' => 'am-chip--bad'],
+                                ];
+
+                                $focusAreas = collect($orderedMetrics)
+                                    ->reject(fn ($key) => $key === 'job_match_score')
+                                    ->map(fn ($key) => ['key' => $key] + $fitmentMetrics[$key] + ['value' => $analysisResult[$key] ?? null])
+                                    ->filter(fn ($metric) => is_numeric($metric['value']) && (int) $metric['value'] < 70)
+                                    ->sortBy('value')
+                                    ->take(3)
+                                    ->values();
+
+                                $requirements = is_array($detail['requirements'] ?? null) ? $detail['requirements'] : [];
+                                $mustHave = array_values(array_filter($requirements, fn ($r) => ($r['type'] ?? 'must_have') !== 'nice_to_have'));
+                                $niceToHave = array_values(array_filter($requirements, fn ($r) => ($r['type'] ?? 'must_have') === 'nice_to_have'));
+
+                                $foundKeywords = is_array($analysisResult['keywords']['found'] ?? null) ? $analysisResult['keywords']['found'] : [];
+                                $weakKeywords = is_array($analysisResult['keywords']['weak_evidence'] ?? null) ? $analysisResult['keywords']['weak_evidence'] : [];
+                                $missingKeywords = is_array($analysisResult['keywords']['missing'] ?? null) ? $analysisResult['keywords']['missing'] : [];
+                                $suggestions = is_array($analysisResult['suggestions'] ?? null) ? $analysisResult['suggestions'] : [];
+                                $strengths = is_array($analysisResult['strengths'] ?? null) ? $analysisResult['strengths'] : [];
+                                $criticalGaps = is_array($analysisResult['critical_gaps'] ?? null) ? $analysisResult['critical_gaps'] : [];
+                                $missingMetrics = is_array($analysisResult['missing_metrics'] ?? null) ? $analysisResult['missing_metrics'] : [];
+                                $rewritePriorities = is_array($analysisResult['rewrite_priorities'] ?? null) ? $analysisResult['rewrite_priorities'] : [];
+                                $experienceReview = is_array($analysisResult['experience_review'] ?? null) ? array_values(array_filter($analysisResult['experience_review'])) : [];
+                                $industryMatch = is_array($analysisResult['industry_match'] ?? null) ? $analysisResult['industry_match'] : [];
+                            @endphp
+
+                            <div class="am-result">
+                                {{-- Ringkasan utama --}}
+                                <div class="am-card am-summary">
+                                    <div class="am-summary-top">
+                                        <div class="am-hero-ring">
+                                            <x-score-ring :value="$heroPct" :size="112" :stroke-width="6" center-class="text-lg" variant="muted" />
+                                            <span class="am-ring-caption">{{ $jobMatchValue !== null ? 'Job Match' : 'Role Fitment' }}</span>
                                         </div>
-                                    </div>
-                                @endif
-
-                                {{-- Evidence-Based Job Match Breakdown --}}
-                                @if(!empty($analysisResult['job_match_detail']) && is_array($analysisResult['job_match_detail']))
-                                    @php
-                                        $detail = $analysisResult['job_match_detail'];
-                                    @endphp
-                                    <div class="space-y-4 border border-cyan-500/20 bg-cyan-950/5 p-4 rounded-xl">
-                                        <div class="flex items-center justify-between flex-wrap gap-2">
-                                            <h4 class="text-sm font-bold text-cyan-300 flex items-center gap-2">
-                                                <x-heroicon-o-clipboard-document-check class="w-4.5 h-4.5" />
-                                                <span>Job Match Requirements (Evidence-Based)</span>
-                                            </h4>
-                                            <span class="text-[10px] font-mono text-slate-500">formula: {{ $detail['formula_version'] ?? '-' }}</span>
-                                        </div>
-
-                                        {{-- Component scores --}}
-                                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                            <div class="bg-[#12121a]/60 border border-[#2d2d3a]/30 p-3 rounded-lg text-center">
-                                                <p class="text-lg font-bold font-mono text-emerald-400">{{ $detail['overall'] ?? 0 }}%</p>
-                                                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Overall Match</span>
-                                            </div>
-                                            <div class="bg-[#12121a]/60 border border-[#2d2d3a]/30 p-3 rounded-lg text-center">
-                                                <p class="text-lg font-bold font-mono text-cyan-400">{{ $detail['must_have_coverage'] ?? 0 }}%</p>
-                                                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Must-Have Coverage</span>
-                                            </div>
-                                            <div class="bg-[#12121a]/60 border border-[#2d2d3a]/30 p-3 rounded-lg text-center">
-                                                <p class="text-lg font-bold font-mono text-blue-400">{{ $detail['nice_to_have_coverage'] ?? 0 }}%</p>
-                                                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Nice-to-Have Coverage</span>
-                                            </div>
-                                            <div class="bg-[#12121a]/60 border border-[#2d2d3a]/30 p-3 rounded-lg text-center">
-                                                <p class="text-lg font-bold font-mono text-amber-400">{{ $detail['evidence_quality'] ?? 0 }}%</p>
-                                                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Evidence Quality</span>
-                                            </div>
-                                        </div>
-
-                                        {{-- Anchored band (BARS-style definition) --}}
-                                        @if(!empty($detail['band']))
-                                            <div class="bg-[#12121a]/60 border border-[#2d2d3a]/30 p-3 rounded-lg">
-                                                <div class="flex items-center gap-2">
-                                                    <span class="text-xs font-bold text-white">{{ $detail['band']['label'] ?? '' }}</span>
-                                                    <span class="text-[10px] text-slate-500 uppercase tracking-wider">anchored band</span>
-                                                </div>
-                                                <p class="text-xs text-slate-400 mt-1">{{ $detail['band']['definition'] ?? '' }}</p>
-                                            </div>
-                                        @endif
-
-                                        {{-- Requirement checklist with evidence --}}
-                                        @if(!empty($detail['requirements']) && is_array($detail['requirements']))
-                                            <div class="space-y-2">
-                                                <h5 class="text-xs font-bold text-slate-300 uppercase tracking-wide">Requirement Checklist</h5>
-                                                @foreach($detail['requirements'] as $req)
-                                                    @php
-                                                        $status = $req['status'] ?? 'missing';
-                                                        $statusStyles = [
-                                                            'verified' => 'bg-emerald-950/40 text-emerald-300 border border-emerald-500/30',
-                                                            'claimed' => 'bg-amber-950/40 text-amber-300 border border-amber-500/30',
-                                                            'missing' => 'bg-rose-950/40 text-rose-300 border border-rose-500/30',
-                                                        ];
-                                                        $statusLabels = ['verified' => '✓ Verified', 'claimed' => '~ Claimed', 'missing' => '✗ Missing'];
-                                                    @endphp
-                                                    <div class="bg-[#12121a]/70 border border-[#2d2d3a]/50 p-3 rounded-lg space-y-1.5">
-                                                        <div class="flex items-center justify-between gap-2 flex-wrap">
-                                                            <span class="text-sm font-semibold text-white">{{ $req['requirement'] ?? '' }}</span>
-                                                            <div class="flex items-center gap-1.5">
-                                                                <span class="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide {{ ($req['type'] ?? '') === 'nice_to_have' ? 'bg-blue-950/40 text-blue-300 border border-blue-500/30' : 'bg-cyan-950/40 text-cyan-300 border border-cyan-500/30' }}">
-                                                                    {{ ($req['type'] ?? 'must_have') === 'nice_to_have' ? 'nice-to-have' : 'must-have' }}
-                                                                </span>
-                                                                <span class="text-[10px] px-2 py-0.5 rounded-full font-bold {{ $statusStyles[$status] ?? $statusStyles['missing'] }}">
-                                                                    {{ $statusLabels[$status] ?? $statusLabels['missing'] }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        @if(!empty($req['evidence_quote']))
-                                                            <div class="text-xs text-slate-400 font-mono bg-black/30 border-l-2 border-slate-600 pl-2 py-1 rounded-r">
-                                                                “{{ $req['evidence_quote'] }}”
-                                                            </div>
-                                                        @endif
-                                                        @if(!empty($req['reasoning']))
-                                                            <div class="text-[11px] text-slate-500">{{ $req['reasoning'] }}</div>
-                                                        @endif
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        @endif
-
-                                        {{-- Formula transparency --}}
-                                        <details class="bg-[#12121a]/60 border border-[#2d2d3a]/30 rounded-lg">
-                                            <summary class="cursor-pointer px-3 py-2 text-xs font-bold text-slate-300 hover:text-white select-none">
-                                                How this score is computed (objective formula)
-                                            </summary>
-                                            <div class="px-3 pb-3 space-y-2 text-[11px] text-slate-400 font-mono">
-                                                <p>overall = 0.6 × must_have_coverage + 0.2 × nice_to_have_coverage + 0.2 × evidence_quality</p>
-                                                <p>status points: verified = 1.0 · claimed = 0.4 · missing = 0.0</p>
-                                                <p>evidence_quality = verified / (verified + claimed)</p>
-                                                <div class="pt-1 border-t border-[#2d2d3a]/50 space-y-1 font-sans">
-                                                    <p><span class="text-emerald-400 font-bold">85–100 Strong:</span> majority of must-haves verified with quantified evidence.</p>
-                                                    <p><span class="text-cyan-400 font-bold">70–84 Good:</span> must-haves covered, several only claimed.</p>
-                                                    <p><span class="text-amber-400 font-bold">50–69 Partial:</span> gaps in must-haves or weak evidence.</p>
-                                                    <p><span class="text-rose-400 font-bold">0–49 Weak:</span> critical must-haves missing.</p>
-                                                </div>
-                                                <p class="font-sans text-slate-500 pt-1">Scores are computed deterministically from evidence verified against the CV text — the AI never assigns the numeric score.</p>
-                                            </div>
-                                        </details>
-
-
-                                    </div>
-                                @endif
-
-                                {{-- Industry match --}}
-                                @if(isset($analysisResult['industry_match']))
-                                    <div class="space-y-3">
-                                        <h4 class="text-sm font-bold text-slate-200">Domain Match Details</h4>
-                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                            @foreach((is_array($analysisResult['industry_match'] ?? null) ? $analysisResult['industry_match'] : []) as $domain => $score)
-                                                @php
-                                                    $isTargetDomain = $domain === $roleProfile['domain'];
-                                                @endphp
-                                                <div class="p-3 rounded-lg flex items-center justify-between {{ $isTargetDomain ? 'border border-cyan-500/40 bg-cyan-950/20' : 'bg-[#12121a]/60 border border-[#2d2d3a]/30' }}">
-                                                    <span class="text-xs font-semibold flex items-center gap-1.5 {{ $isTargetDomain ? 'text-cyan-300' : 'text-slate-400' }}">
-                                                        @if($isTargetDomain)
-                                                            <x-heroicon-o-check-circle class="w-3.5 h-3.5" />
-                                                        @endif
-                                                        {{ strtoupper($domain) }}
-                                                        @if($isTargetDomain)
-                                                            <span class="text-[9px] bg-cyan-500/20 text-cyan-300 px-1.5 py-0.5 rounded-full font-bold">TARGET</span>
-                                                        @endif
-                                                    </span>
-                                                    <span class="text-xs font-mono font-bold {{ $isTargetDomain ? 'text-cyan-400' : 'text-slate-500' }}">{{ $score }}%</span>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endif
-
-                                {{-- Keywords --}}
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div class="bg-emerald-950/10 border border-emerald-500/20 p-4 rounded-xl">
-                                        <h5 class="text-xs font-bold text-emerald-400 uppercase tracking-wide flex items-center gap-1.5 mb-2.5">
-                                            <x-heroicon-o-check-circle class="w-4 h-4" />
-                                            <span>Keywords Found ({{ count(is_countable($analysisResult['keywords']['found'] ?? null) ? $analysisResult['keywords']['found'] : []) }})</span>
-                                        </h5>
-                                        <div class="flex flex-wrap gap-1">
-                                            @forelse((is_array($analysisResult['keywords']['found'] ?? null) ? $analysisResult['keywords']['found'] : []) as $kw)
-                                                <span class="text-[10px] bg-emerald-950/30 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">{{ $kw }}</span>
-                                            @empty
-                                                <span class="text-[10px] text-slate-500">None detected</span>
-                                            @endforelse
-                                        </div>
-                                    </div>
-
-                                    <div class="bg-amber-950/10 border border-amber-500/20 p-4 rounded-xl">
-                                        <h5 class="text-xs font-bold text-amber-400 uppercase tracking-wide flex items-center gap-1.5 mb-2.5">
-                                            <x-heroicon-o-exclamation-triangle class="w-4 h-4" />
-                                            <span>Weak Evidence ({{ count(is_countable($analysisResult['keywords']['weak_evidence'] ?? null) ? $analysisResult['keywords']['weak_evidence'] : []) }})</span>
-                                        </h5>
-                                        <div class="flex flex-wrap gap-1">
-                                            @forelse((is_array($analysisResult['keywords']['weak_evidence'] ?? null) ? $analysisResult['keywords']['weak_evidence'] : []) as $kw)
-                                                @php
-                                                    $weakLabel = is_array($kw)
-                                                        ? (string) ($kw['keyword'] ?? $kw['reason'] ?? '')
-                                                        : (string) $kw;
-                                                    $weakReason = is_array($kw) ? (string) ($kw['reason'] ?? '') : '';
-                                                @endphp
-                                                @if(trim($weakLabel) !== '')
-                                                    <span class="text-[10px] bg-amber-950/30 text-amber-300 border border-amber-500/20 px-2 py-0.5 rounded" @if(trim($weakReason) !== '') title="{{ $weakReason }}" @endif>{{ $weakLabel }}</span>
+                                        <div class="am-summary-body">
+                                            <div class="am-summary-head">
+                                                <h3 class="am-title-lg">Kecocokan untuk {{ $analysisResult['job_title_targeted'] ?? $targetRole }}</h3>
+                                                @if($bandLabel)
+                                                    <span class="am-chip am-chip--{{ $bandTone }}">{{ $bandLabel }}</span>
                                                 @endif
-                                            @empty
-                                                <span class="text-[10px] text-slate-500">No weak-evidence flags.</span>
-                                            @endforelse
+                                            </div>
+                                            <p class="am-summary-tagline">{{ $roleProfile['tagline'] }}</p>
+                                            <div class="am-tags">
+                                                @if(!empty($analysisResult['target_seniority']))
+                                                    <span class="am-chip am-chip--neutral">Seniority: {{ $analysisResult['target_seniority'] }}</span>
+                                                @endif
+                                                @if(is_numeric($heroDomain))
+                                                    <span class="am-chip am-chip--neutral">Domain {{ strtoupper(str_replace('_', ' ', $roleProfile['domain'])) }}: {{ (int) $heroDomain }}%</span>
+                                                @endif
+                                                @if($jobMatchValue !== null)
+                                                    <span class="am-chip am-chip--{{ $bandTone }}">Job Match: {{ $jobMatchValue }}%</span>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="bg-rose-950/10 border border-rose-500/20 p-4 rounded-xl">
-                                        <h5 class="text-xs font-bold text-rose-400 uppercase tracking-wide flex items-center gap-1.5 mb-2.5">
-                                            <x-heroicon-o-x-circle class="w-4 h-4" />
-                                            <span>Missing Keywords ({{ count(is_countable($analysisResult['keywords']['missing'] ?? null) ? $analysisResult['keywords']['missing'] : []) }})</span>
-                                        </h5>
-                                        <div class="flex flex-wrap gap-1">
-                                            @forelse((is_array($analysisResult['keywords']['missing'] ?? null) ? $analysisResult['keywords']['missing'] : []) as $kw)
-                                                <span class="text-[10px] bg-rose-950/30 text-rose-400 border border-rose-500/20 px-2 py-0.5 rounded">{{ $kw }}</span>
-                                            @empty
-                                                <span class="text-[10px] text-slate-500">Perfect keyword coverage!</span>
-                                            @endforelse
+                                    @if(!empty($analysisResult['summary']))
+                                        <p class="am-summary-text">{{ $analysisResult['summary'] }}</p>
+                                    @endif
+
+                                    <div class="am-quick-grid">
+                                        @foreach($roleProfile['core'] as $coreKey)
+                                            @php $coreValue = $analysisResult[$coreKey] ?? null; @endphp
+                                            <div class="am-quick">
+                                                <span class="am-quick-value am-tone-{{ is_numeric($coreValue) ? ((int) $coreValue >= 80 ? 'ok' : ((int) $coreValue >= 60 ? 'warn' : 'bad')) : 'neutral' }}">
+                                                    {{ is_numeric($coreValue) ? (int) $coreValue.'%' : '-' }}
+                                                </span>
+                                                <span class="am-quick-label">{{ $fitmentMetrics[$coreKey]['label'] }}</span>
+                                            </div>
+                                        @endforeach
+                                        <div class="am-quick">
+                                            <span class="am-quick-value am-tone-neutral">{{ $analysisResult['ats_score'] ?? '-' }}%</span>
+                                            <span class="am-quick-label">Skor ATS</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                {{-- Recommendations --}}
-                                @if(isset($analysisResult['suggestions']) && count(is_countable($analysisResult['suggestions']) ? $analysisResult['suggestions'] : []) > 0)
-                                    <div class="space-y-3">
-                                        <h4 class="text-sm font-bold text-slate-200">Recommended Optimization Steps</h4>
-                                        <div class="space-y-2">
-                                            @foreach((is_array($analysisResult['suggestions'] ?? null) ? $analysisResult['suggestions'] : []) as $idx => $suggestion)
-                                                <div class="bg-[#12121a]/80 border border-[#2d2d3a]/50 p-3 rounded-lg flex items-start gap-3">
-                                                    <span class="w-5 h-5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-500/30 text-xs flex items-center justify-center flex-shrink-0 font-bold font-mono">{{ $idx + 1 }}</span>
-                                                    <p class="text-xs text-slate-300 leading-relaxed">{{ $suggestion }}</p>
+                                {{-- Metrik lengkap --}}
+                                <div class="am-card">
+                                    <div class="am-card-head">
+                                        <span class="am-ico"><x-heroicon-o-chart-bar class="w-4.5 h-4.5" /></span>
+                                        <div>
+                                            <h3 class="am-title">Metrik Penilaian</h3>
+                                            <p class="am-hint">Metrik inti untuk role ini ditandai.</p>
+                                        </div>
+                                    </div>
+                                    <div class="am-metrics">
+                                        @foreach($orderedMetrics as $metricKey)
+                                            @php
+                                                $metric = $fitmentMetrics[$metricKey];
+                                                $isCore = in_array($metricKey, $roleProfile['core']);
+                                                $metricValue = $analysisResult[$metricKey] ?? null;
+                                            @endphp
+                                            <div class="am-metric {{ $isCore ? 'is-core' : '' }}">
+                                                <div class="am-metric-top">
+                                                    <span class="am-metric-label">{{ $metric['label'] }}</span>
+                                                    @if($isCore)<span class="am-chip am-chip--accent am-chip--xs">inti</span>@endif
                                                 </div>
-                                            @endforeach
-                                        </div>
+                                                <div class="am-meter">
+                                                    <div class="am-meter-fill am-tone-bg-{{ is_numeric($metricValue) ? ((int) $metricValue >= 80 ? 'ok' : ((int) $metricValue >= 60 ? 'warn' : 'bad')) : 'neutral' }}"
+                                                         style="width: {{ is_numeric($metricValue) ? (int) max(0, min(100, $metricValue)) : 0 }}%"></div>
+                                                </div>
+                                                <div class="am-metric-bottom">
+                                                    <span class="am-metric-desc">{{ $metric['desc'] }}</span>
+                                                    <span class="am-metric-value">{{ is_numeric($metricValue) ? (int) $metricValue.'%' : '-' }}</span>
+                                                </div>
+                                            </div>
+                                        @endforeach
                                     </div>
-                                @endif
-
-                                <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                                    @if(!empty($analysisResult['strengths']) && is_array($analysisResult['strengths']))
-                                        <div class="bg-emerald-950/10 border border-emerald-500/20 p-4 rounded-xl space-y-2">
-                                            <h4 class="text-sm font-bold text-emerald-300">Professional Strengths</h4>
-                                            <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-                                                @foreach((is_array($analysisResult['strengths'] ?? null) ? $analysisResult['strengths'] : []) as $strength)
-                                                    <li class="flex gap-2"><span class="text-emerald-400">•</span><span>{{ $strength }}</span></li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-
-                                    @if(!empty($analysisResult['critical_gaps']) && is_array($analysisResult['critical_gaps']))
-                                        <div class="bg-rose-950/10 border border-rose-500/20 p-4 rounded-xl space-y-2">
-                                            <h4 class="text-sm font-bold text-rose-300">Critical Gaps</h4>
-                                            <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-                                                @foreach((is_array($analysisResult['critical_gaps'] ?? null) ? $analysisResult['critical_gaps'] : []) as $gap)
-                                                    <li class="flex gap-2"><span class="text-rose-400">•</span><span>{{ $gap }}</span></li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-
-                                    @if(!empty($analysisResult['missing_metrics']) && is_array($analysisResult['missing_metrics']))
-                                        <div class="bg-amber-950/10 border border-amber-500/20 p-4 rounded-xl space-y-2">
-                                            <h4 class="text-sm font-bold text-amber-300">Missing Metrics</h4>
-                                            <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-                                                @foreach((is_array($analysisResult['missing_metrics'] ?? null) ? $analysisResult['missing_metrics'] : []) as $metric)
-                                                    <li class="flex gap-2"><span class="text-amber-400">•</span><span>{{ $metric }}</span></li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-
-                                    @if(!empty($analysisResult['rewrite_priorities']) && is_array($analysisResult['rewrite_priorities']))
-                                        <div class="bg-sky-950/10 border border-sky-500/20 p-4 rounded-xl space-y-2">
-                                            <h4 class="text-sm font-bold text-sky-300">Rewrite Priorities</h4>
-                                            <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-                                                @foreach((is_array($analysisResult['rewrite_priorities'] ?? null) ? $analysisResult['rewrite_priorities'] : []) as $priority)
-                                                    <li class="flex gap-2"><span class="text-sky-400">•</span><span>{{ $priority }}</span></li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
                                 </div>
 
-                                @if(!empty($analysisResult['experience_review']) && is_array($analysisResult['experience_review']))
-                                    @php
-                                        $experienceReviewItems = array_values(array_filter($analysisResult['experience_review']));
-                                    @endphp
-                                    <div class="space-y-3">
-                                        <h4 class="text-sm font-bold text-slate-200 flex items-center gap-2">
-                                            <x-heroicon-o-clipboard-document-check class="w-4.5 h-4.5 text-cyan-400" />
-                                            <span>Experience Evidence Review</span>
-                                            <span class="text-[10px] font-mono bg-[#181824] border border-[#2d2d3a] text-slate-400 px-2 py-0.5 rounded-full">{{ count($experienceReviewItems) }} sections</span>
-                                        </h4>
-                                        <div class="space-y-3">
-                                            @php $experienceReviewIndex = 0; @endphp
-                                            @foreach($experienceReviewItems as $review)
-                                                @if(is_string($review))
-                                                    {{-- Legacy plain-note item: render as a single annotated row --}}
-                                                    <div class="bg-[#12121a]/80 border-l-2 border-cyan-500/50 border-y border-r border-[#2d2d3a]/50 rounded-lg p-3.5">
-                                                        <div class="flex items-start gap-2.5">
-                                                            <x-heroicon-o-information-circle class="w-3.5 h-3.5 text-cyan-400 mt-0.5 flex-shrink-0" />
-                                                            <p class="text-xs text-slate-300 leading-relaxed">{{ $review }}</p>
+                                {{-- A. Checklist requirement --}}
+                                @if(is_array($detail) && $requirements !== [])
+                                    <details class="am-section" open>
+                                        <summary class="am-section-head">
+                                            <span class="am-section-title">
+                                                <x-heroicon-o-clipboard-document-check class="w-4.5 h-4.5" />
+                                                <span>Checklist Requirement</span>
+                                            </span>
+                                            <span class="am-section-meta">{{ count($requirements) }} syarat</span>
+                                            <x-heroicon-o-chevron-down class="am-chevron w-4 h-4" />
+                                        </summary>
+                                        <div class="am-section-body">
+                                            <div class="am-coverage-grid">
+                                                <div class="am-coverage">
+                                                    <span class="am-coverage-value am-tone-{{ $bandTone }}">{{ $detail['overall'] ?? 0 }}%</span>
+                                                    <span class="am-coverage-label">Skor Keseluruhan</span>
+                                                </div>
+                                                <div class="am-coverage">
+                                                    <span class="am-coverage-value">{{ $detail['must_have_coverage'] ?? 0 }}%</span>
+                                                    <span class="am-coverage-label">Must-have</span>
+                                                </div>
+                                                <div class="am-coverage">
+                                                    <span class="am-coverage-value">{{ $detail['nice_to_have_coverage'] ?? 0 }}%</span>
+                                                    <span class="am-coverage-label">Nice-to-have</span>
+                                                </div>
+                                                <div class="am-coverage">
+                                                    <span class="am-coverage-value">{{ $detail['evidence_quality'] ?? 0 }}%</span>
+                                                    <span class="am-coverage-label">Kualitas Bukti</span>
+                                                </div>
+                                            </div>
+
+                                            @if(!empty($detail['band']['definition']))
+                                                <div class="am-callout am-callout--accent">
+                                                    <strong>{{ $bandLabel ?? ($detail['band']['label'] ?? '') }}</strong>
+                                                    <span>{{ $detail['band']['definition'] }}</span>
+                                                </div>
+                                            @endif
+
+                                            @foreach([['title' => 'Must-have', 'items' => $mustHave], ['title' => 'Nice-to-have', 'items' => $niceToHave]] as $group)
+                                                @if($group['items'] !== [])
+                                                    <div class="am-req-group">
+                                                        <h5 class="am-subtitle">{{ $group['title'] }} <span class="am-subtitle-count">{{ count($group['items']) }}</span></h5>
+                                                        <div class="am-req-list">
+                                                            @foreach($group['items'] as $req)
+                                                                @php
+                                                                    $status = $req['status'] ?? 'missing';
+                                                                    $meta = $statusMeta[$status] ?? $statusMeta['missing'];
+                                                                @endphp
+                                                                <div class="am-req">
+                                                                    <div class="am-req-head">
+                                                                        <span class="am-req-name">{{ $req['requirement'] ?? '' }}</span>
+                                                                        <span class="am-chip {{ $meta['class'] }} am-chip--xs">{{ $meta['label'] }}</span>
+                                                                    </div>
+                                                                    @if(!empty($req['evidence_quote']))
+                                                                        <blockquote class="am-quote">{{ $req['evidence_quote'] }}</blockquote>
+                                                                    @endif
+                                                                    @if(!empty($req['reasoning']))
+                                                                        <p class="am-req-reason">{{ $req['reasoning'] }}</p>
+                                                                    @endif
+                                                                </div>
+                                                            @endforeach
                                                         </div>
                                                     </div>
-                                                @elseif(is_array($review))
-                                                    @php
-                                                        $reviewSection = trim((string) ($review['section'] ?? ''));
-                                                        $reviewStrength = trim((string) ($review['strength'] ?? ''));
-                                                        $reviewGap = trim((string) ($review['gap'] ?? ''));
-                                                        $reviewHint = trim((string) ($review['rewrite_hint'] ?? ''));
-                                                        $experienceReviewIndex++;
-                                                    @endphp
-                                                    <div class="bg-[#12121a]/80 border border-[#2d2d3a]/50 rounded-xl overflow-hidden">
-                                                        {{-- Section header --}}
-                                                        <div class="flex items-center gap-2.5 px-4 py-2.5 bg-[#181824]/60 border-b border-[#2d2d3a]/50">
-                                                            <span class="w-6 h-6 rounded-md bg-cyan-950/60 border border-cyan-500/20 text-cyan-400 text-[10px] font-bold font-mono flex items-center justify-center flex-shrink-0">{{ $experienceReviewIndex }}</span>
-                                                            <h5 class="text-sm font-bold text-white truncate">{{ $reviewSection !== '' ? $reviewSection : 'Experience Review' }}</h5>
+                                                @endif
+                                            @endforeach
+
+                                            <details class="am-subsection">
+                                                <summary class="am-subsection-head">
+                                                    <x-heroicon-o-information-circle class="w-4 h-4" />
+                                                    <span>Cara skor dihitung (formula objektif)</span>
+                                                    <x-heroicon-o-chevron-down class="am-chevron w-3.5 h-3.5" />
+                                                </summary>
+                                                <div class="am-subsection-body">
+                                                    <p>overall = 0.6 × must_have_coverage + 0.2 × nice_to_have_coverage + 0.2 × evidence_quality</p>
+                                                    <p>poin status: verified = 1.0 · claimed = 0.4 · missing = 0.0</p>
+                                                    <p>evidence_quality = verified / (verified + claimed)</p>
+                                                    <ul class="am-band-list">
+                                                        <li><span class="am-tone-ok">85–100 Kuat:</span> mayoritas must-have terverifikasi dengan bukti terukur.</li>
+                                                        <li><span class="am-tone-accent">70–84 Baik:</span> must-have tercakup, sebagian masih sebatas klaim.</li>
+                                                        <li><span class="am-tone-warn">50–69 Sebagian:</span> ada celah pada must-have atau bukti lemah.</li>
+                                                        <li><span class="am-tone-bad">0–49 Lemah:</span> must-have penting belum ada di CV.</li>
+                                                    </ul>
+                                                    <p class="am-subsection-note">Skor dihitung secara deterministik dari bukti yang diverifikasi terhadap teks CV — AI tidak pernah menetapkan angka.</p>
+                                                </div>
+                                            </details>
+                                        </div>
+                                    </details>
+                                @endif
+
+                                {{-- B. Audit kata kunci --}}
+                                @if($foundKeywords !== [] || $weakKeywords !== [] || $missingKeywords !== [])
+                                    <details class="am-section">
+                                        <summary class="am-section-head">
+                                            <span class="am-section-title">
+                                                <x-heroicon-o-tag class="w-4.5 h-4.5" />
+                                                <span>Audit Kata Kunci</span>
+                                            </span>
+                                            <span class="am-section-meta">{{ count($foundKeywords) }} ditemukan · {{ count($missingKeywords) }} hilang</span>
+                                            <x-heroicon-o-chevron-down class="am-chevron w-4 h-4" />
+                                        </summary>
+                                        <div class="am-section-body">
+                                            <div class="am-kw-grid">
+                                                <div class="am-kw am-kw--ok">
+                                                    <h5 class="am-kw-title"><x-heroicon-o-check-circle class="w-4 h-4" /> Ditemukan ({{ count($foundKeywords) }})</h5>
+                                                    <div class="am-chip-wrap">
+                                                        @forelse($foundKeywords as $kw)
+                                                            <span class="am-chip am-chip--ok am-chip--xs">{{ $kw }}</span>
+                                                        @empty
+                                                            <span class="am-empty-note">Tidak ada</span>
+                                                        @endforelse
+                                                    </div>
+                                                </div>
+                                                <div class="am-kw am-kw--warn">
+                                                    <h5 class="am-kw-title"><x-heroicon-o-exclamation-triangle class="w-4 h-4" /> Bukti Lemah ({{ count($weakKeywords) }})</h5>
+                                                    <div class="am-chip-wrap">
+                                                        @forelse($weakKeywords as $kw)
+                                                            @php
+                                                                $weakLabel = is_array($kw) ? (string) ($kw['keyword'] ?? $kw['reason'] ?? '') : (string) $kw;
+                                                                $weakReason = is_array($kw) ? (string) ($kw['reason'] ?? '') : '';
+                                                            @endphp
+                                                            @if(trim($weakLabel) !== '')
+                                                                <span class="am-chip am-chip--warn am-chip--xs" @if(trim($weakReason) !== '') title="{{ $weakReason }}" @endif>{{ $weakLabel }}</span>
+                                                            @endif
+                                                        @empty
+                                                            <span class="am-empty-note">Tidak ada</span>
+                                                        @endforelse
+                                                    </div>
+                                                </div>
+                                                <div class="am-kw am-kw--bad">
+                                                    <h5 class="am-kw-title"><x-heroicon-o-x-circle class="w-4 h-4" /> Hilang ({{ count($missingKeywords) }})</h5>
+                                                    <div class="am-chip-wrap">
+                                                        @forelse($missingKeywords as $kw)
+                                                            <span class="am-chip am-chip--bad am-chip--xs">{{ $kw }}</span>
+                                                        @empty
+                                                            <span class="am-empty-note">Cakupan kata kunci lengkap.</span>
+                                                        @endforelse
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </details>
+                                @endif
+
+                                {{-- C. Fokus perbaikan --}}
+                                @if($focusAreas->isNotEmpty() || $suggestions !== [] || $rewritePriorities !== [])
+                                    <details class="am-section" open>
+                                        <summary class="am-section-head">
+                                            <span class="am-section-title">
+                                                <x-heroicon-o-wrench-screwdriver class="w-4.5 h-4.5" />
+                                                <span>Fokus Perbaikan</span>
+                                            </span>
+                                            <span class="am-section-meta">{{ $focusAreas->count() + count($suggestions) }} item</span>
+                                            <x-heroicon-o-chevron-down class="am-chevron w-4 h-4" />
+                                        </summary>
+                                        <div class="am-section-body">
+                                            @if($focusAreas->isNotEmpty())
+                                                <div class="am-focus">
+                                                    <h5 class="am-subtitle">Area skor terendah</h5>
+                                                    <div class="am-chip-wrap">
+                                                        @foreach($focusAreas as $area)
+                                                            <span class="am-chip am-chip--warn">
+                                                                <span class="am-chip-strong">{{ (int) $area['value'] }}%</span>
+                                                                {{ $area['label'] }}
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            @if($suggestions !== [])
+                                                <div>
+                                                    <h5 class="am-subtitle">Langkah optimasi</h5>
+                                                    <ol class="am-numbered">
+                                                        @foreach($suggestions as $idx => $suggestion)
+                                                            <li>
+                                                                <span class="am-numbered-idx">{{ $idx + 1 }}</span>
+                                                                <span class="am-numbered-text">{{ $suggestion }}</span>
+                                                            </li>
+                                                        @endforeach
+                                                    </ol>
+                                                </div>
+                                            @endif
+
+                                            @if($rewritePriorities !== [])
+                                                <div>
+                                                    <h5 class="am-subtitle">Prioritas rewrite</h5>
+                                                    <ul class="am-bullets">
+                                                        @foreach($rewritePriorities as $priority)
+                                                            <li>{{ $priority }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </details>
+                                @endif
+
+                                {{-- D. Kekuatan & celah --}}
+                                @if($strengths !== [] || $criticalGaps !== [] || $missingMetrics !== [])
+                                    <details class="am-section">
+                                        <summary class="am-section-head">
+                                            <span class="am-section-title">
+                                                <x-heroicon-o-scale class="w-4.5 h-4.5" />
+                                                <span>Kekuatan & Celah</span>
+                                            </span>
+                                            <span class="am-section-meta">{{ count($strengths) }} kekuatan · {{ count($criticalGaps) }} celah</span>
+                                            <x-heroicon-o-chevron-down class="am-chevron w-4 h-4" />
+                                        </summary>
+                                        <div class="am-section-body">
+                                            <div class="am-two-col">
+                                                @if($strengths !== [])
+                                                    <div class="am-callout am-callout--ok">
+                                                        <h5 class="am-subtitle am-tone-ok">Kekuatan profesional</h5>
+                                                        <ul class="am-bullets">
+                                                            @foreach($strengths as $strength)
+                                                                <li>{{ $strength }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                @endif
+                                                @if($criticalGaps !== [])
+                                                    <div class="am-callout am-callout--bad">
+                                                        <h5 class="am-subtitle am-tone-bad">Celah kritis</h5>
+                                                        <ul class="am-bullets">
+                                                            @foreach($criticalGaps as $gap)
+                                                                <li>{{ $gap }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            @if($missingMetrics !== [])
+                                                <div class="am-callout am-callout--warn">
+                                                    <h5 class="am-subtitle am-tone-warn">Metrik yang belum ada</h5>
+                                                    <ul class="am-bullets">
+                                                        @foreach($missingMetrics as $metric)
+                                                            <li>{{ $metric }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </details>
+                                @endif
+
+                                {{-- E. Review pengalaman --}}
+                                @if($experienceReview !== [])
+                                    <details class="am-section">
+                                        <summary class="am-section-head">
+                                            <span class="am-section-title">
+                                                <x-heroicon-o-clipboard-document-check class="w-4.5 h-4.5" />
+                                                <span>Review Pengalaman</span>
+                                            </span>
+                                            <span class="am-section-meta">{{ count($experienceReview) }} bagian</span>
+                                            <x-heroicon-o-chevron-down class="am-chevron w-4 h-4" />
+                                        </summary>
+                                        <div class="am-section-body">
+                                            <div class="am-review-list">
+                                                @foreach($experienceReview as $review)
+                                                    @if(is_string($review))
+                                                        <div class="am-review-note">
+                                                            <x-heroicon-o-information-circle class="w-4 h-4" />
+                                                            <p>{{ $review }}</p>
                                                         </div>
-                                                        {{-- Evidence rows --}}
-                                                        <div class="p-4 space-y-3">
+                                                    @elseif(is_array($review))
+                                                        @php
+                                                            $reviewSection = trim((string) ($review['section'] ?? ''));
+                                                            $reviewStrength = trim((string) ($review['strength'] ?? ''));
+                                                            $reviewGap = trim((string) ($review['gap'] ?? ''));
+                                                            $reviewHint = trim((string) ($review['rewrite_hint'] ?? ''));
+                                                        @endphp
+                                                        <div class="am-review">
+                                                            @if($reviewSection !== '')
+                                                                <h5 class="am-review-head">{{ $reviewSection }}</h5>
+                                                            @endif
                                                             @if($reviewStrength !== '')
-                                                                <div class="flex items-start gap-2.5">
-                                                                    <x-heroicon-o-check-circle class="w-3.5 h-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />
-                                                                    <div class="min-w-0">
-                                                                        <span class="block text-[10px] uppercase font-bold tracking-wider text-emerald-400 mb-0.5">Strength</span>
-                                                                        <p class="text-xs text-slate-300 leading-relaxed">{{ $reviewStrength }}</p>
-                                                                    </div>
+                                                                <div class="am-review-row">
+                                                                    <span class="am-review-tag am-tone-ok">Kekuatan</span>
+                                                                    <p>{{ $reviewStrength }}</p>
                                                                 </div>
                                                             @endif
                                                             @if($reviewGap !== '')
-                                                                <div class="flex items-start gap-2.5">
-                                                                    <x-heroicon-o-x-circle class="w-3.5 h-3.5 text-rose-400 mt-0.5 flex-shrink-0" />
-                                                                    <div class="min-w-0">
-                                                                        <span class="block text-[10px] uppercase font-bold tracking-wider text-rose-400 mb-0.5">Gap</span>
-                                                                        <p class="text-xs text-slate-300 leading-relaxed">{{ $reviewGap }}</p>
-                                                                    </div>
+                                                                <div class="am-review-row">
+                                                                    <span class="am-review-tag am-tone-bad">Celah</span>
+                                                                    <p>{{ $reviewGap }}</p>
                                                                 </div>
                                                             @endif
                                                             @if($reviewHint !== '')
-                                                                <div class="flex items-start gap-2.5 bg-sky-950/20 border border-sky-500/10 rounded-lg p-2.5">
-                                                                    <x-heroicon-o-pencil-square class="w-3.5 h-3.5 text-sky-400 mt-0.5 flex-shrink-0" />
-                                                                    <div class="min-w-0">
-                                                                        <span class="block text-[10px] uppercase font-bold tracking-wider text-sky-400 mb-0.5">Rewrite Hint</span>
-                                                                        <p class="text-xs text-slate-300 leading-relaxed">{{ $reviewHint }}</p>
-                                                                    </div>
+                                                                <div class="am-review-row am-review-row--hint">
+                                                                    <span class="am-review-tag am-tone-accent">Saran rewrite</span>
+                                                                    <p>{{ $reviewHint }}</p>
                                                                 </div>
                                                             @endif
                                                         </div>
-                                                    </div>
-                                                @endif
-                                            @endforeach
+                                                    @endif
+                                                @endforeach
+                                            </div>
                                         </div>
-                                    </div>
+                                    </details>
                                 @endif
 
-                                {{-- Summary --}}
-                                @if(!empty($analysisResult['summary']))
-                                    <div class="bg-[#12121a]/40 border border-[#2d2d3a]/30 p-4 rounded-xl">
-                                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Executive Fitment Summary</h4>
-                                        <p class="text-xs text-slate-300 leading-relaxed font-sans">{{ $analysisResult['summary'] }}</p>
-                                    </div>
+                                {{-- F. Detail domain --}}
+                                @if($industryMatch !== [])
+                                    <details class="am-section">
+                                        <summary class="am-section-head">
+                                            <span class="am-section-title">
+                                                <x-heroicon-o-globe-alt class="w-4.5 h-4.5" />
+                                                <span>Detail Domain</span>
+                                            </span>
+                                            <span class="am-section-meta">{{ count($industryMatch) }} domain</span>
+                                            <x-heroicon-o-chevron-down class="am-chevron w-4 h-4" />
+                                        </summary>
+                                        <div class="am-section-body">
+                                            <div class="am-domain-grid">
+                                                @foreach($industryMatch as $domainKey => $score)
+                                                    @php $isTargetDomain = $domainKey === $roleProfile['domain']; @endphp
+                                                    <div class="am-domain {{ $isTargetDomain ? 'is-target' : '' }}">
+                                                        <span class="am-domain-name">
+                                                            {{ strtoupper(str_replace('_', ' ', $domainKey)) }}
+                                                            @if($isTargetDomain)<span class="am-chip am-chip--accent am-chip--xs">target</span>@endif
+                                                        </span>
+                                                        <span class="am-domain-value">{{ $score }}%</span>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </details>
                                 @endif
                             </div>
-                        @elseif(!$isAnalyzing && !$analysisResult)
-                            <div class="glass-card p-12 text-center">
-                                <x-heroicon-o-sparkles class="w-12 h-12 text-slate-600 mx-auto mb-3" />
-                                <h4 class="text-md font-bold text-white">Interactive AI Insights Ready</h4>
-                                <p class="text-xs text-slate-400 max-w-sm mx-auto mt-1">Paste a job description on the left panel, and click "Run AI Analysis" to review direct scoring results, keywords audit, and action items inline.</p>
-                            </div>
-                        @else
-                            {{-- Skeleton Loader during analysis --}}
-                            <div class="glass-card p-6 space-y-6 animate-pulse">
-                                <div class="flex items-center justify-between border-b border-[#2d2d3a] pb-4">
-                                    <div class="h-6 w-48 bg-slate-800 rounded"></div>
-                                    <div class="h-6 w-24 bg-slate-800 rounded-full"></div>
-                                </div>
-                                <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
-                                    @for($i=0; $i<5; $i++)
-                                        <div class="bg-[#1e1e2d]/40 border border-[#2d2d3a]/30 p-4 rounded-xl text-center space-y-2">
-                                            <div class="h-8 w-12 bg-slate-800 rounded mx-auto"></div>
-                                            <div class="h-3 w-16 bg-slate-800 rounded mx-auto"></div>
-                                        </div>
+                        @elseif($isAnalyzing)
+                            <div class="am-card am-skeleton">
+                                <div class="am-skel am-skel--title"></div>
+                                <div class="am-skel-grid">
+                                    @for($i = 0; $i < 4; $i++)
+                                        <div class="am-skel am-skel--stat"></div>
                                     @endfor
                                 </div>
-                                <div class="space-y-3 pt-4 border-t border-[#2d2d3a]/50">
-                                    <div class="h-4 w-1/4 bg-slate-800 rounded"></div>
-                                    <div class="h-3 w-full bg-slate-800/60 rounded"></div>
-                                    <div class="h-3 w-5/6 bg-slate-800/60 rounded"></div>
-                                </div>
+                                <div class="am-skel am-skel--line"></div>
+                                <div class="am-skel am-skel--line am-skel--short"></div>
+                            </div>
+                        @else
+                            <div class="am-card am-empty">
+                                <span class="am-empty-ico"><x-heroicon-o-sparkles class="w-6 h-6" /></span>
+                                <h4 class="am-title-lg">Belum ada hasil analisis</h4>
+                                <p class="am-hint am-empty-hint">Pilih target role di panel kiri, tempel deskripsi lowongan bila ada, lalu jalankan analisis untuk melihat skor, checklist requirement, dan langkah perbaikan.</p>
+                                <x-filament::button wire:click="analyzeJobMatch" color="primary">
+                                    <x-heroicon-o-sparkles class="w-4 h-4 mr-1.5" />
+                                    <span>Jalankan Analisis AI</span>
+                                </x-filament::button>
                             </div>
                         @endif
                     </div>
@@ -2143,6 +2210,372 @@
             border-color: #00d4ff !important;
             box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.15), 0 0 10px rgba(0, 212, 255, 0.2) !important;
             outline: none;
+        }
+
+        /* ============================================================
+           AI JOB MATCH — Muted, scoped design (light + dark)
+           Only affects the aimatch tab via .am-scope
+           ============================================================ */
+        .am-scope {
+            --am-bg: #ffffff;
+            --am-bg-soft: #f8fafc;
+            --am-bg-sunken: #f1f5f9;
+            --am-border: #e2e8f0;
+            --am-border-strong: #cbd5e1;
+            --am-text: #1e293b;
+            --am-text-muted: #475569;
+            --am-text-faint: #64748b;
+            --am-accent: #2563eb;
+            --am-accent-soft: #eff6ff;
+            --am-accent-border: #bfdbfe;
+            --am-ok: #047857;
+            --am-ok-soft: #ecfdf5;
+            --am-ok-border: #a7f3d0;
+            --am-warn: #b45309;
+            --am-warn-soft: #fffbeb;
+            --am-warn-border: #fde68a;
+            --am-bad: #b91c1c;
+            --am-bad-soft: #fef2f2;
+            --am-bad-border: #fecaca;
+            color: var(--am-text);
+        }
+
+        .dark .am-scope {
+            --am-bg: #1e293b;
+            --am-bg-soft: #172033;
+            --am-bg-sunken: #0f172a;
+            --am-border: #334155;
+            --am-border-strong: #475569;
+            --am-text: #e2e8f0;
+            --am-text-muted: #94a3b8;
+            --am-text-faint: #7c8aa0;
+            --am-accent: #60a5fa;
+            --am-accent-soft: rgba(96, 165, 250, 0.10);
+            --am-accent-border: rgba(96, 165, 250, 0.30);
+            --am-ok: #34d399;
+            --am-ok-soft: rgba(52, 211, 153, 0.10);
+            --am-ok-border: rgba(52, 211, 153, 0.28);
+            --am-warn: #fbbf24;
+            --am-warn-soft: rgba(251, 191, 36, 0.10);
+            --am-warn-border: rgba(251, 191, 36, 0.28);
+            --am-bad: #fb7185;
+            --am-bad-soft: rgba(251, 113, 133, 0.10);
+            --am-bad-border: rgba(251, 113, 133, 0.28);
+        }
+
+        .am-scope .am-tone-ok { color: var(--am-ok) !important; }
+        .am-scope .am-tone-warn { color: var(--am-warn) !important; }
+        .am-scope .am-tone-bad { color: var(--am-bad) !important; }
+        .am-scope .am-tone-accent { color: var(--am-accent) !important; }
+        .am-scope .am-tone-neutral { color: var(--am-text-muted) !important; }
+
+        .am-scope .am-tone-bg-ok { background: var(--am-ok) !important; }
+        .am-scope .am-tone-bg-warn { background: var(--am-warn) !important; }
+        .am-scope .am-tone-bg-bad { background: var(--am-bad) !important; }
+        .am-scope .am-tone-bg-accent { background: var(--am-accent) !important; }
+        .am-scope .am-tone-bg-neutral { background: var(--am-border-strong) !important; }
+
+        .am-scope .am-ring-track { color: var(--am-border-strong); opacity: 0.5; }
+
+        /* Layout */
+        .am-scope .am-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+        }
+        @media (min-width: 1024px) {
+            .am-scope .am-layout { grid-template-columns: minmax(320px, 360px) 1fr; align-items: start; }
+            .am-scope .am-col-input { position: sticky; top: 1rem; }
+        }
+        .am-scope .am-col-input,
+        .am-scope .am-col-result { display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; }
+
+        /* Cards */
+        .am-scope .am-card {
+            background: var(--am-bg);
+            border: 1px solid var(--am-border);
+            border-radius: 14px;
+            padding: 1.15rem 1.25rem;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        }
+        .dark .am-scope .am-card { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); }
+
+        .am-scope .am-card-head { display: flex; align-items: flex-start; gap: 0.65rem; margin-bottom: 0.9rem; }
+        .am-scope .am-ico {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 2rem; height: 2rem; flex-shrink: 0;
+            border-radius: 9px;
+            border: 1px solid var(--am-accent-border);
+            background: var(--am-accent-soft);
+            color: var(--am-accent);
+        }
+        .am-scope .am-title { font-size: 0.95rem; font-weight: 700; color: var(--am-text); line-height: 1.2; }
+        .am-scope .am-title-lg { font-size: 1.05rem; font-weight: 700; color: var(--am-text); line-height: 1.3; }
+        .am-scope .am-hint { font-size: 0.78rem; color: var(--am-text-faint); line-height: 1.5; margin-top: 0.15rem; }
+        .am-scope .am-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--am-text-muted); margin-bottom: 0.4rem; }
+        .am-scope .am-optional { font-weight: 500; color: var(--am-text-faint); font-size: 0.72rem; }
+        .am-scope .am-field { margin-bottom: 1rem; }
+
+        .am-scope .am-input,
+        .am-scope .am-select,
+        .am-scope .am-textarea {
+            width: 100%;
+            background: var(--am-bg-soft);
+            border: 1px solid var(--am-border-strong);
+            border-radius: 10px;
+            color: var(--am-text);
+            padding: 0.6rem 0.8rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+        .am-scope .am-textarea { font-family: var(--font-mono, monospace); font-size: 0.8rem; resize: vertical; }
+        .am-scope .am-input:focus,
+        .am-scope .am-select:focus,
+        .am-scope .am-textarea:focus {
+            outline: none;
+            border-color: var(--am-accent);
+            box-shadow: 0 0 0 3px var(--am-accent-soft);
+        }
+        .am-scope .am-input::placeholder,
+        .am-scope .am-textarea::placeholder { color: var(--am-text-faint); }
+
+        /* Chips */
+        .am-scope .am-chip {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.72rem; font-weight: 600; line-height: 1.2;
+            border: 1px solid transparent;
+        }
+        .am-scope .am-chip--xs { padding: 0.15rem 0.5rem; font-size: 0.68rem; }
+        .am-scope .am-chip--ok { background: var(--am-ok-soft); color: var(--am-ok); border-color: var(--am-ok-border); }
+        .am-scope .am-chip--warn { background: var(--am-warn-soft); color: var(--am-warn); border-color: var(--am-warn-border); }
+        .am-scope .am-chip--bad { background: var(--am-bad-soft); color: var(--am-bad); border-color: var(--am-bad-border); }
+        .am-scope .am-chip--accent { background: var(--am-accent-soft); color: var(--am-accent); border-color: var(--am-accent-border); }
+        .am-scope .am-chip--neutral { background: var(--am-bg-sunken); color: var(--am-text-muted); border-color: var(--am-border); }
+        .am-scope .am-chip-strong { font-weight: 700; }
+
+        /* History */
+        .am-scope .am-history { display: flex; flex-direction: column; gap: 0.4rem; }
+        .am-scope .am-history-item {
+            display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
+            width: 100%; text-align: left;
+            padding: 0.55rem 0.7rem;
+            border-radius: 10px;
+            border: 1px solid var(--am-border);
+            background: var(--am-bg-soft);
+            transition: border-color 0.15s ease, background 0.15s ease;
+            cursor: pointer;
+        }
+        .am-scope .am-history-item:hover { border-color: var(--am-border-strong); }
+        .am-scope .am-history-item.is-active { border-color: var(--am-accent-border); background: var(--am-accent-soft); }
+        .am-scope .am-history-main { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+        .am-scope .am-history-role { font-size: 0.8rem; font-weight: 600; color: var(--am-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .am-scope .am-history-date { font-size: 0.68rem; color: var(--am-text-faint); font-family: var(--font-mono, monospace); }
+
+        /* Summary */
+        .am-scope .am-summary-top { display: flex; align-items: center; gap: 1.15rem; flex-wrap: wrap; }
+        .am-scope .am-hero-ring { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+        .am-scope .am-ring-caption { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--am-text-faint); }
+        .am-scope .am-summary-body { flex: 1; min-width: 200px; }
+        .am-scope .am-summary-head { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+        .am-scope .am-summary-tagline { font-size: 0.8rem; color: var(--am-text-muted); line-height: 1.55; margin-top: 0.35rem; }
+        .am-scope .am-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+        .am-scope .am-summary-text {
+            margin-top: 0.9rem; padding-top: 0.85rem;
+            border-top: 1px solid var(--am-border);
+            font-size: 0.8rem; color: var(--am-text-muted); line-height: 1.65;
+        }
+        .am-scope .am-quick-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;
+            margin-top: 0.9rem;
+        }
+        @media (min-width: 640px) { .am-scope .am-quick-grid { grid-template-columns: repeat(4, 1fr); } }
+        .am-scope .am-quick {
+            display: flex; flex-direction: column; gap: 0.15rem;
+            padding: 0.5rem 0.6rem; border-radius: 10px;
+            background: var(--am-bg-soft); border: 1px solid var(--am-border);
+        }
+        .am-scope .am-quick-value { font-family: var(--font-mono, monospace); font-weight: 700; font-size: 1rem; }
+        .am-scope .am-quick-label { font-size: 0.68rem; color: var(--am-text-faint); }
+
+        /* Metrics */
+        .am-scope .am-metrics { display: grid; grid-template-columns: 1fr; gap: 0.7rem; }
+        @media (min-width: 640px) { .am-scope .am-metrics { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1280px) { .am-scope .am-metrics { grid-template-columns: repeat(3, 1fr); } }
+        .am-scope .am-metric { padding: 0.6rem 0.7rem; border-radius: 10px; border: 1px solid var(--am-border); background: var(--am-bg-soft); }
+        .am-scope .am-metric.is-core { border-color: var(--am-accent-border); background: var(--am-accent-soft); }
+        .am-scope .am-metric-top { display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; }
+        .am-scope .am-metric-label { font-size: 0.78rem; font-weight: 600; color: var(--am-text); }
+        .am-scope .am-meter { width: 100%; height: 5px; border-radius: 999px; background: var(--am-bg-sunken); overflow: hidden; margin: 0.45rem 0; }
+        .dark .am-scope .am-meter { background: rgba(148, 163, 184, 0.18); }
+        .am-scope .am-meter-fill { height: 100%; border-radius: 999px; }
+        .am-scope .am-metric-bottom { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+        .am-scope .am-metric-desc { font-size: 0.68rem; color: var(--am-text-faint); line-height: 1.4; }
+        .am-scope .am-metric-value { font-family: var(--font-mono, monospace); font-weight: 700; font-size: 0.85rem; color: var(--am-text); flex-shrink: 0; }
+
+        /* Collapsible sections */
+        .am-scope .am-section { background: var(--am-bg); border: 1px solid var(--am-border); border-radius: 14px; overflow: hidden; }
+        .am-scope .am-section-head {
+            display: flex; align-items: center; gap: 0.6rem;
+            padding: 0.85rem 1.1rem;
+            cursor: pointer; user-select: none;
+            list-style: none;
+        }
+        .am-scope .am-section-head::-webkit-details-marker { display: none; }
+        .am-scope .am-section-title { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 700; color: var(--am-text); }
+        .am-scope .am-section-title svg { color: var(--am-accent); }
+        .am-scope .am-section-meta { margin-left: auto; font-size: 0.7rem; color: var(--am-text-faint); }
+        .am-scope .am-chevron { color: var(--am-text-faint); transition: transform 0.2s ease; flex-shrink: 0; }
+        .am-scope details[open] > .am-section-head .am-chevron { transform: rotate(180deg); }
+        .am-scope .am-subsection[open] > .am-subsection-head .am-chevron { transform: rotate(180deg); }
+        .am-scope .am-section-head:hover { background: var(--am-bg-soft); }
+        .am-scope .am-section-body { padding: 0 1.1rem 1.1rem; display: flex; flex-direction: column; gap: 1rem; }
+
+        .am-scope .am-subtitle { font-size: 0.78rem; font-weight: 700; color: var(--am-text); text-transform: uppercase; letter-spacing: 0.04em; display: flex; align-items: center; gap: 0.4rem; }
+        .am-scope .am-subtitle-count { font-size: 0.68rem; font-weight: 600; color: var(--am-text-faint); }
+
+        /* Coverage */
+        .am-scope .am-coverage-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+        @media (min-width: 640px) { .am-scope .am-coverage-grid { grid-template-columns: repeat(4, 1fr); } }
+        .am-scope .am-coverage { padding: 0.55rem; border-radius: 10px; border: 1px solid var(--am-border); background: var(--am-bg-soft); text-align: center; }
+        .am-scope .am-coverage-value { display: block; font-family: var(--font-mono, monospace); font-weight: 700; font-size: 1.05rem; color: var(--am-text); }
+        .am-scope .am-coverage-label { display: block; font-size: 0.66rem; color: var(--am-text-faint); margin-top: 0.15rem; }
+
+        /* Callouts */
+        .am-scope .am-callout { display: flex; flex-direction: column; gap: 0.35rem; padding: 0.7rem 0.85rem; border-radius: 10px; border: 1px solid var(--am-border); background: var(--am-bg-soft); font-size: 0.78rem; color: var(--am-text-muted); line-height: 1.55; }
+        .am-scope .am-callout strong { color: var(--am-text); }
+        .am-scope .am-callout--accent { border-color: var(--am-accent-border); background: var(--am-accent-soft); }
+        .am-scope .am-callout--ok { border-color: var(--am-ok-border); background: var(--am-ok-soft); }
+        .am-scope .am-callout--warn { border-color: var(--am-warn-border); background: var(--am-warn-soft); }
+        .am-scope .am-callout--bad { border-color: var(--am-bad-border); background: var(--am-bad-soft); }
+
+        /* Requirements */
+        .am-scope .am-req-group { display: flex; flex-direction: column; gap: 0.55rem; }
+        .am-scope .am-req-list { display: flex; flex-direction: column; gap: 0.5rem; }
+        .am-scope .am-req { padding: 0.65rem 0.75rem; border-radius: 10px; border: 1px solid var(--am-border); background: var(--am-bg-soft); }
+        .am-scope .am-req-head { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+        .am-scope .am-req-name { font-size: 0.82rem; font-weight: 600; color: var(--am-text); }
+        .am-scope .am-quote {
+            margin-top: 0.5rem; padding: 0.4rem 0.6rem;
+            border-left: 3px solid var(--am-border-strong);
+            background: var(--am-bg-sunken);
+            border-radius: 0 8px 8px 0;
+            font-family: var(--font-mono, monospace); font-size: 0.72rem; color: var(--am-text-muted); line-height: 1.5;
+        }
+        .dark .am-scope .am-quote { background: rgba(15, 23, 42, 0.5); }
+        .am-scope .am-req-reason { margin-top: 0.4rem; font-size: 0.72rem; color: var(--am-text-faint); line-height: 1.5; }
+
+        /* Subsection (formula) */
+        .am-scope .am-subsection { border: 1px solid var(--am-border); border-radius: 10px; background: var(--am-bg-soft); }
+        .am-scope .am-subsection-head { display: flex; align-items: center; gap: 0.45rem; padding: 0.6rem 0.8rem; cursor: pointer; list-style: none; font-size: 0.76rem; font-weight: 600; color: var(--am-text-muted); }
+        .am-scope .am-subsection-head::-webkit-details-marker { display: none; }
+        .am-scope .am-subsection-body { padding: 0 0.8rem 0.8rem; display: flex; flex-direction: column; gap: 0.5rem; font-family: var(--font-mono, monospace); font-size: 0.72rem; color: var(--am-text-muted); line-height: 1.55; }
+        .am-scope .am-band-list { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; font-family: var(--font-sans, sans-serif); }
+        .am-scope .am-subsection-note { font-family: var(--font-sans, sans-serif); color: var(--am-text-faint); }
+
+        /* Keywords */
+        .am-scope .am-kw-grid { display: grid; grid-template-columns: 1fr; gap: 0.6rem; }
+        @media (min-width: 768px) { .am-scope .am-kw-grid { grid-template-columns: repeat(3, 1fr); } }
+        .am-scope .am-kw { padding: 0.7rem 0.75rem; border-radius: 10px; border: 1px solid var(--am-border); }
+        .am-scope .am-kw--ok { background: var(--am-ok-soft); border-color: var(--am-ok-border); }
+        .am-scope .am-kw--warn { background: var(--am-warn-soft); border-color: var(--am-warn-border); }
+        .am-scope .am-kw--bad { background: var(--am-bad-soft); border-color: var(--am-bad-border); }
+        .am-scope .am-kw-title { display: flex; align-items: center; gap: 0.35rem; font-size: 0.74rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .am-scope .am-kw--ok .am-kw-title { color: var(--am-ok); }
+        .am-scope .am-kw--warn .am-kw-title { color: var(--am-warn); }
+        .am-scope .am-kw--bad .am-kw-title { color: var(--am-bad); }
+        .am-scope .am-chip-wrap { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+        .am-scope .am-empty-note { font-size: 0.72rem; color: var(--am-text-faint); }
+
+        /* Focus / lists */
+        .am-scope .am-focus { display: flex; flex-direction: column; gap: 0.5rem; }
+        .am-scope .am-numbered { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }
+        .am-scope .am-numbered li { display: flex; align-items: flex-start; gap: 0.55rem; }
+        .am-scope .am-numbered-idx {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 1.25rem; height: 1.25rem; flex-shrink: 0; margin-top: 0.05rem;
+            border-radius: 999px; background: var(--am-accent-soft); border: 1px solid var(--am-accent-border);
+            color: var(--am-accent); font-size: 0.68rem; font-weight: 700; font-family: var(--font-mono, monospace);
+        }
+        .am-scope .am-numbered-text { font-size: 0.78rem; color: var(--am-text-muted); line-height: 1.55; }
+        .am-scope .am-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+        .am-scope .am-bullets li { position: relative; padding-left: 0.9rem; font-size: 0.78rem; color: var(--am-text-muted); line-height: 1.55; }
+        .am-scope .am-bullets li::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 5px; height: 5px; border-radius: 999px; background: var(--am-border-strong); }
+
+        /* Two-column */
+        .am-scope .am-two-col { display: grid; grid-template-columns: 1fr; gap: 0.6rem; }
+        @media (min-width: 768px) { .am-scope .am-two-col { grid-template-columns: repeat(2, 1fr); } }
+        .am-scope .am-two-col .am-subtitle { margin-bottom: 0.5rem; }
+
+        /* Experience review */
+        .am-scope .am-review-list { display: flex; flex-direction: column; gap: 0.6rem; }
+        .am-scope .am-review { border: 1px solid var(--am-border); border-radius: 10px; padding: 0.75rem 0.85rem; background: var(--am-bg-soft); display: flex; flex-direction: column; gap: 0.55rem; }
+        .am-scope .am-review-head { font-size: 0.82rem; font-weight: 700; color: var(--am-text); padding-bottom: 0.45rem; border-bottom: 1px solid var(--am-border); }
+        .am-scope .am-review-row { display: flex; align-items: flex-start; gap: 0.55rem; }
+        .am-scope .am-review-row p { font-size: 0.76rem; color: var(--am-text-muted); line-height: 1.55; }
+        .am-scope .am-review-row--hint { padding: 0.5rem 0.6rem; border-radius: 8px; border: 1px solid var(--am-accent-border); background: var(--am-accent-soft); }
+        .am-scope .am-review-tag { flex-shrink: 0; font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 0.1rem; min-width: 5.5rem; }
+        .am-scope .am-review-note { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.6rem 0.7rem; border-radius: 10px; border: 1px solid var(--am-border); background: var(--am-bg-soft); color: var(--am-text-muted); font-size: 0.76rem; line-height: 1.55; }
+        .am-scope .am-review-note svg { color: var(--am-accent); flex-shrink: 0; margin-top: 0.1rem; }
+
+        /* Domain */
+        .am-scope .am-domain-grid { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
+        @media (min-width: 768px) { .am-scope .am-domain-grid { grid-template-columns: repeat(3, 1fr); } }
+        .am-scope .am-domain { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.55rem 0.7rem; border-radius: 10px; border: 1px solid var(--am-border); background: var(--am-bg-soft); }
+        .am-scope .am-domain.is-target { border-color: var(--am-accent-border); background: var(--am-accent-soft); }
+        .am-scope .am-domain-name { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; font-weight: 600; color: var(--am-text-muted); }
+        .am-scope .am-domain-value { font-family: var(--font-mono, monospace); font-weight: 700; font-size: 0.8rem; color: var(--am-text); }
+
+        /* Skeleton + empty */
+        .am-scope .am-skeleton { display: flex; flex-direction: column; gap: 1rem; }
+        .am-scope .am-skel { background: var(--am-bg-sunken); border-radius: 8px; height: 0.9rem; animation: am-pulse 1.6s ease-in-out infinite; }
+        .dark .am-scope .am-skel { background: rgba(148, 163, 184, 0.14); }
+        .am-scope .am-skel--title { width: 45%; height: 1.2rem; }
+        .am-scope .am-skel--line { width: 100%; }
+        .am-scope .am-skel--short { width: 65%; }
+        .am-scope .am-skel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+        @media (min-width: 640px) { .am-scope .am-skel-grid { grid-template-columns: repeat(4, 1fr); } }
+        .am-scope .am-skel--stat { height: 4.5rem; }
+        @keyframes am-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+        .am-scope .am-empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.6rem; padding: 2.5rem 1.5rem; }
+        .am-scope .am-empty-ico { display: inline-flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; border-radius: 12px; background: var(--am-bg-sunken); border: 1px solid var(--am-border); color: var(--am-text-faint); }
+        .am-scope .am-empty-hint { max-width: 26rem; }
+
+        /* Progress stepper */
+        .am-scope .am-progress-bar { height: 5px; border-radius: 999px; background: var(--am-bg-sunken); overflow: hidden; margin-bottom: 0.85rem; }
+        .dark .am-scope .am-progress-bar { background: rgba(148, 163, 184, 0.18); }
+        .am-scope .am-progress-bar-fill { height: 100%; border-radius: 999px; background: var(--am-accent); transition: width 0.5s ease; }
+        .am-scope .am-steps { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+        .am-scope .am-step { display: flex; align-items: flex-start; gap: 0.6rem; }
+        .am-scope .am-step-mark {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 1.5rem; height: 1.5rem; flex-shrink: 0; margin-top: 0.05rem;
+            border-radius: 999px; border: 1px solid var(--am-border-strong);
+            background: var(--am-bg-soft); color: var(--am-text-faint);
+            font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono, monospace);
+        }
+        .am-scope .am-step.is-active .am-step-mark { border-color: var(--am-accent); color: var(--am-accent); background: var(--am-accent-soft); }
+        .am-scope .am-step.is-done .am-step-mark { border-color: var(--am-ok); color: var(--am-ok); background: var(--am-ok-soft); }
+        .am-scope .am-step-text { display: flex; flex-direction: column; gap: 0.05rem; }
+        .am-scope .am-step-title { font-size: 0.8rem; font-weight: 600; color: var(--am-text-faint); }
+        .am-scope .am-step.is-active .am-step-title { color: var(--am-text); }
+        .am-scope .am-step.is-done .am-step-title { color: var(--am-text-muted); }
+        .am-scope .am-step-desc { font-size: 0.7rem; color: var(--am-text-faint); line-height: 1.45; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .am-scope .am-skel { animation: none; }
+            .am-scope .am-chevron,
+            .am-scope .am-progress-bar-fill { transition: none; }
+        }
+
+        .am-scope .am-section-head:focus-visible,
+        .am-scope .am-subsection-head:focus-visible,
+        .am-scope .am-history-item:focus-visible {
+            outline: 2px solid var(--am-accent);
+            outline-offset: 2px;
         }
     </style>
 </x-filament-panels::page>
