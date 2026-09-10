@@ -43,7 +43,22 @@ class CVAnalysisForm
                             ->placeholder('Add found keyword'),
                         TagsInput::make('weak_evidence')
                             ->label('Weak Evidence')
-                            ->placeholder('Add weak evidence keyword'),
+                            ->placeholder('Add weak evidence keyword')
+                            ->formatStateUsing(static function ($state): array {
+                                // The AI provider may store weak_evidence as objects
+                                // ({keyword, reason}); TagsInput can only edit strings.
+                                if (! is_array($state)) {
+                                    return is_string($state) ? [$state] : [];
+                                }
+
+                                return collect($state)
+                                    ->map(static fn ($item): string => is_array($item)
+                                        ? trim((string) ($item['keyword'] ?? $item['reason'] ?? ''))
+                                        : trim((string) $item))
+                                    ->filter(static fn (string $item): bool => $item !== '')
+                                    ->values()
+                                    ->all();
+                            }),
                         TagsInput::make('keywords_missing')
                             ->label('Keywords Missing')
                             ->placeholder('Add missing keyword'),

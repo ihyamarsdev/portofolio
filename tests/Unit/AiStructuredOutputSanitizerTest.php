@@ -237,4 +237,49 @@ class AiStructuredOutputSanitizerTest extends TestCase
         $this->assertSame('Automation Role', $clean['experience_review'][0]['section']);
         $this->assertArrayHasKey('rewrite_hint', $clean['experience_review'][0]);
     }
+
+    public function test_normalize_weak_evidence_keeps_objects_with_keyword_and_reason(): void
+    {
+        // Shape actually returned by the provider for analysis id 8, which
+        // crashed blade rendering with "Array to string conversion".
+        $dirty = [
+            ['keyword' => '99.9% availability', 'reason' => 'Mentioned without context of measurement methodology.'],
+            ['keyword' => 'Cost reduction', 'reason' => 'No specific percentage or dollar amount provided.'],
+        ];
+
+        $clean = AiStructuredOutputSanitizer::normalizeWeakEvidence($dirty);
+
+        $this->assertCount(2, $clean);
+        $this->assertSame('99.9% availability', $clean[0]['keyword']);
+        $this->assertSame('Mentioned without context of measurement methodology.', $clean[0]['reason']);
+        $this->assertSame('Cost reduction', $clean[1]['keyword']);
+    }
+
+    public function test_normalize_weak_evidence_wraps_plain_strings(): void
+    {
+        $clean = AiStructuredOutputSanitizer::normalizeWeakEvidence(['**', '99.9% uptime', '']);
+
+        $this->assertCount(1, $clean);
+        $this->assertSame('99.9% uptime', $clean[0]['keyword']);
+        $this->assertSame('', $clean[0]['reason']);
+    }
+
+    public function test_sanitize_normalizes_weak_evidence_inside_keywords_object(): void
+    {
+        $payload = [
+            'keywords' => [
+                'found' => ['Docker', 'Kubernetes'],
+                'missing' => ['Vault'],
+                'weak_evidence' => [
+                    ['keyword' => 'Deployment frequency metrics', 'reason' => 'No actual deployment rate data shown.'],
+                ],
+            ],
+        ];
+
+        $clean = AiStructuredOutputSanitizer::sanitize($payload);
+
+        $this->assertSame(['Docker', 'Kubernetes'], $clean['keywords']['found']);
+        $this->assertSame('Deployment frequency metrics', $clean['keywords']['weak_evidence'][0]['keyword']);
+        $this->assertSame('No actual deployment rate data shown.', $clean['keywords']['weak_evidence'][0]['reason']);
+    }
 }

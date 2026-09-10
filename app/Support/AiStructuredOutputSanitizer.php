@@ -49,6 +49,22 @@ class AiStructuredOutputSanitizer
                 continue;
             }
 
+            if ($key === 'weak_evidence') {
+                $payload[$key] = self::normalizeWeakEvidence($value);
+
+                continue;
+            }
+
+            if ($key === 'keywords' && is_array($value)) {
+                if (array_key_exists('weak_evidence', $value)) {
+                    $value['weak_evidence'] = self::normalizeWeakEvidence($value['weak_evidence']);
+                }
+
+                $payload[$key] = self::sanitizeValue($value);
+
+                continue;
+            }
+
             $payload[$key] = is_array($value)
                 ? self::sanitizeValue($value)
                 : (is_string($value) ? self::cleanText($value) : $value);
@@ -181,6 +197,54 @@ class AiStructuredOutputSanitizer
                 'gap' => '',
                 'rewrite_hint' => $line,
             ];
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * Normalize a weak_evidence payload into a consistent list of
+     * {keyword, reason} objects, regardless of what the provider produced:
+     *
+     *  - a list of objects ({keyword, reason} — the observed shape)
+     *  - a list of plain strings (reason stays empty)
+     *
+     * Consumers (blade chips with reason tooltips, TagsInput forms) must not
+     * crash when the model ignores the `array of strings` schema constraint.
+     */
+    public static function normalizeWeakEvidence(mixed $items): array
+    {
+        if (! is_array($items)) {
+            return [];
+        }
+
+        $normalized = [];
+
+        foreach ($items as $item) {
+            if (is_array($item)) {
+                $keyword = self::cleanText((string) ($item['keyword'] ?? $item['term'] ?? ''));
+                $reason = self::cleanText((string) ($item['reason'] ?? $item['why'] ?? ''));
+
+                if ($keyword === '' && $reason === '') {
+                    continue;
+                }
+
+                $normalized[] = ['keyword' => $keyword, 'reason' => $reason];
+
+                continue;
+            }
+
+            if (! is_string($item)) {
+                continue;
+            }
+
+            $keyword = self::cleanText($item);
+
+            if ($keyword === '' || self::isJunk($keyword)) {
+                continue;
+            }
+
+            $normalized[] = ['keyword' => $keyword, 'reason' => ''];
         }
 
         return $normalized;

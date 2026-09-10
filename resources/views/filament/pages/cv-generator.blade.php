@@ -919,7 +919,15 @@
                                         </h5>
                                         <div class="flex flex-wrap gap-1">
                                             @forelse((is_array($analysisResult['keywords']['weak_evidence'] ?? null) ? $analysisResult['keywords']['weak_evidence'] : []) as $kw)
-                                                <span class="text-[10px] bg-amber-950/30 text-amber-300 border border-amber-500/20 px-2 py-0.5 rounded">{{ $kw }}</span>
+                                                @php
+                                                    $weakLabel = is_array($kw)
+                                                        ? (string) ($kw['keyword'] ?? $kw['reason'] ?? '')
+                                                        : (string) $kw;
+                                                    $weakReason = is_array($kw) ? (string) ($kw['reason'] ?? '') : '';
+                                                @endphp
+                                                @if(trim($weakLabel) !== '')
+                                                    <span class="text-[10px] bg-amber-950/30 text-amber-300 border border-amber-500/20 px-2 py-0.5 rounded" @if(trim($weakReason) !== '') title="{{ $weakReason }}" @endif>{{ $weakLabel }}</span>
+                                                @endif
                                             @empty
                                                 <span class="text-[10px] text-slate-500">No weak-evidence flags.</span>
                                             @endforelse
@@ -1605,9 +1613,15 @@
                                      @if(!empty($selectedAnalysisDetail['keywords']['weak_evidence']) && is_array($selectedAnalysisDetail['keywords']['weak_evidence']))
                                          <div class="flex flex-wrap gap-1.5">
                                              @foreach($selectedAnalysisDetail['keywords']['weak_evidence'] as $kw)
-                                                 <span class="px-2 py-1 bg-amber-950/40 text-amber-300 border border-amber-500/20 text-xs font-semibold rounded font-mono">
-                                                     {{ $kw }}
-                                                 </span>
+                                                 @php
+                                                     $weakLabel = is_array($kw)
+                                                         ? (string) ($kw['keyword'] ?? $kw['reason'] ?? '')
+                                                         : (string) $kw;
+                                                     $weakReason = is_array($kw) ? (string) ($kw['reason'] ?? '') : '';
+                                                 @endphp
+                                                 @if(trim($weakLabel) !== '')
+                                                     <span class="px-2 py-1 bg-amber-950/40 text-amber-300 border border-amber-500/20 text-xs font-semibold rounded font-mono" @if(trim($weakReason) !== '') title="{{ $weakReason }}" @endif>{{ $weakLabel }}</span>
+                                                 @endif
                                              @endforeach
                                          </div>
                                      @else
