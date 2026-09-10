@@ -988,7 +988,9 @@
                                         <h4 class="text-sm font-bold text-slate-200">Domain Match Details</h4>
                                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                                             @foreach((is_array($analysisResult['industry_match'] ?? null) ? $analysisResult['industry_match'] : []) as $domain => $score)
-                                                @php($isTargetDomain = $domain === $roleProfile['domain'])
+                                                @php
+                                                    $isTargetDomain = $domain === $roleProfile['domain'];
+                                                @endphp
                                                 <div class="p-3 rounded-lg flex items-center justify-between {{ $isTargetDomain ? 'border border-cyan-500/40 bg-cyan-950/20' : 'bg-[#12121a]/60 border border-[#2d2d3a]/30' }}">
                                                     <span class="text-xs font-semibold flex items-center gap-1.5 {{ $isTargetDomain ? 'text-cyan-300' : 'text-slate-400' }}">
                                                         @if($isTargetDomain)
