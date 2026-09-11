@@ -10,13 +10,15 @@ use Filament\Widgets\TableWidget;
 
 class LatestProjectsWidget extends TableWidget
 {
-    protected static ?int $sort = 6;
+    protected static ?int $sort = 7;
 
     protected int|string|array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {
         return $table
+            ->heading('Latest Projects')
+            ->description('Recently added portfolio work')
             ->query(
                 Project::query()
                     ->latest()

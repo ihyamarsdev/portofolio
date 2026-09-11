@@ -6,7 +6,6 @@ use App\Models\HomeSettings;
 use App\Models\Post;
 use App\Models\Profile;
 use App\Models\Project;
-use App\Models\Skill;
 use App\Models\Stack;
 
 class PageController extends Controller
