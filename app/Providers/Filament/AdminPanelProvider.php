@@ -31,9 +31,10 @@ class AdminPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->profile(EditProfile::class)
-            ->maxContentWidth('full') // Set max width ke full
+            ->maxContentWidth('7xl')
             ->colors([
-                'primary' => Color::Cyan,
+                'primary' => Color::Sky,
+                'gray' => Color::Slate,
                 'danger' => Color::Rose,
                 'success' => Color::Emerald,
                 'warning' => Color::Amber,

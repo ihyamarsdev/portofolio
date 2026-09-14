@@ -7,9 +7,9 @@ use Filament\Widgets\Widget;
 
 class SystemStatusWidget extends Widget
 {
-    protected static ?int $sort = 9;
+    protected static ?int $sort = 3;
 
-    protected int|string|array $columnSpan = ['default' => 'full', 'xl' => 2];
+    protected int|string|array $columnSpan = ['default' => 'full', 'md' => 1, 'xl' => 1];
 
     protected string $view = 'filament.widgets.system-status';
 

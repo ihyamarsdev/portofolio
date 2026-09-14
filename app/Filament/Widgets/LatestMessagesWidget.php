@@ -10,9 +10,9 @@ use Filament\Widgets\TableWidget;
 
 class LatestMessagesWidget extends TableWidget
 {
-    protected static ?int $sort = 8;
+    protected static ?int $sort = 2;
 
-    protected int|string|array $columnSpan = ['default' => 'full', 'xl' => 2];
+    protected int|string|array $columnSpan = ['default' => 'full', 'md' => 1, 'xl' => 1];
 
     public function table(Table $table): Table
     {

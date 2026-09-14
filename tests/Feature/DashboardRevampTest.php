@@ -51,4 +51,36 @@ class DashboardRevampTest extends TestCase
             ->assertSee('Application')
             ->assertSee('Database');
     }
+
+    public function test_dashboard_curates_widgets_and_excludes_cv_charts(): void
+    {
+        $user = User::factory()->create(['is_admin' => true]);
+
+        $response = $this->actingAs($user)->get('/admin');
+
+        $response->assertSuccessful()
+            ->assertSee('StatsOverview')
+            ->assertSee('LatestMessagesWidget')
+            ->assertSee('SystemStatusWidget')
+            ->assertSee('LatestProjectsWidget')
+            ->assertDontSee('CvScoresTrendChartWidget')
+            ->assertDontSee('CvCoverageRadarWidget')
+            ->assertDontSee('CvRequirementStatusWidget')
+            ->assertDontSee('LatestCvAnalysisWidget');
+    }
+
+    public function test_cv_analyses_list_page_renders_relocated_cv_widgets(): void
+    {
+        $user = User::factory()->create(['is_admin' => true]);
+
+        $response = $this->actingAs($user)->get('/admin/cv-analyses');
+
+        $response->assertSuccessful()
+            ->assertSee('CvScoresTrendChartWidget')
+            ->assertSee('CvCoverageRadarWidget')
+            ->assertSee('CvRequirementStatusWidget')
+            ->assertSee('LatestCvAnalysisWidget')
+            ->assertDontSee('LatestMessagesWidget')
+            ->assertDontSee('LatestProjectsWidget');
+    }
 }
