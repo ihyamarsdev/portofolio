@@ -1,6 +1,4 @@
 <x-filament-panels::page>
-    @vite('resources/css/app.css')
-
     {{-- SVG Gradient Definitions for Circular Progress & Neon Borders --}}
     <svg style="position: absolute; width: 0; height: 0">
         <defs>

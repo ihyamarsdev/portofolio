@@ -23,15 +23,22 @@
 /* ====================================================
    Base App Canvas
    ==================================================== */
+html,
+body,
+.fi-body,
 .fi-app {
     font-family: var(--font-sans);
-    background-color: #f8fafc;
+    background-color: #f8fafc !important;
     color: #0f172a;
     background-image: none !important;
 }
 
+html.dark,
+html.dark body,
+.dark body,
+.dark .fi-body,
 .dark .fi-app {
-    background-color: #0b0f19;
+    background-color: #0b0f19 !important;
     color: #f8fafc;
     background-image: none !important;
 }
