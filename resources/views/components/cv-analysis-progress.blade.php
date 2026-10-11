@@ -1,9 +1,9 @@
 @php
     $steps = [
-        ['title' => 'Menyiapkan profil CV', 'desc' => 'Memuat profil, pengalaman kerja, dan skill.'],
-        ['title' => 'Mengekstrak requirement', 'desc' => 'Membaca deskripsi lowongan menjadi daftar syarat.'],
-        ['title' => 'Mencocokkan bukti', 'desc' => 'Memverifikasi bukti pada CV dengan metode STAR.'],
-        ['title' => 'Menyusun skor', 'desc' => 'Menghitung skor objektif dan menyusun rekomendasi.'],
+        ['title' => __('cv-aimatch.progress.steps.profile.title'), 'desc' => __('cv-aimatch.progress.steps.profile.desc')],
+        ['title' => __('cv-aimatch.progress.steps.requirements.title'), 'desc' => __('cv-aimatch.progress.steps.requirements.desc')],
+        ['title' => __('cv-aimatch.progress.steps.evidence.title'), 'desc' => __('cv-aimatch.progress.steps.evidence.desc')],
+        ['title' => __('cv-aimatch.progress.steps.scoring.title'), 'desc' => __('cv-aimatch.progress.steps.scoring.desc')],
     ];
 @endphp
 
@@ -51,10 +51,10 @@
         <div class="am-card-head">
             <span class="am-ico"><x-heroicon-o-sparkles class="w-4.5 h-4.5" /></span>
             <div>
-                <h3 class="am-title">Proses Analisis</h3>
-                <p class="am-hint" x-show="analyzing">Sedang berjalan — estimasi 30–90 detik.</p>
-                <p class="am-hint" x-show="! analyzing && hasResult">Analisis terakhir selesai.</p>
-                <p class="am-hint" x-show="! analyzing && ! hasResult">Siap dijalankan.</p>
+                <h3 class="am-title">{{ __('cv-aimatch.progress.title') }}</h3>
+                <p class="am-hint" x-show="analyzing">{{ __('cv-aimatch.progress.hint_running') }}</p>
+                <p class="am-hint" x-show="! analyzing && hasResult">{{ __('cv-aimatch.progress.hint_done') }}</p>
+                <p class="am-hint" x-show="! analyzing && ! hasResult">{{ __('cv-aimatch.progress.hint_ready') }}</p>
             </div>
         </div>
 

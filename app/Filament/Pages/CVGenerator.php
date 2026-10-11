@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Log;
@@ -41,13 +42,21 @@ class CVGenerator extends Page
 
     protected CVGeneratorService $cvService;
 
-    protected static ?string $title = 'CV Builder & AI Analyzer';
-
     protected static ?string $slug = 'cv-generator';
+
+    public function getTitle(): string|Htmlable
+    {
+        return __('cv-workspace.page.title');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('cv-workspace.page.title');
+    }
 
     public static function getNavigationGroup(): ?string
     {
-        return 'CV Management';
+        return __('cv-workspace.page.navigation_group');
     }
 
     protected string $view = 'filament.pages.cv-generator';
@@ -205,7 +214,10 @@ class CVGenerator extends Page
             $tab = 'overview';
         }
 
-        $this->activeTab = $tab;
+        $validTabs = ['overview', 'profile', 'experience', 'education', 'skills', 'certificates', 'aimatch', 'preview'];
+        if (in_array($tab, $validTabs, true)) {
+            $this->activeTab = $tab;
+        }
     }
 
     public function updatedTargetRole(string $value): void
@@ -369,8 +381,8 @@ class CVGenerator extends Page
         $profile->save();
 
         Notification::make()
-            ->title('Profile Saved')
-            ->body('Your professional details have been updated successfully.')
+            ->title(__('cv-workspace.notifications.profile_saved.title'))
+            ->body(__('cv-workspace.notifications.profile_saved.body'))
             ->success()
             ->send();
 
@@ -460,7 +472,7 @@ class CVGenerator extends Page
         $exp->skills()->sync($this->selected_exp_skills);
 
         Notification::make()
-            ->title($this->editingExperienceId ? 'Experience Updated' : 'Experience Added')
+            ->title($this->editingExperienceId ? __('cv-workspace.notifications.experience_updated.title') : __('cv-workspace.notifications.experience_added.title'))
             ->success()
             ->send();
 
@@ -475,7 +487,7 @@ class CVGenerator extends Page
         $exp->delete();
 
         Notification::make()
-            ->title('Experience Deleted')
+            ->title(__('cv-workspace.notifications.experience_deleted.title'))
             ->success()
             ->send();
 
@@ -503,7 +515,7 @@ class CVGenerator extends Page
             $this->loadAllData();
 
             Notification::make()
-                ->title('Order Updated')
+                ->title(__('cv-workspace.notifications.order_updated.title'))
                 ->success()
                 ->send();
         }
@@ -565,7 +577,7 @@ class CVGenerator extends Page
         );
 
         Notification::make()
-            ->title($this->editingEducationId ? 'Education Updated' : 'Education Added')
+            ->title($this->editingEducationId ? __('cv-workspace.notifications.education_updated.title') : __('cv-workspace.notifications.education_added.title'))
             ->success()
             ->send();
 
@@ -578,7 +590,7 @@ class CVGenerator extends Page
         Education::findOrFail($id)->delete();
 
         Notification::make()
-            ->title('Education Deleted')
+            ->title(__('cv-workspace.notifications.education_deleted.title'))
             ->success()
             ->send();
 
@@ -628,7 +640,7 @@ class CVGenerator extends Page
         );
 
         Notification::make()
-            ->title($this->editingSkillId ? 'Skill Updated' : 'Skill Added')
+            ->title($this->editingSkillId ? __('cv-workspace.notifications.skill_updated.title') : __('cv-workspace.notifications.skill_added.title'))
             ->success()
             ->send();
 
@@ -641,7 +653,7 @@ class CVGenerator extends Page
         Skill::findOrFail($id)->delete();
 
         Notification::make()
-            ->title('Skill Deleted')
+            ->title(__('cv-workspace.notifications.skill_deleted.title'))
             ->success()
             ->send();
 
@@ -700,7 +712,7 @@ class CVGenerator extends Page
         );
 
         Notification::make()
-            ->title($this->editingCertificateId ? 'Certificate Updated' : 'Certificate Added')
+            ->title($this->editingCertificateId ? __('cv-workspace.notifications.certificate_updated.title') : __('cv-workspace.notifications.certificate_added.title'))
             ->success()
             ->send();
 
@@ -713,7 +725,7 @@ class CVGenerator extends Page
         Certificate::findOrFail($id)->delete();
 
         Notification::make()
-            ->title('Certificate Deleted')
+            ->title(__('cv-workspace.notifications.certificate_deleted.title'))
             ->success()
             ->send();
 
@@ -727,8 +739,8 @@ class CVGenerator extends Page
     {
         if (! array_key_exists($template, config('cv-templates'))) {
             Notification::make()
-                ->title('Invalid Template')
-                ->body('Template not found.')
+                ->title(__('cv-workspace.notifications.invalid_template.title'))
+                ->body(__('cv-workspace.notifications.invalid_template.body'))
                 ->danger()
                 ->send();
 
@@ -743,8 +755,8 @@ class CVGenerator extends Page
         $this->selectedTemplate = $template;
 
         Notification::make()
-            ->title('Template Selected')
-            ->body('Now using: '.ucfirst($template))
+            ->title(__('cv-workspace.notifications.template_selected.title'))
+            ->body(__('cv-workspace.notifications.template_selected.body', ['template' => ucfirst($template)]))
             ->success()
             ->send();
 
@@ -770,8 +782,8 @@ class CVGenerator extends Page
 
             if (! $profile) {
                 Notification::make()
-                    ->title('Profile Not Found')
-                    ->body('Please create a primary profile first.')
+                    ->title(__('cv-workspace.notifications.profile_not_found.title'))
+                    ->body(__('cv-workspace.notifications.profile_not_found.body'))
                     ->danger()
                     ->send();
                 $this->isAnalyzing = false;
@@ -886,8 +898,8 @@ class CVGenerator extends Page
             $this->history = $profile->cvAnalyses()->latest()->take(10)->get();
 
             Notification::make()
-                ->title('Analysis Complete')
-                ->body('Your CV has been analyzed successfully.')
+                ->title(__('cv-workspace.notifications.analysis_complete.title'))
+                ->body(__('cv-workspace.notifications.analysis_complete.body'))
                 ->success()
                 ->send();
 
@@ -907,8 +919,8 @@ class CVGenerator extends Page
     {
         if (empty($this->jobDescription)) {
             Notification::make()
-                ->title('Job Description Required')
-                ->body('Please paste a job description first.')
+                ->title(__('cv-workspace.notifications.job_description_required.title'))
+                ->body(__('cv-workspace.notifications.job_description_required.body'))
                 ->warning()
                 ->send();
 
@@ -924,8 +936,8 @@ class CVGenerator extends Page
 
         if (! $profile) {
             Notification::make()
-                ->title('Profile Not Found')
-                ->body('Please create a primary profile first.')
+                ->title(__('cv-workspace.notifications.profile_not_found.title'))
+                ->body(__('cv-workspace.notifications.profile_not_found.body'))
                 ->danger()
                 ->send();
 
@@ -938,8 +950,8 @@ class CVGenerator extends Page
     public function downloadExport(): void
     {
         Notification::make()
-            ->title('Export Options')
-            ->body('PDF, DOCX, Text, Markdown exports coming soon!')
+            ->title(__('cv-workspace.notifications.export_options.title'))
+            ->body(__('cv-workspace.notifications.export_options.body'))
             ->info()
             ->send();
     }
@@ -995,12 +1007,12 @@ class CVGenerator extends Page
     {
         $message = match (true) {
             $exception instanceof RequestException => $this->humanizeAiRequestError($exception),
-            $exception instanceof ConnectionException => 'AI provider connection failed. Please check the provider/network and try again.',
-            default => 'Analysis failed. '.$this->safeErrorMessage($exception->getMessage()),
+            $exception instanceof ConnectionException => __('cv-workspace.notifications.analysis_failed.connection_failed'),
+            default => __('cv-workspace.notifications.analysis_failed.default', ['error' => $this->safeErrorMessage($exception->getMessage())]),
         };
 
         Notification::make()
-            ->title('Analysis Failed')
+            ->title(__('cv-workspace.notifications.analysis_failed.title'))
             ->body($message)
             ->danger()
             ->persistent()
@@ -1021,10 +1033,10 @@ class CVGenerator extends Page
         $providerMessage = $this->safeErrorMessage((string) $providerMessage);
 
         $prefix = match ($status) {
-            401, 403 => 'AI provider authentication failed. Please check API credentials.',
-            429 => 'AI provider rate limit reached. Please wait and try again.',
-            500, 502, 503, 504 => 'AI provider is temporarily unavailable. Please try again later.',
-            default => 'AI request failed.',
+            401, 403 => __('cv-workspace.notifications.analysis_failed.auth_failed'),
+            429 => __('cv-workspace.notifications.analysis_failed.rate_limit'),
+            500, 502, 503, 504 => __('cv-workspace.notifications.analysis_failed.unavailable'),
+            default => __('cv-workspace.notifications.analysis_failed.request_failed'),
         };
 
         return "{$prefix} Status: {$status}. {$providerMessage}";
@@ -1080,8 +1092,8 @@ class CVGenerator extends Page
         $this->activeTab = 'aimatch';
 
         Notification::make()
-            ->title('Analysis Run Loaded')
-            ->body('Showing insights for past run: '.($analysis->job_title_targeted ?? 'CV Analysis'))
+            ->title(__('cv-workspace.notifications.analysis_run_loaded.title'))
+            ->body(__('cv-workspace.notifications.analysis_run_loaded.body', ['role' => $analysis->job_title_targeted ?? __('cv-workspace.notifications.analysis_run_loaded.default_role')]))
             ->info()
             ->send();
     }
@@ -1091,7 +1103,7 @@ class CVGenerator extends Page
         CVAnalysis::findOrFail($id)->delete();
 
         Notification::make()
-            ->title('Analysis Run Deleted')
+            ->title(__('cv-workspace.notifications.analysis_run_deleted.title'))
             ->success()
             ->send();
 
