@@ -60,7 +60,7 @@
                             <p class="font-bold">{{ $homeSettings->site_brand }}</p>
                             <p class="pt-1 text-[#00D1FF] font-bold">$ <span id="terminal-text" class="break-all text-white"></span><span class="terminal-cursor"></span></p>
                             <div class="mt-3 bg-white/10 border border-white/20 rounded-[8px] p-3 text-xs leading-6 text-[#d6d6d6] sm:text-sm font-medium">
-                                <p><span class="text-[#2563EB]">role</span>: {{ $homeSettings->site_title }}</p>
+                                <p><span class="text-[#60A5FA]">role</span>: {{ $homeSettings->site_title }}</p>
                                 <p><span class="text-[#00D1FF]">focus</span>: {{ $homeSettings->meta_description }}</p>
                             </div>
                         </div>

@@ -74,7 +74,7 @@
                 <div class="brutal-card p-10 text-center font-black uppercase mb-8">{{ __('messages.blog.no_posts_yet') }}</div>
             @endif
 
-            <div class="mt-6 brutal-card p-6 sm:p-7 bg-[#111] dark:bg-[#1E293B] text-[#FFFBF0] relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-[3px] border-black dark:border-[#CBD5E1] shadow-[6px_6px_0_0_#111] dark:shadow-[5px_5px_0_0_rgba(203,213,225,0.9)]">
+            <div class="mt-6 rounded-[16px] p-6 sm:p-7 bg-[#111] dark:bg-[#1E293B] text-[#FFFBF0] relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-[3px] border-black dark:border-[#CBD5E1] shadow-[6px_6px_0_0_#111] dark:shadow-[5px_5px_0_0_rgba(203,213,225,0.9)]">
                 <div class="max-w-xl relative z-10">
                     <span class="font-mono text-[11px] font-black uppercase tracking-[0.16em] bg-[#2563EB] text-white inline-flex px-2 py-1 rounded border-2 border-black">{{ __('messages.blog.subscribe') }}</span>
                     <h3 class="mt-2 text-xl sm:text-2xl font-black tracking-[-0.03em] text-white">{{ __('messages.blog.stay_updated') }}</h3>
