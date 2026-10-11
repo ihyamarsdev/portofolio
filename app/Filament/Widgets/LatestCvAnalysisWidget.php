@@ -18,9 +18,8 @@ class LatestCvAnalysisWidget extends StatsOverviewWidget
 
         if ($analysis === null) {
             return [
-                Stat::make('Latest CV Analysis', 'Not run yet')
-                    ->description('Run an analysis from CV Builder → AI Job Match')
-                    ->descriptionIcon('heroicon-m-sparkles')
+                Stat::make(__('cv-workspace.widgets.latest_analysis.title'), __('cv-workspace.widgets.latest_analysis.not_run'))
+                    ->description(__('cv-workspace.widgets.latest_analysis.not_run_desc'))
                     ->color('gray'),
             ];
         }
@@ -28,8 +27,8 @@ class LatestCvAnalysisWidget extends StatsOverviewWidget
         $detail = $analysis->job_match_detail;
 
         $stats = [
-            Stat::make('Latest CV Analysis', $analysis->job_title_targeted ?? 'General CV Analysis')
-                ->description('Run '.$analysis->created_at->format('M j, Y H:i'))
+            Stat::make(__('cv-workspace.widgets.latest_analysis.title'), $analysis->job_title_targeted ?? __('cv-workspace.widgets.latest_analysis.general_title'))
+                ->description(__('cv-workspace.widgets.latest_analysis.run_at', ['date' => $analysis->created_at->translatedFormat('M j, Y H:i')]))
                 ->descriptionIcon('heroicon-m-clock')
                 ->color('info'),
         ];
@@ -38,28 +37,27 @@ class LatestCvAnalysisWidget extends StatsOverviewWidget
             $band = $detail['band']['label'] ?? 'N/A';
             $counts = $detail['counts'] ?? [];
 
-            $stats[] = Stat::make('Job Match Score', ($analysis->job_match_score ?? 0).'%')
-                ->description($band.' (formula '.($detail['formula_version'] ?? 'legacy').')')
+            $stats[] = Stat::make(__('cv-workspace.widgets.latest_analysis.job_match_score'), ($analysis->job_match_score ?? 0).'%')
+                ->description(__('cv-workspace.widgets.latest_analysis.formula_suffix', ['band' => $band, 'version' => $detail['formula_version'] ?? 'legacy']))
                 ->descriptionIcon('heroicon-m-chart-bar')
                 ->color($this->bandColor($detail['overall'] ?? 0));
 
-            $stats[] = Stat::make('Must-Have Coverage', ($detail['must_have_coverage'] ?? 0).'%')
-                ->description('Nice-to-have '.($detail['nice_to_have_coverage'] ?? 0).'%')
+            $stats[] = Stat::make(__('cv-workspace.widgets.latest_analysis.must_have_coverage'), ($detail['must_have_coverage'] ?? 0).'%')
+                ->description(__('cv-workspace.widgets.latest_analysis.nice_to_have', ['pct' => $detail['nice_to_have_coverage'] ?? 0]))
                 ->descriptionIcon('heroicon-m-clipboard-document-check')
                 ->color('cyan');
 
-            $stats[] = Stat::make('Evidence Quality', ($detail['evidence_quality'] ?? 0).'%')
-                ->description(sprintf(
-                    '%d verified · %d claimed · %d missing',
-                    $counts['verified'] ?? 0,
-                    $counts['claimed'] ?? 0,
-                    $counts['missing'] ?? 0
-                ))
+            $stats[] = Stat::make(__('cv-workspace.widgets.latest_analysis.evidence_quality'), ($detail['evidence_quality'] ?? 0).'%')
+                ->description(__('cv-workspace.widgets.latest_analysis.evidence_summary', [
+                    'verified' => $counts['verified'] ?? 0,
+                    'claimed' => $counts['claimed'] ?? 0,
+                    'missing' => $counts['missing'] ?? 0,
+                ]))
                 ->descriptionIcon('heroicon-m-check-badge')
                 ->color('emerald');
         } else {
-            $stats[] = Stat::make('Job Match Score', $analysis->job_match_score !== null ? $analysis->job_match_score.'%' : 'N/A')
-                ->description('Legacy run — no evidence breakdown stored')
+            $stats[] = Stat::make(__('cv-workspace.widgets.latest_analysis.job_match_score'), $analysis->job_match_score !== null ? $analysis->job_match_score.'%' : 'N/A')
+                ->description(__('cv-workspace.widgets.latest_analysis.legacy_desc'))
                 ->descriptionIcon('heroicon-m-chart-bar')
                 ->color('gray');
         }

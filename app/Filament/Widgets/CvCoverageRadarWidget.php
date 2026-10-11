@@ -7,7 +7,10 @@ use Filament\Widgets\ChartWidget;
 
 class CvCoverageRadarWidget extends ChartWidget
 {
-    protected ?string $heading = 'Coverage Breakdown — Last 5 Runs';
+    public function getHeading(): ?string
+    {
+        return __('cv-workspace.widgets.coverage_radar.heading');
+    }
 
     protected static ?int $sort = 6;
 
@@ -48,7 +51,11 @@ class CvCoverageRadarWidget extends ChartWidget
 
         return [
             'datasets' => $datasets,
-            'labels' => ['Must-Have', 'Nice-to-Have', 'Evidence Quality'],
+            'labels' => [
+                __('cv-workspace.widgets.coverage_radar.labels.must_have'),
+                __('cv-workspace.widgets.coverage_radar.labels.nice_to_have'),
+                __('cv-workspace.widgets.coverage_radar.labels.evidence_quality'),
+            ],
         ];
     }
 
