@@ -3,7 +3,7 @@
     <section class="bg-[#FFFBF0] dark:bg-[#0F172A]">
         <div class="section-container py-12 sm:py-16">
             <div class="mb-8 max-w-3xl">
-                <span class="inline-flex font-mono text-[11px] font-black uppercase tracking-[0.16em] bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">Index — {{ str_pad($projects->count(), 2, '0', STR_PAD_LEFT) }}</span>
+                <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">Index — {{ str_pad($projects->count(), 2, '0', STR_PAD_LEFT) }}</span>
                 <h1 class="mt-3 text-4xl font-black tracking-[-0.06em] leading-none text-black dark:text-[#FFFBF0] sm:text-6xl">
                     {{ __('messages.projects.title') }}
                     <span class="inline-block bg-[#2563EB] border-[3px] border-black px-2 py-1 shadow-[5px_5px_0_0_#111] rotate-[-0.5deg] ml-1 text-3xl sm:text-5xl">.</span>

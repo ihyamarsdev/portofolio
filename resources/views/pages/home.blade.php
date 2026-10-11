@@ -26,7 +26,7 @@
                     @endif
                     <h1 class="max-w-4xl text-[2.5rem] font-black leading-[0.9] tracking-[-0.06em] text-black dark:text-[#FFFBF0] sm:text-6xl lg:text-[4.5rem]">
                         <span class="block">{{ $homeSettings->hero_greeting }}</span>
-                        <span class="inline-block mt-2 bg-[#2563EB] dark:bg-[#3B82F6] text-white px-3 py-1 border-[3px] border-black dark:border-[#CBD5E1] shadow-[6px_6px_0_0_#111] dark:shadow-[5px_5px_0_0_rgba(203,213,225,0.9)] rotate-[-1deg]">{{ $homeSettings->site_title }}</span>
+                        <span class="inline-block mt-2 bg-[#2563EB] dark:bg-[#2563EB] text-white px-3 py-1 border-[3px] border-black dark:border-[#CBD5E1] shadow-[6px_6px_0_0_#111] dark:shadow-[5px_5px_0_0_rgba(203,213,225,0.9)] rotate-[-1deg]">{{ $homeSettings->site_title }}</span>
                     </h1>
 
                     <p class="mt-6 max-w-xl text-[15px] leading-7 text-[#2a2a2a] dark:text-[#d6d6d6] sm:text-[17px] font-medium border-l-[4px] border-black dark:border-[#CBD5E1] pl-4">
@@ -42,7 +42,7 @@
                         </a>
                     </div>
 
-                    <div class="mt-6 flex items-center gap-3 font-mono text-[11px] font-bold uppercase tracking-widest text-[#6b6b6b] dark:text-[#9a9a9a]">
+                    <div class="mt-6 flex items-center gap-3 font-mono text-xs font-bold uppercase tracking-wider text-[#666666] dark:text-[#adadad]">
                         <span class="w-8 h-[2.5px] bg-black dark:bg-[#FFFBF0]"></span>
                         DevOps • Cloud • Automation
                     </div>
@@ -53,7 +53,7 @@
                     <div class="bg-[#111] dark:bg-[#0F172A] border-[2.5px] border-black rounded-[12px] p-4 font-mono text-sm text-[#FFFBF0] overflow-hidden">
                         <div class="mb-3 flex items-center justify-between">
                             <div class="flex gap-1.5"><span class="h-3 w-3 rounded-full bg-[#FF5F56] border border-black"></span><span class="h-3 w-3 rounded-full bg-[#FFBD2E] border border-black"></span><span class="h-3 w-3 rounded-full bg-[#27C93F] border border-black"></span></div>
-                            <span class="text-[11px] font-black uppercase tracking-widest bg-[#2563EB] text-white px-2 py-0.5 rounded border border-black">terminal</span>
+                            <span class="text-xs font-black uppercase tracking-wider bg-[#2563EB] text-white px-2 py-0.5 rounded border border-black">terminal</span>
                         </div>
                         <div class="min-h-[11rem] space-y-2.5 sm:min-h-[12rem]">
                             <p class="text-[#B8FF66] font-bold">$ whoami</p>
@@ -110,7 +110,7 @@
                     </div>
                 </div>
             </div>
-            <div class="bg-black dark:bg-white text-white dark:text-black py-2 text-center font-mono text-[11px] font-black uppercase tracking-[0.18em]">
+            <div class="bg-black dark:bg-white text-white dark:text-black py-2 text-center font-mono text-xs font-black uppercase tracking-[0.12em]">
                 ● STACK ● TOOLS ● INFRA ● AUTOMATION ● STACK ● TOOLS ● INFRA ●
             </div>
         </section>
@@ -120,7 +120,7 @@
     <section class="section-container py-12 sm:py-16">
         <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-                <span class="inline-flex font-mono text-[11px] font-black uppercase tracking-[0.16em] bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">Featured Work</span>
+                <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">Featured Work</span>
                 <h2 class="mt-3 text-3xl font-black tracking-[-0.05em] text-black dark:text-[#FFFBF0] sm:text-4xl leading-none">{{ $homeSettings->featured_projects_title }}</h2>
                 <p class="mt-3 max-w-2xl text-sm leading-6 text-[#2a2a2a] dark:text-[#d6d6d6] font-medium">{{ $homeSettings->featured_projects_description }}</p>
             </div>
@@ -140,14 +140,14 @@
                         </div>
                     @endif
                     <div class="p-5 flex flex-col flex-grow">
-                        <span class="inline-flex self-start font-mono text-[10px] font-black uppercase tracking-widest bg-[#2563EB] text-white border-2 border-black px-2 py-0.5 rounded-full">Project — 0{{ $loop->iteration }}</span>
+                        <span class="inline-flex self-start font-mono text-xs font-black uppercase tracking-wider bg-[#2563EB] text-white border-2 border-black px-2 py-0.5 rounded-full">Project — 0{{ $loop->iteration }}</span>
                         <h3 class="mt-3 text-xl font-black tracking-[-0.03em] text-black dark:text-white group-hover:underline decoration-[3px] underline-offset-4 leading-tight">{{ $project->title }}</h3>
                         <p class="mt-2 line-clamp-3 text-sm leading-6 text-[#2a2a2a] dark:text-[#d6d6d6] font-medium">{{ Str::limit(strip_tags($project->description), 150) }}</p>
                         <span class="mt-4 pt-2 inline-flex items-center gap-1 text-sm font-black uppercase tracking-tight text-black dark:text-white">{{ __('messages.ux_home.details') }} <span class="group-hover:translate-x-1 transition-transform">→</span></span>
                     </div>
                 </a>
             @empty
-                <div class="brutal-card p-8 text-center font-bold text-[#6b6b6b] md:col-span-3">No featured projects yet.</div>
+                <div class="brutal-card p-8 text-center font-bold text-[#666666] dark:text-[#adadad] md:col-span-3">No featured projects yet.</div>
             @endforelse
         </div>
 
@@ -157,7 +157,7 @@
             <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#2563EB] border-[3px] border-black rounded-full hidden sm:block"></div>
             <div class="absolute -bottom-4 -left-4 w-14 h-14 bg-[#00D1FF] border-[3px] border-black rotate-12 hidden sm:block"></div>
             <div class="relative max-w-3xl">
-                <span class="inline-flex font-mono text-[11px] font-black uppercase tracking-widest bg-[#2563EB] text-white px-2.5 py-1 rounded-[6px] border-2 border-black">{{ $homeSettings->infrastructure_title ?: __('messages.ux_home.contact_cta_badge') }}</span>
+                <span class="inline-flex font-mono text-xs font-black uppercase tracking-wider bg-[#2563EB] text-white px-2.5 py-1 rounded-[6px] border-2 border-black">{{ $homeSettings->infrastructure_title ?: __('messages.ux_home.contact_cta_badge') }}</span>
                 <h2 class="mt-4 text-3xl font-black tracking-[-0.04em] leading-tight sm:text-4xl lg:text-5xl">{{ $homeSettings->cta_title }}</h2>
                 <p class="mt-4 max-w-2xl text-base leading-7 text-[#d6d6d6] font-medium">{{ $homeSettings->cta_description }}</p>
                 <div class="mt-7 flex flex-wrap items-center gap-3">
@@ -177,7 +177,7 @@
         <section class="section-container pb-12 sm:pb-16">
             <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <span class="inline-flex font-mono text-[11px] font-black uppercase tracking-[0.16em] bg-[#00D1FF] text-black px-2.5 py-1 rounded-[6px] border-2 border-black">{{ __('messages.ux_home.blog_section_badge') }}</span>
+                    <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-[#00D1FF] text-black px-2.5 py-1 rounded-[6px] border-2 border-black">{{ __('messages.ux_home.blog_section_badge') }}</span>
                     <h2 class="mt-3 text-3xl font-black tracking-[-0.05em] text-black dark:text-[#FFFBF0] sm:text-4xl leading-none">{{ __('messages.ux_home.blog_section_title') }}</h2>
                     <p class="mt-3 max-w-2xl text-sm leading-6 text-[#2a2a2a] dark:text-[#d6d6d6] font-medium">{{ __('messages.ux_home.blog_section_desc') }}</p>
                 </div>
@@ -189,7 +189,7 @@
                     <a href="{{ route('blog.show', $post->slug) }}" class="group brutal-card p-5 flex flex-col justify-between hover:bg-[#FFFBF0] dark:hover:bg-[#1E293B]">
                         <div>
                             @if($displayDate)
-                                <p class="font-mono text-[10px] font-black uppercase tracking-widest bg-[#2563EB] text-white px-2 py-0.5 rounded border border-black inline-block">{{ $displayDate->format('M j, Y') }}</p>
+                                <p class="font-mono text-xs font-black uppercase tracking-wider bg-[#2563EB] text-white px-2 py-0.5 rounded border border-black inline-block">{{ $displayDate->format('M j, Y') }}</p>
                             @endif
                             <h3 class="mt-3 text-lg font-black leading-snug text-black dark:text-white group-hover:underline decoration-[3px] underline-offset-4 line-clamp-2">{{ $post->title }}</h3>
                             <p class="mt-2 line-clamp-3 text-xs leading-5 text-[#2a2a2a] dark:text-[#d6d6d6] font-medium">{{ Str::limit(strip_tags($post->excerpt ?? $post->content), 120) }}</p>

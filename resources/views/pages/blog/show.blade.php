@@ -7,7 +7,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path></svg> {{ __('messages.blog.back_to') }}
                     </a>
 
-                    <span class="inline-flex font-mono text-[11px] font-black uppercase tracking-widest bg-[#2563EB] text-white px-2.5 py-1 rounded-full border-2 border-black mb-3">Article</span>
+                    <span class="inline-flex font-mono text-xs font-black uppercase tracking-wider bg-[#2563EB] text-white px-2.5 py-1 rounded-full border-2 border-black mb-3">Article</span>
                     <h1 class="text-3xl sm:text-5xl font-black tracking-[-0.05em] leading-[0.95] text-black dark:text-[#FFFBF0]">{{ $post->title }}</h1>
 
                     @php($displayDate = $post->published_at ?? $post->updated_at ?? $post->created_at)
@@ -32,9 +32,9 @@
                     </div>
                 </div>
 
-                <footer class="mt-6 brutal-card p-5 flex flex-wrap justify-between items-center gap-4 bg-[#2563EB] dark:bg-[#1E293B]">
+                <footer class="mt-6 brutal-card p-5 flex flex-wrap justify-between items-center gap-4 !bg-[#2563EB] dark:!bg-[#1E293B]">
                     <div class="text-sm font-bold text-white">
-                        Thanks for reading! Have questions? <a href="{{ route('contact') }}" class="underline decoration-[3px] underline-offset-4 bg-black text-white dark:bg-[#3B82F6] dark:text-white px-1">Get in touch</a>.
+                        Thanks for reading! Have questions? <a href="{{ route('contact') }}" class="underline decoration-[3px] underline-offset-4 bg-black text-white dark:bg-[#2563EB] dark:text-white px-1">Get in touch</a>.
                     </div>
                     <div class="flex gap-2">
                         <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($post->title) }}" target="_blank" rel="noopener noreferrer" class="w-11 h-11 min-w-[44px] min-h-[44px] inline-flex items-center justify-center bg-white dark:bg-[#1E293B] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-[8px] shadow-[2px_2px_0_0_#111] dark:shadow-[2px_2px_0_0_rgba(203,213,225,0.9)] hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors" title="Share on X">

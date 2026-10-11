@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    <span class="inline-flex font-mono text-[11px] font-black uppercase tracking-[0.16em] bg-[#2563EB] text-white px-2.5 py-1 rounded-full border-2 border-black">Project Detail</span>
+                    <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-[#2563EB] text-white px-2.5 py-1 rounded-full border-2 border-black">Project Detail</span>
                     <h1 class="mt-3 text-3xl sm:text-5xl font-black tracking-[-0.06em] leading-none text-black dark:text-[#FFFBF0]">{{ $project->title }}</h1>
 
                     <div class="flex flex-wrap gap-3 mt-5">

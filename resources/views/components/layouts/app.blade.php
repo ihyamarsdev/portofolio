@@ -129,11 +129,11 @@
                     <!-- Language Switcher — brutal pill -->
                     <div class="flex items-center gap-1 p-1 bg-white dark:bg-[#1E293B] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-[10px] shadow-[3px_3px_0_0_#111] dark:shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] text-xs font-black uppercase">
                         <a href="{{ route('lang.switch', 'en') }}"
-                            class="min-w-[44px] min-h-[44px] px-3 py-2 rounded-[6px] border-2 transition-all inline-flex items-center justify-center gap-1 {{ app()->getLocale() === 'en' ? 'bg-black text-white border-black dark:bg-[#3B82F6] dark:text-white dark:border-[#CBD5E1] shadow-[2px_2px_0_0_#111]' : 'border-transparent text-[#6b6b6b] dark:text-[#9a9a9a] hover:text-black dark:hover:text-white' }}">
+                            class="min-w-[44px] min-h-[44px] px-3 py-2 rounded-[6px] border-2 transition-all inline-flex items-center justify-center gap-1 {{ app()->getLocale() === 'en' ? 'bg-black text-white border-black dark:bg-[#2563EB] dark:text-white dark:border-[#CBD5E1] shadow-[2px_2px_0_0_#111]' : 'border-transparent text-[#666666] dark:text-[#adadad] hover:text-black dark:hover:text-white' }}">
                             <span>EN</span>
                         </a>
                         <a href="{{ route('lang.switch', 'id') }}"
-                            class="min-w-[44px] min-h-[44px] px-3 py-2 rounded-[6px] border-2 transition-all inline-flex items-center justify-center gap-1 {{ app()->getLocale() === 'id' ? 'bg-black text-white border-black dark:bg-[#3B82F6] dark:text-white dark:border-[#CBD5E1] shadow-[2px_2px_0_0_#111]' : 'border-transparent text-[#6b6b6b] dark:text-[#9a9a9a] hover:text-black dark:hover:text-white' }}">
+                            class="min-w-[44px] min-h-[44px] px-3 py-2 rounded-[6px] border-2 transition-all inline-flex items-center justify-center gap-1 {{ app()->getLocale() === 'id' ? 'bg-black text-white border-black dark:bg-[#2563EB] dark:text-white dark:border-[#CBD5E1] shadow-[2px_2px_0_0_#111]' : 'border-transparent text-[#666666] dark:text-[#adadad] hover:text-black dark:hover:text-white' }}">
                             <span>ID</span>
                         </a>
                     </div>
@@ -165,7 +165,7 @@
                         <a href="{{ route('certificates') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('certificates') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.certificates') }}</a>
                     @endif
                     <a href="{{ route('blog') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('blog*') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.blog') }}</a>
-                    <a href="{{ route('contact') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('contact') ? 'bg-black text-white dark:bg-[#3B82F6] dark:text-white border-2 border-black' : 'bg-[#2563EB] text-white border-2 border-black shadow-[3px_3px_0_0_#111] text-center mt-2' }}">{{ __('messages.nav.contact') }}</a>
+                    <a href="{{ route('contact') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('contact') ? 'bg-black text-white dark:bg-[#2563EB] dark:text-white border-2 border-black' : 'bg-[#2563EB] text-white border-2 border-black shadow-[3px_3px_0_0_#111] text-center mt-2' }}">{{ __('messages.nav.contact') }}</a>
                 </div>
             </div>
         </div>
@@ -219,10 +219,10 @@
             </div>
 
             <div class="mt-10 pt-6 border-t-[2px] border-[#2a2a2a] flex flex-col md:flex-row justify-between items-center gap-3">
-                <p class="font-mono text-xs font-bold uppercase tracking-widest text-[#9a9a9a]">
+                <p class="font-mono text-xs font-bold uppercase tracking-widest text-[#adadad]">
                     © {{ date('Y') }} {{ $homeSettings->footer_text }} — Built brutal, shipped minimal.
                 </p>
-                <span class="font-mono text-[10px] font-black uppercase tracking-[0.2em] bg-white text-black px-2 py-1 rounded border-2 border-black">Neo-Brutalism × Minimalist</span>
+                <span class="font-mono text-xs font-black uppercase tracking-[0.12em] bg-white text-black px-2 py-1 rounded border-2 border-black">Neo-Brutalism × Minimalist</span>
             </div>
         </div>
     </footer>

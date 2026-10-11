@@ -2,7 +2,7 @@
     <section class="bg-[#FFFBF0] dark:bg-[#0F172A]">
         <div class="section-container py-12 sm:py-16">
             <div class="mb-8 max-w-3xl">
-                <span class="inline-flex font-mono text-[11px] font-black uppercase tracking-[0.16em] bg-[#FF90E8] text-black px-2.5 py-1 rounded-[6px] border-[2.5px] border-black">{{ __('messages.blog.eyebrow') }}</span>
+                <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-[#FF90E8] text-black px-2.5 py-1 rounded-[6px] border-[2.5px] border-black">{{ __('messages.blog.eyebrow') }}</span>
                 <h1 class="mt-3 text-4xl font-black tracking-[-0.06em] leading-none text-black dark:text-[#FFFBF0] sm:text-6xl">{{ __('messages.blog.heading') }}</h1>
                 <p class="mt-4 text-base leading-7 font-medium text-[#2a2a2a] dark:text-[#d6d6d6] border-l-[4px] border-black dark:border-[#CBD5E1] pl-4 sm:text-lg">{{ __('messages.blog.subtitle') }}</p>
             </div>
@@ -51,10 +51,10 @@
                                     @php($displayDate = $post->published_at ?? $post->updated_at ?? $post->created_at)
                                     <div class="mb-3 flex flex-wrap items-center gap-2">
                                         @if($displayDate)
-                                            <span class="inline-flex font-mono text-[11px] font-black uppercase tracking-widest bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2 py-1 rounded-full border-2 border-black">{{ $displayDate->format('M j, Y') }}</span>
+                                            <span class="inline-flex font-mono text-xs font-black uppercase tracking-wider bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2 py-1 rounded-full border-2 border-black">{{ $displayDate->format('M j, Y') }}</span>
                                         @endif
-                                        <span class="inline-flex font-mono text-[11px] font-bold uppercase bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-full px-2 py-1">{{ ceil(str_word_count(strip_tags($post->content)) / 200) }} min</span>
-                                        @if($post->category)<span class="brutal-badge brutal-badge--yellow text-[11px]">{{ $post->category->name }}</span>@endif
+                                        <span class="inline-flex font-mono text-xs font-bold uppercase bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-full px-2 py-1">{{ ceil(str_word_count(strip_tags($post->content)) / 200) }} min</span>
+                                        @if($post->category)<span class="brutal-badge brutal-badge--yellow text-xs">{{ $post->category->name }}</span>@endif
                                     </div>
                                     <h2 class="text-xl font-black tracking-[-0.04em] leading-tight text-black dark:text-white group-hover:underline decoration-[3px] underline-offset-4">{{ $post->title }}</h2>
                                     <p class="mt-2 line-clamp-3 text-sm leading-6 font-medium text-[#2a2a2a] dark:text-[#d6d6d6]">{{ $post->excerpt ?: Str::limit(strip_tags($post->content), 180) }}</p>
@@ -76,7 +76,7 @@
 
             <div class="mt-6 rounded-[16px] p-6 sm:p-7 bg-[#111] dark:bg-[#1E293B] text-[#FFFBF0] relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-[3px] border-black dark:border-[#CBD5E1] shadow-[6px_6px_0_0_#111] dark:shadow-[5px_5px_0_0_rgba(203,213,225,0.9)]">
                 <div class="max-w-xl relative z-10">
-                    <span class="font-mono text-[11px] font-black uppercase tracking-[0.16em] bg-[#2563EB] text-white inline-flex px-2 py-1 rounded border-2 border-black">{{ __('messages.blog.subscribe') }}</span>
+                    <span class="font-mono text-xs font-black uppercase tracking-[0.12em] bg-[#2563EB] text-white inline-flex px-2 py-1 rounded border-2 border-black">{{ __('messages.blog.subscribe') }}</span>
                     <h3 class="mt-2 text-xl sm:text-2xl font-black tracking-[-0.03em] text-white">{{ __('messages.blog.stay_updated') }}</h3>
                     <p class="mt-1 text-sm font-medium text-[#d6d6d6]">{{ __('messages.blog.subscribe_desc') }}</p>
                 </div>
