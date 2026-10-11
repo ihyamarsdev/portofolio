@@ -7,9 +7,10 @@
 
             <div class="max-w-4xl mx-auto">
                 <div class="mb-6">
-                    @if($project->image_url || $project->getFirstMediaUrl('images'))
+                    @php($imageSrc = $project->imageSrc())
+                    @if($imageSrc)
                         <div class="aspect-video overflow-hidden bg-white dark:bg-[#1E293B] border-[3px] border-black dark:border-[#CBD5E1] rounded-[16px] shadow-[6px_6px_0_0_#111] dark:shadow-[5px_5px_0_0_rgba(203,213,225,0.9)] mb-6 p-3">
-                            <img src="{{ $project->image_url ?: $project->getFirstMediaUrl('images') }}" alt="{{ $project->title }}" class="h-full w-full object-contain">
+                            <img src="{{ $imageSrc }}" alt="{{ $project->title }}" fetchpriority="high" decoding="async" class="h-full w-full object-contain">
                         </div>
                     @endif
 

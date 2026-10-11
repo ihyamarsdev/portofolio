@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasOptimizedImage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\File;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Translatable\HasTranslations;
-use Symfony\Component\HttpFoundation\File\File;
 
 class Project extends Model implements HasMedia
 {
-    use HasTranslations, InteractsWithMedia;
+    use HasOptimizedImage, HasTranslations, InteractsWithMedia;
 
     public array $translatable = [
         'title',
@@ -68,5 +71,31 @@ class Project extends Model implements HasMedia
 
                 return in_array($file->mimeType, $allowedTypes);
             });
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('webp')
+            ->performOnCollections('images')
+            ->fit(Fit::Max, 1600, 1600)
+            ->format('webp')
+            ->quality(80)
+            ->nonQueued();
+
+        $this->addMediaConversion('card')
+            ->performOnCollections('images')
+            ->fit(Fit::Max, 800, 800)
+            ->format('webp')
+            ->quality(78)
+            ->nonQueued();
+    }
+
+    /**
+     * Image URL for public pages: the remote URL when set, otherwise the
+     * optimized WebP conversion of the uploaded image.
+     */
+    public function imageSrc(string $conversion = 'webp'): string
+    {
+        return $this->image_url ?: $this->optimizedMediaUrl('images', $conversion);
     }
 }

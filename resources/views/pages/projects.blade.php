@@ -1,5 +1,5 @@
 <x-layouts.app title="{{ __('messages.projects.title') }}">
-    @php($projects = \App\Models\Project::with('skills')->orderBy('order')->latest()->get())
+    @php($projects = \App\Models\Project::with(['skills', 'media'])->orderBy('order')->latest()->get())
     <section class="bg-[#FFFBF0] dark:bg-[#0F172A]">
         <div class="section-container py-12 sm:py-16">
             <div class="mb-8 max-w-3xl">
@@ -14,9 +14,10 @@
                 @forelse($projects as $project)
                     <article class="group relative brutal-card overflow-hidden flex flex-col p-0">
                         <a href="{{ route('projects.show', $project->slug) }}" class="absolute inset-0 z-10" aria-label="Open {{ $project->title }}"></a>
-                        @if($project->image_url || $project->getFirstMediaUrl('images'))
+                        @php($imageSrc = $project->imageSrc('card'))
+                        @if($imageSrc)
                             <div class="aspect-video w-full bg-white dark:bg-[#1E293B] border-b-[3px] border-black dark:border-[#CBD5E1] overflow-hidden p-2">
-                                <img src="{{ $project->image_url ?: $project->getFirstMediaUrl('images') }}" alt="{{ $project->title }}" class="h-full w-full object-contain">
+                                <img src="{{ $imageSrc }}" alt="{{ $project->title }}" loading="lazy" decoding="async" class="h-full w-full object-contain">
                             </div>
                         @else
                             <div class="aspect-video w-full border-b-[3px] border-black dark:border-[#CBD5E1] bg-[#2563EB] flex items-center justify-center">

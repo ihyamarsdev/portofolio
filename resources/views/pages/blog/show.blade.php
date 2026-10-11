@@ -19,9 +19,10 @@
                     </div>
                 </header>
 
-                @if($post->featured_image_url || $post->getFirstMediaUrl('featured_image'))
+                @php($imageSrc = $post->imageSrc())
+                @if($imageSrc)
                     <div class="aspect-video overflow-hidden bg-white dark:bg-[#1E293B] border-[3px] border-black dark:border-[#CBD5E1] rounded-[16px] shadow-[6px_6px_0_0_#111] dark:shadow-[5px_5px_0_0_rgba(203,213,225,0.9)] mb-8 p-3">
-                        <img src="{{ $post->featured_image_url ?: $post->getFirstMediaUrl('featured_image') }}" alt="{{ $post->title }}" class="h-full w-full object-contain">
+                        <img src="{{ $imageSrc }}" alt="{{ $post->title }}" fetchpriority="high" decoding="async" class="h-full w-full object-contain">
                     </div>
                 @endif
 
