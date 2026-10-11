@@ -9,8 +9,10 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Throwable;
 
 class ImportRemoteImages extends Command
 {
@@ -90,16 +92,30 @@ class ImportRemoteImages extends Command
                 $url = (string) $record->getAttribute($urlColumn);
                 $title = $this->formatTitle($record);
 
-                // Check if already has media in this collection
-                if ($record->hasMedia($collection)) {
-                    $skippedCount++;
+                // Media already imported (e.g. an earlier run was interrupted before the URL was cleared)
+                $existing = $record->getFirstMedia($collection);
+                if ($existing) {
+                    $hasWebp = $existing->hasGeneratedConversion('webp');
+
+                    if ($hasWebp && ! $dryRun) {
+                        $record->setAttribute($urlColumn, null);
+                        $record->save();
+                        $successCount++;
+                    } elseif (! $hasWebp) {
+                        $skippedCount++;
+                    }
+
                     $allRows[] = [
                         'id' => "{$label}#{$record->getKey()}",
                         'title' => $title,
                         'source' => $url,
-                        'original_kb' => '-',
+                        'original_kb' => number_format($existing->size / 1024, 2),
                         'webp_kb' => '-',
-                        'status' => 'SKIPPED (has media)',
+                        'status' => match (true) {
+                            ! $hasWebp => 'SKIPPED (has media without WebP)',
+                            $dryRun => 'WOULD_FINALIZE',
+                            default => 'FINALIZED (media existed)',
+                        },
                     ];
 
                     continue;
@@ -215,6 +231,10 @@ class ImportRemoteImages extends Command
                 $filename = ($filename !== '' ? $filename : 'image').'.'.$extension;
             }
 
+            // Keep object keys URL- and S3-safe (no spaces, parentheses or ampersands).
+            $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+            $filename = (Str::slug(pathinfo($filename, PATHINFO_FILENAME)) ?: 'image').'.'.$extension;
+
             // Store media
             /** @var Media $media */
             $media = $record->addMedia($tempFile)
@@ -232,9 +252,14 @@ class ImportRemoteImages extends Command
             $originalKb = number_format($media->size / 1024, 2);
 
             $conversionsDisk = $media->conversions_disk ?: $media->disk;
-            $webpRelativePath = $media->getPathRelativeToRoot('webp');
-            $webpSize = Storage::disk($conversionsDisk)->size($webpRelativePath);
-            $webpKb = number_format($webpSize / 1024, 2);
+
+            try {
+                $webpSize = Storage::disk($conversionsDisk)->size($media->getPathRelativeToRoot('webp'));
+                $webpKb = number_format($webpSize / 1024, 2);
+            } catch (Throwable) {
+                // Size is informational only; the conversion was already confirmed as generated.
+                $webpKb = 'n/a';
+            }
 
             // Clear remote URL column
             $record->setAttribute($urlColumn, null);

@@ -79,13 +79,11 @@ class ImportRemoteImagesCommandTest extends TestCase
         $this->assertStringEndsWith('-webp.webp', $post->imageSrc());
     }
 
-    public function test_skips_records_that_already_have_media(): void
+    public function test_clears_url_without_downloading_when_webp_media_already_exists(): void
     {
         $url = 'https://remote.example.com/images/existing.jpg';
 
-        Http::fake([
-            $url => Http::response($this->sampleJpegData, 200, ['Content-Type' => 'image/jpeg']),
-        ]);
+        Http::fake();
 
         $project = Project::query()->create([
             'title' => 'Existing Media Project',
@@ -94,19 +92,65 @@ class ImportRemoteImagesCommandTest extends TestCase
             'image_url' => $url,
         ]);
 
-        // Add media beforehand
+        // Media imported earlier by an interrupted run: conversions exist, URL still set
         $temp = tempnam(sys_get_temp_dir(), 'test_img');
         file_put_contents($temp, $this->sampleJpegData);
         $project->addMedia($temp)->toMediaCollection('images');
 
         $this->artisan('media:import-remote-images --model=projects')
-            ->expectsOutputToContain('SKIPPED (has media)')
+            ->expectsOutputToContain('FINALIZED (media existed)')
             ->assertExitCode(0);
 
-        // Remote URL should remain untouched because media was not re-imported
         $project->refresh();
-        $this->assertSame($url, $project->image_url);
+        $this->assertNull($project->image_url);
         $this->assertCount(1, $project->getMedia('images'));
+        Http::assertNothingSent();
+    }
+
+    public function test_skips_records_whose_existing_media_has_no_webp_conversion(): void
+    {
+        $url = 'https://remote.example.com/images/no-webp.jpg';
+
+        Http::fake();
+
+        $project = Project::query()->create([
+            'title' => 'No WebP Project',
+            'slug' => 'no-webp',
+            'description' => 'Test project',
+            'image_url' => $url,
+        ]);
+
+        $temp = tempnam(sys_get_temp_dir(), 'test_img');
+        file_put_contents($temp, $this->sampleJpegData);
+        $media = $project->addMedia($temp)->toMediaCollection('images');
+        $media->forceFill(['generated_conversions' => []])->save();
+
+        $this->artisan('media:import-remote-images --model=projects')
+            ->expectsOutputToContain('SKIPPED (has media without WebP)')
+            ->assertExitCode(0);
+
+        $this->assertSame($url, $project->fresh()->image_url);
+        Http::assertNothingSent();
+    }
+
+    public function test_imported_file_names_are_slugified_for_safe_object_keys(): void
+    {
+        $url = 'https://remote.example.com/images/CIVA%20%28CLI%20Tool%29%20%26%20More.jpeg';
+
+        Http::fake([
+            '*' => Http::response($this->sampleJpegData, 200, ['Content-Type' => 'image/jpeg']),
+        ]);
+
+        $project = Project::query()->create([
+            'title' => 'Unsafe Name',
+            'slug' => 'unsafe-name',
+            'description' => 'Test project',
+            'image_url' => $url,
+        ]);
+
+        $this->artisan('media:import-remote-images --model=projects')->assertExitCode(0);
+
+        $this->assertSame('civa-cli-tool-more.jpeg', $project->fresh()->getFirstMedia('images')->file_name);
     }
 
     public function test_dry_run_writes_nothing(): void
