@@ -3,6 +3,8 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
+      args:
+        PHP_BASE_IMAGE: ${PHP_BASE_IMAGE:-portofolio-php-base:8.4}
     image: portofolio-app
     container_name: portofolio-app
     restart: unless-stopped

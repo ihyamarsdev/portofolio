@@ -1,0 +1,32 @@
+# syntax=docker/dockerfile:1.7
+
+# =============================================================================
+# Base PHP Runtime Image for Laravel 13 + FrankenPHP
+#
+# Contains pre-compiled PHP extensions and system libraries needed in production:
+# - System libraries: libicu76 libpq5 libzip5 netcat-openbsd
+# - PHP extensions: exif gd intl pdo_pgsql redis zip
+#
+# Build command:
+#   docker buildx build -f docker/Dockerfile.base -t portofolio-php-base:8.4 .
+# Override in application Dockerfile via build arg:
+#   docker buildx build --build-arg PHP_BASE_IMAGE=ghcr.io/org/portofolio-php-base:8.4 -f docker/Dockerfile .
+# =============================================================================
+
+FROM dunglas/frankenphp:php8.4
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libicu76 \
+        libpq5 \
+        libzip5 \
+        netcat-openbsd \
+    && install-php-extensions \
+        exif \
+        gd \
+        intl \
+        pdo_pgsql \
+        redis \
+        zip \
+    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+    && rm -rf /var/lib/apt/lists/* /tmp/*

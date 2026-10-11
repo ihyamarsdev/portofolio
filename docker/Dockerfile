@@ -3,13 +3,19 @@
 # =============================================================================
 # Production Dockerfile for Laravel 13 + FrankenPHP
 # Optimized for fast rebuilds:
-# - deps copied before source for cache hits
-# - Composer scripts disabled during image build
-# - frontend assets built once
-# - final image copies only runtime files
+# - Base PHP runtime image with pre-compiled extensions separated
+# - Composer dependencies installed in vendor-deps stage
+# - Frontend stage decoupled from post-autoload vendor and non-essential app files
+# - Filament assets pre-compiled at build time
+# - Final runtime image copies only necessary runtime files
 # =============================================================================
 
-FROM composer:2 AS vendor
+ARG PHP_BASE_IMAGE=portofolio-php-base:8.4
+
+# -----------------------------------------------------------------------------
+# Stage 1: Vendor Dependencies
+# -----------------------------------------------------------------------------
+FROM composer:2 AS vendor-deps
 
 WORKDIR /app
 
@@ -26,6 +32,11 @@ RUN --mount=type=cache,target=/tmp/composer-cache,sharing=locked \
         --ignore-platform-reqs \
         --no-scripts
 
+# -----------------------------------------------------------------------------
+# Stage 2: Vendor Autoload (Full App Autoload Generation)
+# -----------------------------------------------------------------------------
+FROM vendor-deps AS vendor
+
 COPY app ./app
 COPY bootstrap ./bootstrap
 COPY config ./config
@@ -36,7 +47,9 @@ COPY artisan ./artisan
 
 RUN composer dump-autoload --no-dev --optimize --classmap-authoritative --no-scripts
 
-
+# -----------------------------------------------------------------------------
+# Stage 3: Frontend Asset Compilation
+# -----------------------------------------------------------------------------
 FROM node:22-alpine AS frontend
 
 WORKDIR /app
@@ -53,18 +66,21 @@ RUN --mount=type=cache,target=/root/.npm,sharing=locked \
 COPY vite.config.js ./vite.config.js
 COPY resources ./resources
 COPY public ./public
-COPY app ./app
-COPY bootstrap ./bootstrap
-COPY config ./config
-COPY routes ./routes
-COPY artisan ./artisan
-COPY --from=vendor /app/vendor ./vendor
+COPY app/Filament ./app/Filament
+COPY app/Livewire ./app/Livewire
+
+# Copy only the vendor assets required for Tailwind @import and @source
+COPY --from=vendor-deps /app/vendor/filament ./vendor/filament
+COPY --from=vendor-deps /app/vendor/awcodes/richer-editor ./vendor/awcodes/richer-editor
+COPY --from=vendor-deps /app/vendor/laravel/framework/src/Illuminate/Pagination/resources ./vendor/laravel/framework/src/Illuminate/Pagination/resources
 
 RUN npm run build \
     && rm -rf /tmp/*
 
-
-FROM dunglas/frankenphp:php8.4 AS runtime
+# -----------------------------------------------------------------------------
+# Stage 4: Production Runtime Image
+# -----------------------------------------------------------------------------
+FROM ${PHP_BASE_IMAGE} AS runtime
 
 WORKDIR /app
 
@@ -77,22 +93,6 @@ ENV APP_ENV=production \
     PHP_OPCACHE_VALIDATE_TIMESTAMPS=0 \
     PHP_MEMORY_LIMIT=256M \
     LOG_CHANNEL=stderr
-
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        libicu76 \
-        libpq5 \
-        libzip5 \
-        netcat-openbsd \
-    && install-php-extensions \
-        bcmath \
-        intl \
-        pcntl \
-        pdo_pgsql \
-        redis \
-        zip \
-    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
-    && rm -rf /var/lib/apt/lists/* /tmp/*
 
 COPY composer.json composer.lock ./
 COPY --from=vendor /app/vendor ./vendor
@@ -117,6 +117,8 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
         storage/framework/sessions \
         storage/framework/views \
         storage/logs \
+    && APP_KEY=base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= php artisan package:discover --ansi \
+    && APP_KEY=base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= php artisan filament:assets --no-interaction \
     && chown -R www-data:www-data /app/storage /app/bootstrap/cache \
     && find /app/storage -type d -exec chmod 775 {} \; \
     && find /app/bootstrap/cache -type d -exec chmod 775 {} \; \

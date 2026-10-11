@@ -48,7 +48,6 @@ else
 fi
 
 php artisan storage:link --force || true
-php artisan filament:assets --no-interaction || true
 
 if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
     echo "Running database migrations..."
