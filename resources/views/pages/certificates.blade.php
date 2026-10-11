@@ -25,11 +25,25 @@
                             <div class="bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-[8px] p-2"><dt class="font-mono text-[10px] font-black uppercase tracking-widest">Expires</dt><dd class="font-black">{{ $certificate->expiry_date?->format('M Y') ?? 'Never' }}</dd></div>
                         </dl>
                         @if($certificate->credential_url)
-                            <a href="{{ $certificate->credential_url }}" target="_blank" class="mt-4 inline-flex self-start brutal-btn brutal-btn--white text-xs px-3 py-1.5">Verify →</a>
+                            <a href="{{ $certificate->credential_url }}" target="_blank" class="mt-4 inline-flex items-center self-start brutal-btn brutal-btn--white text-xs px-4 py-2 min-h-[44px]">Verify →</a>
                         @endif
                     </article>
                 @empty
-                    <div class="brutal-card p-10 text-center font-black uppercase sm:col-span-2 xl:col-span-3">No certificates yet.</div>
+                    <div class="brutal-card p-8 sm:p-12 text-center sm:col-span-2 xl:col-span-3 bg-white dark:bg-[#1E293B] shadow-[6px_6px_0_0_#111] dark:shadow-[5px_5px_0_0_rgba(203,213,225,0.9)]">
+                        <div class="mx-auto w-16 h-16 flex items-center justify-center bg-[#00D1FF] border-[3px] border-black rounded-[14px] shadow-[4px_4px_0_0_#111] text-3xl mb-4">
+                            📜
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-black dark:text-white uppercase">{{ __('messages.ux_pages.no_certificates_title') }}</h2>
+                        <p class="mt-3 max-w-xl mx-auto text-sm sm:text-base leading-6 font-medium text-[#2a2a2a] dark:text-[#d6d6d6]">{{ __('messages.ux_pages.no_certificates_desc') }}</p>
+                        <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+                            <a href="{{ route('about') }}" class="brutal-btn brutal-btn--primary text-xs sm:text-sm px-5 py-3 min-h-[44px] inline-flex items-center gap-2">
+                                {{ __('messages.ux_pages.view_about') }} →
+                            </a>
+                            <a href="{{ route('contact') }}" class="brutal-btn brutal-btn--white text-xs sm:text-sm px-5 py-3 min-h-[44px] inline-flex items-center gap-2">
+                                {{ __('messages.ux_pages.contact_me') }}
+                            </a>
+                        </div>
+                    </div>
                 @endforelse
             </div>
         </div>

@@ -12,19 +12,19 @@
             </div>
             <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 @forelse($projects as $project)
-                    <article class="group relative brutal-card overflow-hidden flex flex-col p-0">
+                    <article class="group relative brutal-card overflow-hidden flex flex-col p-0 h-full">
                         <a href="{{ route('projects.show', $project->slug) }}" class="absolute inset-0 z-10" aria-label="Open {{ $project->title }}"></a>
                         @php($imageSrc = $project->imageSrc('card'))
                         @if($imageSrc)
-                            <div class="aspect-video w-full bg-white dark:bg-[#1E293B] border-b-[3px] border-black dark:border-[#CBD5E1] overflow-hidden p-2">
-                                <img src="{{ $imageSrc }}" alt="{{ $project->title }}" loading="lazy" decoding="async" class="h-full w-full object-contain">
+                            <div class="aspect-video w-full bg-white dark:bg-[#1E293B] border-b-[3px] border-black dark:border-[#CBD5E1] overflow-hidden">
+                                <img src="{{ $imageSrc }}" alt="{{ $project->title }}" loading="lazy" decoding="async" class="h-full w-full object-cover">
                             </div>
                         @else
                             <div class="aspect-video w-full border-b-[3px] border-black dark:border-[#CBD5E1] bg-[#2563EB] flex items-center justify-center">
-                                <span class="font-black text-3xl tracking-tighter">{{ Str::substr($project->title,0,2) }}</span>
+                                <span class="font-black text-3xl tracking-tighter text-white">{{ Str::substr($project->title,0,2) }}</span>
                             </div>
                         @endif
-                        <div class="p-5 flex flex-col flex-grow">
+                        <div class="p-5 flex flex-col flex-1">
                             <div class="mb-3 flex flex-wrap gap-2">
                                 @if($project->is_featured)<span class="brutal-badge">★ {{ __('messages.projects.featured') }}</span>@endif
                                 @if($project->architecture_diagram)<span class="brutal-badge brutal-badge--cyan">{{ __('messages.projects.architecture_diagram') }}</span>@endif
@@ -32,10 +32,10 @@
                             </div>
                             <h2 class="text-xl font-black tracking-[-0.03em] leading-tight text-black dark:text-white group-hover:underline decoration-[3px] underline-offset-4">{{ $project->title }}</h2>
                             <p class="mt-2 line-clamp-3 text-sm leading-6 text-[#2a2a2a] dark:text-[#d6d6d6] font-medium">{{ Str::limit(strip_tags($project->description), 160) }}</p>
-                            <div class="relative z-20 mt-4 flex flex-wrap items-center gap-2 text-sm font-black uppercase tracking-tight">
-                                <span class="inline-flex items-center gap-1 bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-3 py-1 rounded-[8px] border-2 border-black">Details <span class="group-hover:translate-x-1 transition-transform">→</span></span>
-                                @if($project->repository_url)<a href="{{ $project->repository_url }}" target="_blank" rel="noopener noreferrer" class="underline decoration-2 underline-offset-4 hover:bg-[#2563EB] hover:text-white px-1">Repo</a>@endif
-                                @if($project->live_url)<a href="{{ $project->live_url }}" target="_blank" rel="noopener noreferrer" class="underline decoration-2 underline-offset-4 hover:bg-[#00D1FF] hover:text-black px-1">Live</a>@endif
+                            <div class="relative z-20 mt-auto pt-4 flex flex-wrap items-center gap-2 text-sm font-black uppercase tracking-tight">
+                                <span class="inline-flex items-center gap-1 bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-3.5 py-2 rounded-[8px] border-2 border-black min-h-[44px]">Details <span class="group-hover:translate-x-1 transition-transform">→</span></span>
+                                @if($project->repository_url)<a href="{{ $project->repository_url }}" target="_blank" rel="noopener noreferrer" class="underline decoration-2 underline-offset-4 hover:bg-[#2563EB] hover:text-white px-3 py-2 min-h-[44px] min-w-[44px] inline-flex items-center justify-center">Repo</a>@endif
+                                @if($project->live_url)<a href="{{ $project->live_url }}" target="_blank" rel="noopener noreferrer" class="underline decoration-2 underline-offset-4 hover:bg-[#00D1FF] hover:text-black px-3 py-2 min-h-[44px] min-w-[44px] inline-flex items-center justify-center">Live</a>@endif
                             </div>
                         </div>
                     </article>

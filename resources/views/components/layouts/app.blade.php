@@ -5,6 +5,7 @@
     if (!isset($profile) || !$profile) {
         $profile = \App\Models\Profile::where('is_primary', true)->first();
     }
+    $hasCertificates = \App\Models\Certificate::query()->exists();
     $currentUrl = preg_replace('/^http:\/\/[^\/]+/', 'https://ihyamars.my.id', url()->current());
     $siteBrand = $homeSettings?->site_brand ?? 'ihyamars';
     $siteTitle = $homeSettings?->site_title ?? 'DevOps Engineer';
@@ -104,41 +105,42 @@
     <!-- Navigation — Neo Brutalism -->
     <nav class="sticky top-0 z-50 bg-white dark:bg-[#1E293B] border-b-[3px] border-black dark:border-[#CBD5E1]">
         <div class="section-container">
-            <div class="flex items-center justify-between h-[68px]">
+            <div class="flex items-center justify-between h-[68px] gap-2">
                 <!-- Logo — brutal stamp -->
-                <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                    <span class="inline-flex items-center justify-center w-9 h-9 bg-[#2563EB] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-[8px] text-[20px] shadow-[3px_3px_0_0_#111] dark:shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] group-active:translate-x-[2px] group-active:translate-y-[2px] group-active:shadow-none transition-all">💻</span>
-                    <span class="font-black text-[18px] tracking-[-0.04em] uppercase border-[2.5px] border-black dark:border-[#CBD5E1] px-2.5 py-1 rounded-[8px] bg-white dark:bg-[#1E293B] shadow-[3px_3px_0_0_#111] dark:shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] group-active:translate-x-[2px] group-active:translate-y-[2px] group-active:shadow-none transition-all">
+                <a href="{{ route('home') }}" class="flex items-center gap-1.5 sm:gap-2 group min-h-[44px] min-w-0 shrink">
+                    <span class="inline-flex shrink-0 items-center justify-center w-10 h-10 bg-[#2563EB] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-[8px] text-[20px] shadow-[3px_3px_0_0_#111] dark:shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] group-active:translate-x-[2px] group-active:translate-y-[2px] group-active:shadow-none transition-all">💻</span>
+                    <span class="font-black text-[16px] sm:text-[18px] tracking-[-0.04em] uppercase border-[2.5px] border-black dark:border-[#CBD5E1] px-2 sm:px-2.5 py-1.5 rounded-[8px] bg-white dark:bg-[#1E293B] shadow-[3px_3px_0_0_#111] dark:shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] group-active:translate-x-[2px] group-active:translate-y-[2px] group-active:shadow-none transition-all truncate">
                         {{ $homeSettings->site_brand }}
                     </span>
                 </a>
-
                 <!-- Desktop Navigation -->
                 <div class="hidden lg:flex items-center gap-1.5">
                     <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">{{ __('messages.nav.home') }}</a>
                     <a href="{{ route('projects') }}" class="nav-link {{ request()->routeIs('projects*') ? 'active' : '' }}">{{ __('messages.nav.projects') }}</a>
                     <a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">{{ __('messages.nav.about') }}</a>
-                    <a href="{{ route('certificates') }}" class="nav-link {{ request()->routeIs('certificates') ? 'active' : '' }}">{{ __('messages.nav.certificates') }}</a>
+                    @if($hasCertificates)
+                        <a href="{{ route('certificates') }}" class="nav-link {{ request()->routeIs('certificates') ? 'active' : '' }}">{{ __('messages.nav.certificates') }}</a>
+                    @endif
                     <a href="{{ route('blog') }}" class="nav-link {{ request()->routeIs('blog*') ? 'active' : '' }}">{{ __('messages.nav.blog') }}</a>
                     <a href="{{ route('contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">{{ __('messages.nav.contact') }}</a>
                 </div>
 
-                <div class="flex items-center gap-2 sm:gap-3">
+                <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
                     <!-- Language Switcher — brutal pill -->
                     <div class="flex items-center gap-1 p-1 bg-white dark:bg-[#1E293B] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-[10px] shadow-[3px_3px_0_0_#111] dark:shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] text-xs font-black uppercase">
                         <a href="{{ route('lang.switch', 'en') }}"
-                            class="px-2.5 py-1.5 rounded-[6px] border-2 transition-all flex items-center gap-1 {{ app()->getLocale() === 'en' ? 'bg-black text-white border-black dark:bg-[#3B82F6] dark:text-white dark:border-[#CBD5E1] shadow-[2px_2px_0_0_#111]' : 'border-transparent text-[#6b6b6b] dark:text-[#9a9a9a] hover:text-black dark:hover:text-white' }}">
+                            class="min-w-[44px] min-h-[44px] px-3 py-2 rounded-[6px] border-2 transition-all inline-flex items-center justify-center gap-1 {{ app()->getLocale() === 'en' ? 'bg-black text-white border-black dark:bg-[#3B82F6] dark:text-white dark:border-[#CBD5E1] shadow-[2px_2px_0_0_#111]' : 'border-transparent text-[#6b6b6b] dark:text-[#9a9a9a] hover:text-black dark:hover:text-white' }}">
                             <span>EN</span>
                         </a>
                         <a href="{{ route('lang.switch', 'id') }}"
-                            class="px-2.5 py-1.5 rounded-[6px] border-2 transition-all flex items-center gap-1 {{ app()->getLocale() === 'id' ? 'bg-black text-white border-black dark:bg-[#3B82F6] dark:text-white dark:border-[#CBD5E1] shadow-[2px_2px_0_0_#111]' : 'border-transparent text-[#6b6b6b] dark:text-[#9a9a9a] hover:text-black dark:hover:text-white' }}">
+                            class="min-w-[44px] min-h-[44px] px-3 py-2 rounded-[6px] border-2 transition-all inline-flex items-center justify-center gap-1 {{ app()->getLocale() === 'id' ? 'bg-black text-white border-black dark:bg-[#3B82F6] dark:text-white dark:border-[#CBD5E1] shadow-[2px_2px_0_0_#111]' : 'border-transparent text-[#6b6b6b] dark:text-[#9a9a9a] hover:text-black dark:hover:text-white' }}">
                             <span>ID</span>
                         </a>
                     </div>
 
                     <!-- Theme Toggle — brutal square -->
                     <button onclick="toggleTheme()"
-                        class="w-10 h-10 inline-flex items-center justify-center bg-white dark:bg-[#1E293B] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-[10px] shadow-[3px_3px_0_0_#111] dark:shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                        class="w-11 h-11 inline-flex items-center justify-center bg-white dark:bg-[#1E293B] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-[10px] shadow-[3px_3px_0_0_#111] dark:shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                         aria-label="Toggle theme">
                         <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
@@ -146,9 +148,9 @@
 
                     <!-- Mobile Menu Button -->
                     <button type="button"
-                        class="lg:hidden w-10 h-10 inline-flex items-center justify-center bg-[#2563EB] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-[10px] shadow-[3px_3px_0_0_#111] dark:shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                        class="lg:hidden w-11 h-11 inline-flex items-center justify-center bg-[#2563EB] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-[10px] shadow-[3px_3px_0_0_#111] dark:shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                         onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" aria-label="Menu">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                 </div>
             </div>
@@ -159,7 +161,9 @@
                     <a href="{{ route('home') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('home') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.home') }}</a>
                     <a href="{{ route('projects') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('projects*') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.projects') }}</a>
                     <a href="{{ route('about') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('about') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.about') }}</a>
-                    <a href="{{ route('certificates') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('certificates') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.certificates') }}</a>
+                    @if($hasCertificates)
+                        <a href="{{ route('certificates') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('certificates') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.certificates') }}</a>
+                    @endif
                     <a href="{{ route('blog') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('blog*') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.blog') }}</a>
                     <a href="{{ route('contact') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('contact') ? 'bg-black text-white dark:bg-[#3B82F6] dark:text-white border-2 border-black' : 'bg-[#2563EB] text-white border-2 border-black shadow-[3px_3px_0_0_#111] text-center mt-2' }}">{{ __('messages.nav.contact') }}</a>
                 </div>
@@ -192,9 +196,9 @@
                 <div>
                     <h3 class="font-black uppercase tracking-tight text-sm mb-4 flex items-center gap-2"><span class="w-2 h-8 bg-[#2563EB] border-2 border-black rounded-full"></span> Quick Links</h3>
                     <ul class="space-y-2 text-sm font-bold">
-                        <li><a href="{{ route('projects') }}" class="inline-block bg-white text-black px-3 py-1 rounded-[8px] border-2 border-black hover:bg-[#2563EB] hover:text-white transition-colors">Projects →</a></li>
-                        <li><a href="{{ route('blog') }}" class="inline-block bg-white text-black px-3 py-1 rounded-[8px] border-2 border-black hover:bg-[#00D1FF] transition-colors">Blog →</a></li>
-                        <li><a href="{{ route('contact') }}" class="inline-block bg-[#2563EB] text-white px-3 py-1 rounded-[8px] border-2 border-black shadow-[3px_3px_0_0_#fff] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">Contact →</a></li>
+                        <li><a href="{{ route('projects') }}" class="inline-flex items-center min-h-[44px] bg-white text-black px-4 py-2 rounded-[8px] border-2 border-black hover:bg-[#2563EB] hover:text-white transition-colors">Projects →</a></li>
+                        <li><a href="{{ route('blog') }}" class="inline-flex items-center min-h-[44px] bg-white text-black px-4 py-2 rounded-[8px] border-2 border-black hover:bg-[#00D1FF] transition-colors">Blog →</a></li>
+                        <li><a href="{{ route('contact') }}" class="inline-flex items-center min-h-[44px] bg-[#2563EB] text-white px-4 py-2 rounded-[8px] border-2 border-black shadow-[3px_3px_0_0_#fff] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">Contact →</a></li>
                     </ul>
                 </div>
 

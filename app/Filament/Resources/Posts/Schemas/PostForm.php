@@ -205,18 +205,21 @@ class PostForm
 
                                 SpatieMediaLibraryFileUpload::make('featured_image')
                                     ->collection('featured_image')
+                                    ->label('Featured Image')
                                     ->image()
                                     ->imageEditor()
                                     ->imageResizeMode('cover')
                                     ->imageCropAspectRatio('16:9')
-                                    ->imageResizeTargetWidth('1200')
-                                    ->imageResizeTargetHeight('675'),
+                                    ->imageResizeTargetWidth('1600')
+                                    ->imageResizeTargetHeight('900')
+                                    ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'])
+                                    ->helperText('Upload is preferred: automatically optimized and converted to responsive WebP.'),
                                 TextInput::make('featured_image_url')
-                                    ->label('Internet Image URL')
+                                    ->label('External Image URL')
                                     ->url()
                                     ->prefixIcon('heroicon-o-photo')
                                     ->placeholder('https://images.unsplash.com/...')
-                                    ->helperText('Use this when the featured image is hosted on the internet instead of uploaded locally.'),
+                                    ->helperText('Fallback only for remote images. When an image is uploaded above, the uploaded WebP is preferred.'),
                             ])
                             ->collapsible()
                             ->collapsed(),

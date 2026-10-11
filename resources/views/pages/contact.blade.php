@@ -6,10 +6,9 @@
                     <span class="inline-flex font-mono text-[11px] font-black uppercase tracking-[0.16em] bg-[#FF90E8] text-black px-2.5 py-1 rounded-[6px] border-[2.5px] border-black">{{ __('messages.contact.eyebrow') }}</span>
                     <h1 class="mt-3 text-4xl font-black tracking-[-0.06em] leading-[0.9] text-black dark:text-[#FFFBF0] sm:text-6xl">{{ __('messages.contact.lead_title') }}</h1>
                     <p class="mt-4 text-base leading-7 font-medium text-[#2a2a2a] dark:text-[#d6d6d6] border-l-[4px] border-black dark:border-[#CBD5E1] pl-4 sm:text-lg">{{ __('messages.contact.lead_desc') }}</p>
-                    <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                    <div class="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
                         @foreach([
                             [__('messages.contact.info_email'), $profile?->email ?? 'contact@example.com', '📧', '#2563EB'],
-                            [__('messages.contact.info_phone'), $profile?->phone ?? '+62 123 4567 890', '📞', '#00D1FF'],
                             [__('messages.contact.info_location'), $profile?->location ?? __('Indonesia'), '📍', '#FF90E8'],
                             [__('messages.contact.info_response'), __('messages.contact.response_time'), '⚡', '#B8FF66'],
                         ] as [$label, $value, $icon, $bg])

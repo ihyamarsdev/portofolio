@@ -119,4 +119,29 @@ return [
         'quick_links' => 'Tautan Cepat',
         'connect' => 'Terhubung',
     ],
+
+    // UX Improvements (FrontHome)
+    'ux_home' => [
+        'details' => 'Detail',
+        'contact_cta_badge' => 'Hubungi Saya',
+        'contact_cta_button' => 'Hubungi Sekarang',
+        'explore_projects' => 'Jelajahi Proyek',
+        'blog_section_badge' => 'Wawasan',
+        'blog_section_title' => 'Artikel Terbaru dari Blog',
+        'blog_section_desc' => 'Artikel dan panduan seputar arsitektur cloud, otomatisasi, dan praktik DevOps.',
+        'view_all_posts' => 'Semua artikel',
+        'read_more' => 'Baca',
+    ],
+
+    // UX Improvements (FrontPages)
+    'ux_pages' => [
+        'featured_post' => 'Artikel Unggulan',
+        'no_certificates_title' => 'Sertifikat Dalam Proses',
+        'no_certificates_desc' => 'Sertifikasi dan kredensial terverifikasi sedang diperbarui. Sementara itu, Anda dapat melihat pengalaman kerja saya atau menghubungi secara langsung.',
+        'view_about' => 'Lihat Pengalaman & Keahlian',
+        'contact_me' => 'Hubungi Saya',
+        'download_cv' => 'Unduh CV',
+        'show_more_achievements' => 'Tampilkan :count lainnya',
+        'show_less' => 'Tampilkan lebih sedikit',
+    ],
 ];

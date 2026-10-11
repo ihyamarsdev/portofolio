@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Projects\Schemas;
 use App\Models\Project;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -155,12 +156,24 @@ class ProjectForm
                                     ->prefixIcon('heroicon-o-globe-alt')
                                     ->placeholder('https://project-demo.com')
                                     ->columnSpanFull(),
+                                SpatieMediaLibraryFileUpload::make('images')
+                                    ->collection('images')
+                                    ->label('Project Image')
+                                    ->image()
+                                    ->imageEditor()
+                                    ->imageResizeMode('cover')
+                                    ->imageCropAspectRatio('16:9')
+                                    ->imageResizeTargetWidth('1600')
+                                    ->imageResizeTargetHeight('900')
+                                    ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'])
+                                    ->helperText('Upload is preferred: automatically optimized and converted to responsive WebP.')
+                                    ->columnSpanFull(),
                                 TextInput::make('image_url')
-                                    ->label('Internet Image URL')
+                                    ->label('External Image URL')
                                     ->url()
                                     ->prefixIcon('heroicon-o-photo')
                                     ->placeholder('https://images.unsplash.com/...')
-                                    ->helperText('Use this when the project image is hosted on the internet instead of uploaded locally.')
+                                    ->helperText('Fallback only for remote images. When an image is uploaded above, the uploaded WebP is preferred.')
                                     ->columnSpanFull(),
                             ])
                             ->collapsible(),

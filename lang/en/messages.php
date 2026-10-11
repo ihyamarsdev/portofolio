@@ -119,4 +119,29 @@ return [
         'quick_links' => 'Quick Links',
         'connect' => 'Connect',
     ],
+
+    // UX Improvements (FrontHome)
+    'ux_home' => [
+        'details' => 'Details',
+        'contact_cta_badge' => 'Get in touch',
+        'contact_cta_button' => 'Contact Me',
+        'explore_projects' => 'Explore Projects',
+        'blog_section_badge' => 'Insights',
+        'blog_section_title' => 'Latest from the Blog',
+        'blog_section_desc' => 'Articles and guides on cloud architecture, automation, and DevOps practices.',
+        'view_all_posts' => 'All articles',
+        'read_more' => 'Read',
+    ],
+
+    // UX Improvements (FrontPages)
+    'ux_pages' => [
+        'featured_post' => 'Featured Article',
+        'no_certificates_title' => 'Certificates In Progress',
+        'no_certificates_desc' => 'Certifications and verified credentials are currently being updated. In the meantime, explore my professional experience or reach out directly.',
+        'view_about' => 'View Experience & Skills',
+        'contact_me' => 'Get in Touch',
+        'download_cv' => 'Download CV',
+        'show_more_achievements' => 'Show :count more items',
+        'show_less' => 'Show less',
+    ],
 ];

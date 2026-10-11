@@ -18,7 +18,13 @@
                             <p class="brutal-card brutal-card--flat p-3 text-sm font-bold flex items-center gap-2 !shadow-[3px_3px_0_0_#111] dark:!shadow-[3px_3px_0_0_rgba(203,213,225,0.9)]"><span class="w-8 h-8 inline-flex items-center justify-center bg-[#2563EB] border-2 border-black rounded-full text-sm">📍</span> {{ $profile?->location ?? __('Indonesia') }}</p>
                             <p class="brutal-card brutal-card--flat p-3 text-sm font-bold flex items-center gap-2 !shadow-[3px_3px_0_0_#111] dark:!shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] bg-[#B8FF66] dark:bg-[#1E293B]"><span class="w-2 h-2 bg-black dark:bg-[#B8FF66] rounded-full animate-pulse"></span> {{ __('messages.about.open_opportunities') }}</p>
                         </div>
-                        <a href="{{ route('contact') }}" class="mt-5 brutal-btn brutal-btn--primary w-full">{{ __('messages.about.get_in_touch') }} →</a>
+                        <div class="mt-5 space-y-2.5">
+                            <a href="{{ route('cv.download') }}" class="brutal-btn brutal-btn--white w-full py-3.5 text-sm min-h-[44px] inline-flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                {{ __('messages.ux_pages.download_cv') }}
+                            </a>
+                            <a href="{{ route('contact') }}" class="brutal-btn brutal-btn--primary w-full py-3.5 text-sm min-h-[44px] inline-flex items-center justify-center">{{ __('messages.about.get_in_touch') }} →</a>
+                        </div>
                     </div>
                 </aside>
 
@@ -75,8 +81,8 @@
                                                 <div class="flex items-center justify-between gap-3 mb-1">
                                                     <span class="text-sm font-black uppercase tracking-tight text-black dark:text-white">{{ $skill->name }}</span>
                                                     <span class="flex items-center gap-2 shrink-0">
-                                                        <span class="font-mono text-[11px] font-bold text-[#2a2a2a] dark:text-[#d6d6d6]">{{ number_format((float) $skill->years_experience, 1) }}y</span>
-                                                        <span class="font-mono text-[10px] font-black uppercase px-1.5 py-0.5 rounded border-2 border-black" style="background: {{ $catColor }}; color: #fff">{{ $proficiencyLabels[$skill->proficiency] ?? $skill->proficiency }}</span>
+                                                        <span class="font-mono text-xs font-bold text-[#2a2a2a] dark:text-[#d6d6d6]">{{ number_format((float) $skill->years_experience, 1) }}y</span>
+                                                        <span class="font-mono text-xs font-black uppercase px-2 py-0.5 rounded border-2 border-black bg-black text-white dark:bg-white dark:text-black">{{ $proficiencyLabels[$skill->proficiency] ?? $skill->proficiency }}</span>
                                                     </span>
                                                 </div>
                                                 <div class="h-3 w-full border-2 border-black dark:border-[#CBD5E1] rounded-sm bg-white dark:bg-[#111] overflow-hidden">
@@ -85,11 +91,11 @@
                                                 @if($skill->stacks->isNotEmpty())
                                                     <div class="mt-1.5 flex flex-wrap gap-1">
                                                         @foreach($skill->stacks->take(4) as $stack)
-                                                            <span class="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-tight bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-full px-1.5 py-0.5">
+                                                            <span class="inline-flex items-center gap-1 font-mono text-xs font-bold uppercase tracking-tight bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-full px-2 py-0.5">
                                                                 @if(filter_var($stack->icon, FILTER_VALIDATE_URL))
-                                                                    <img src="{{ $stack->icon }}" class="w-3 h-3 object-contain" alt="">
+                                                                    <img src="{{ $stack->icon }}" class="w-3.5 h-3.5 object-contain" alt="">
                                                                 @elseif(str_starts_with($stack->icon ?? '', 'devicon-'))
-                                                                    <i class="{{ $stack->icon }} text-[10px]"></i>
+                                                                    <i class="{{ $stack->icon }} text-xs"></i>
                                                                 @endif
                                                                 {{ $stack->name }}
                                                             </span>
@@ -133,12 +139,29 @@
                                         @if($experience->description)
                                             <p class="text-sm leading-6 font-medium text-[#2a2a2a] dark:text-[#d6d6d6]">{{ $experience->description }}</p>
                                         @endif
-                                        @if($experience->achievements && count($experience->achievements) > 0)
-                                            <ul class="mt-3 space-y-1.5 text-sm font-medium list-disc pl-4 marker:font-black">
-                                                @foreach($experience->achievements as $achievement)
-                                                    <li>{{ $achievement }}</li>
-                                                @endforeach
-                                            </ul>
+                                        @php($achievements = $experience->achievements ?? [])
+                                        @if(count($achievements) > 0)
+                                            <div class="mt-4">
+                                                <ul class="space-y-3 text-sm font-medium list-disc pl-4 marker:font-black leading-relaxed text-[#2a2a2a] dark:text-[#d6d6d6]">
+                                                    @foreach(array_slice($achievements, 0, 4) as $achievement)
+                                                        <li>{{ $achievement }}</li>
+                                                    @endforeach
+                                                </ul>
+                                                @if(count($achievements) > 4)
+                                                    <details class="group mt-3">
+                                                        <summary class="cursor-pointer font-mono text-xs font-black uppercase tracking-wider text-black dark:text-white bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-[6px] px-3 py-2 min-h-[44px] shadow-[2px_2px_0_0_#111] dark:shadow-[2px_2px_0_0_rgba(203,213,225,0.9)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all list-none inline-flex items-center gap-2 select-none">
+                                                            <span class="inline-block transition-transform duration-200 group-open:rotate-90">▶</span>
+                                                            <span class="group-open:hidden">{{ __('messages.ux_pages.show_more_achievements', ['count' => count($achievements) - 4]) }}</span>
+                                                            <span class="hidden group-open:inline">{{ __('messages.ux_pages.show_less') }}</span>
+                                                        </summary>
+                                                        <ul class="mt-3 space-y-3 text-sm font-medium list-disc pl-4 marker:font-black leading-relaxed text-[#2a2a2a] dark:text-[#d6d6d6]">
+                                                            @foreach(array_slice($achievements, 4) as $achievement)
+                                                                <li>{{ $achievement }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </details>
+                                                @endif
+                                            </div>
                                         @endif
                                     </div>
                                 </div>
