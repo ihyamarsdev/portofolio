@@ -34,7 +34,7 @@ class SkillForm
                                 5 => '5 — Expert',
                             ])
                             ->label('Proficiency')
-                            ->helperText('Level of mastery, from 1 (Beginner) to 5 (Expert).'),
+                            ->helperText('Level of mastery, from 1 (Beginner) to 5 (Expert). Used by the CV generator only; not shown on the public About page.'),
                         TextInput::make('years_experience')
                             ->required()
                             ->numeric()

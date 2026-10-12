@@ -6,6 +6,7 @@ use App\Models\HomeSettings;
 use App\Models\Post;
 use App\Models\Profile;
 use App\Models\Project;
+use App\Models\Skill;
 use App\Models\Stack;
 
 class PageController extends Controller
@@ -44,7 +45,23 @@ class PageController extends Controller
         $profile = $this->getProfile();
         $homeSettings = HomeSettings::getSettings();
 
-        return view('pages.about', compact('profile', 'homeSettings'));
+        $evidence = fn (Skill $skill): int => $skill->projects->count() + $skill->experiences->count();
+
+        $skills = Skill::with(['category', 'projects', 'experiences'])->get()
+            ->sortBy([
+                fn (Skill $a, Skill $b) => $evidence($b) <=> $evidence($a),
+                fn (Skill $a, Skill $b) => (float) $b->years_experience <=> (float) $a->years_experience,
+                fn (Skill $a, Skill $b) => strcmp($a->name, $b->name),
+            ])->values();
+
+        $skillGroups = $skills
+            ->groupBy(fn (Skill $skill) => $skill->category?->name ?? __('messages.about.other_category'))
+            ->sortKeys()
+            ->sortByDesc(fn ($group) => $group->sum($evidence));
+
+        $coreSkills = $skills->filter(fn (Skill $skill) => $evidence($skill) > 0)->take(6);
+
+        return view('pages.about', compact('profile', 'homeSettings', 'skills', 'skillGroups', 'coreSkills'));
     }
 
     public function certificates()

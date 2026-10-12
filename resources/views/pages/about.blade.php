@@ -1,7 +1,4 @@
 <x-layouts.app title="About">
-    @php
-        $skillsByCategory = \App\Models\Skill::with(['category', 'stacks'])->orderByDesc('proficiency')->orderByDesc('years_experience')->orderBy('name')->get()->groupBy(fn ($skill) => $skill->category?->name ?? 'Other');
-    @endphp
     <section class="bg-[#FFFBF0] dark:bg-[#0F172A]">
         <div class="section-container py-10 sm:py-14">
             <div class="grid gap-8 lg:grid-cols-[22rem_1fr]">
@@ -43,26 +40,30 @@
                     </div>
 
                     <div>
-                        @php
-                            $proficiencyLabels = [
-                                1 => 'Beginner', 2 => 'Developing', 3 => 'Intermediate',
-                                4 => 'Advanced', 5 => 'Expert',
-                            ];
-                            $totalSkills = $skillsByCategory->flatten()->count();
-                        @endphp
-                        <div class="flex flex-wrap items-end justify-between gap-3 mb-5">
+                        <div class="flex flex-wrap items-end justify-between gap-3 mb-3">
                             <h3 class="text-2xl font-black tracking-[-0.04em] text-black dark:text-white flex items-center gap-2"><span class="w-1.5 h-7 bg-[#00D1FF] border-2 border-black rounded-full"></span> {{ __('messages.about.skills_matrix') }}</h3>
                             <div class="flex gap-2">
-                                <span class="font-mono text-xs font-black uppercase bg-[#2563EB] text-white border-2 border-black px-2 py-1 rounded-full">{{ $skillsByCategory->count() }} categories</span>
-                                <span class="font-mono text-xs font-black uppercase bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] px-2 py-1 rounded-full">{{ $totalSkills }} skills</span>
+                                <span class="font-mono text-xs font-black uppercase bg-[#2563EB] text-white border-2 border-black px-2 py-1 rounded-full">{{ trans_choice('messages.about.categories_count', $skillGroups->count(), ['count' => $skillGroups->count()]) }}</span>
+                                <span class="font-mono text-xs font-black uppercase bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] px-2 py-1 rounded-full">{{ trans_choice('messages.about.skills_count', $skills->count(), ['count' => $skills->count()]) }}</span>
                             </div>
                         </div>
+                        <p class="mb-5 text-sm leading-6 font-medium text-[#2a2a2a] dark:text-[#d6d6d6]">{{ __('messages.about.skills_intro') }}</p>
+
+                        @if($coreSkills->isNotEmpty())
+                            <div class="brutal-card p-4 sm:p-5 mb-5">
+                                <p class="mb-3 font-mono text-xs font-black uppercase tracking-wider text-[#0B1B3F] dark:text-white">{{ __('messages.about.core_stack') }}</p>
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach($coreSkills as $coreSkill)
+                                        <span class="inline-flex items-center font-black text-sm px-3 py-1.5 rounded-full border-2 border-black dark:border-[#CBD5E1] bg-[#FFD23F] text-[#0B1B3F] dark:bg-[#2563EB] dark:text-white">{{ $coreSkill->name }}</span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="grid gap-4 md:grid-cols-2">
-                            @forelse($skillsByCategory as $category => $skills)
+                            @forelse($skillGroups as $category => $groupSkills)
                                 @php
-                                    $cat = $skills->first()?->category;
-                                    $catColor = $cat?->color ?? '#2563EB';
-                                    $sorted = $skills->sortByDesc(fn ($s) => $s->proficiency)->values();
+                                    $catColor = $groupSkills->first()?->category?->color ?? '#2563EB';
                                 @endphp
                                 <section class="brutal-card p-5">
                                     <div class="mb-4 flex items-center justify-between gap-3 border-b-2 border-black dark:border-[#CBD5E1] pb-3">
@@ -70,35 +71,25 @@
                                             <span class="w-2.5 h-2.5 border-2 border-black rounded-full shrink-0" style="background: {{ $catColor }}"></span>
                                             {{ $category }}
                                         </h4>
-                                        <span class="brutal-badge brutal-badge--cyan">{{ $sorted->count() }}</span>
+                                        <span class="brutal-badge brutal-badge--cyan">{{ $groupSkills->count() }}</span>
                                     </div>
                                     <div class="space-y-3.5">
-                                        @foreach($sorted as $skill)
-                                            @php
-                                                $pct = max(5, min(100, (int) round($skill->proficiency * 20)));
-                                            @endphp
+                                        @foreach($groupSkills as $skill)
                                             <div>
-                                                <div class="flex items-center justify-between gap-3 mb-1">
+                                                <div class="flex items-center justify-between gap-3">
                                                     <span class="text-sm font-black uppercase tracking-tight text-black dark:text-white">{{ $skill->name }}</span>
-                                                    <span class="flex items-center gap-2 shrink-0">
-                                                        <span class="font-mono text-xs font-bold text-[#2a2a2a] dark:text-[#d6d6d6]">{{ number_format((float) $skill->years_experience, 1) }}y</span>
-                                                        <span class="font-mono text-xs font-black uppercase px-2 py-0.5 rounded border-2 border-black bg-[#1E3A8A] text-white dark:bg-white dark:text-black">{{ $proficiencyLabels[$skill->proficiency] ?? $skill->proficiency }}</span>
-                                                    </span>
+                                                    @if((float) $skill->years_experience > 0)
+                                                        <span class="shrink-0 font-mono text-xs font-bold text-[#2a2a2a] dark:text-[#d6d6d6]">{{ trans_choice('messages.about.years', (float) $skill->years_experience, ['count' => rtrim(rtrim(number_format((float) $skill->years_experience, 1), '0'), '.')]) }}</span>
+                                                    @endif
                                                 </div>
-                                                <div class="h-3 w-full border-2 border-black dark:border-[#CBD5E1] rounded-sm bg-white dark:bg-[#111] overflow-hidden">
-                                                    <div class="h-full transition-all" style="width: {{ $pct }}%; background: {{ $catColor }}"></div>
-                                                </div>
-                                                @if($skill->stacks->isNotEmpty())
-                                                    <div class="mt-1.5 flex flex-wrap gap-1">
-                                                        @foreach($skill->stacks->take(4) as $stack)
-                                                            <span class="inline-flex items-center gap-1 font-mono text-xs font-bold uppercase tracking-tight bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-full px-2 py-0.5">
-                                                                @if(filter_var($stack->icon, FILTER_VALIDATE_URL))
-                                                                    <img src="{{ $stack->icon }}" class="w-3.5 h-3.5 object-contain" alt="">
-                                                                @elseif(str_starts_with($stack->icon ?? '', 'devicon-'))
-                                                                    <i class="{{ $stack->icon }} text-xs"></i>
-                                                                @endif
-                                                                {{ $stack->name }}
-                                                            </span>
+                                                @if($skill->projects->isNotEmpty() || $skill->experiences->isNotEmpty())
+                                                    <div class="mt-1.5 flex flex-wrap items-center gap-1.5">
+                                                        <span class="font-mono text-xs font-bold uppercase text-[#2a2a2a] dark:text-[#d6d6d6]">{{ __('messages.about.used_in') }}</span>
+                                                        @foreach($skill->projects as $project)
+                                                            <a href="{{ route('projects.show', $project->slug) }}" title="{{ $project->title }}" class="inline-flex items-center min-h-[44px] sm:min-h-[32px] px-3 text-xs font-bold rounded-full border-2 border-black dark:border-[#CBD5E1] text-[#0B1B3F] dark:text-white hover:underline bg-[#DBEAFE] dark:bg-[#1E293B]">{{ Str::limit($project->title, 28) }}</a>
+                                                        @endforeach
+                                                        @foreach($skill->experiences as $skillExperience)
+                                                            <a href="#experience-{{ $skillExperience->id }}" title="{{ $skillExperience->company }}" class="inline-flex items-center min-h-[44px] sm:min-h-[32px] px-3 text-xs font-bold rounded-full border-2 border-black dark:border-[#CBD5E1] text-[#0B1B3F] dark:text-white hover:underline bg-white dark:bg-[#1E293B]">{{ Str::limit($skillExperience->company, 28) }}</a>
                                                         @endforeach
                                                     </div>
                                                 @endif
@@ -119,7 +110,7 @@
                                 $experiences = \App\Models\Experience::orderBy('order', 'asc')->orderByDesc('start_date')->get();
                             @endphp
                             @forelse($experiences as $index => $experience)
-                                <div class="relative pl-7 border-l-[3px] {{ $index === 0 ? 'border-black dark:border-[#2563EB]' : 'border-black/20 dark:border-white/20' }}">
+                                <div id="experience-{{ $experience->id }}" class="scroll-mt-24 relative pl-7 border-l-[3px] {{ $index === 0 ? 'border-black dark:border-[#2563EB]' : 'border-black/20 dark:border-white/20' }}">
                                     <div class="absolute left-0 top-2 w-4 h-4 -translate-x-[9px] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-full {{ $index === 0 ? 'bg-[#2563EB] shadow-[2px_2px_0_0_#111]' : 'bg-white dark:bg-[#1E293B]' }}"></div>
                                     <div class="brutal-card p-5 sm:p-6 {{ $index === 0 ? 'bg-[#2563EB] dark:bg-[#1E293B]' : '' }}">
                                         <div class="flex flex-wrap justify-between gap-2 mb-2">
