@@ -19,9 +19,9 @@
             <div class="grid items-start gap-8 lg:grid-cols-[1.15fr_.85fr] lg:gap-10">
                 <div class="min-w-0">
                     @if($homeSettings->availability_active)
-                        <div class="mb-5 inline-flex max-w-full items-center gap-2 bg-[#B8FF66] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#111] dark:shadow-[3px_3px_0_0_rgba(203,213,225,0.9)]">
-                            <span class="w-2.5 h-2.5 shrink-0 rounded-full bg-black border border-black animate-pulse"></span>
-                            <span class="font-mono text-xs font-black uppercase tracking-widest text-black truncate min-w-0">{{ $homeSettings->availability_status }}</span>
+                        <div class="mb-5 inline-flex max-w-full items-center gap-2 bg-[#FFD23F] dark:bg-[#B8FF66] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#111] dark:shadow-[3px_3px_0_0_rgba(203,213,225,0.9)]">
+                            <span class="w-2.5 h-2.5 shrink-0 rounded-full bg-[#0B1B3F] dark:bg-black border border-black animate-pulse"></span>
+                            <span class="font-mono text-xs font-black uppercase tracking-widest text-[#0B1B3F] dark:text-black truncate min-w-0">{{ $homeSettings->availability_status }}</span>
                         </div>
                     @endif
                     <h1 class="max-w-4xl text-[2.5rem] font-black leading-[0.9] tracking-[-0.06em] text-black dark:text-[#FFFBF0] sm:text-6xl lg:text-[4.5rem]">
@@ -43,14 +43,14 @@
                     </div>
 
                     <div class="mt-6 flex items-center gap-3 font-mono text-xs font-bold uppercase tracking-wider text-[#666666] dark:text-[#adadad]">
-                        <span class="w-8 h-[2.5px] bg-black dark:bg-[#FFFBF0]"></span>
+                        <span class="w-8 h-[2.5px] bg-[#2563EB] dark:bg-[#FFFBF0]"></span>
                         DevOps • Cloud • Automation
                     </div>
                 </div>
 
                 <!-- Terminal — brutal window -->
                 <div class="min-w-0 bg-white dark:bg-[#1E293B] border-[3px] border-black dark:border-[#CBD5E1] rounded-[16px] shadow-[6px_6px_0_0_#111] dark:shadow-[5px_5px_0_0_rgba(203,213,225,0.9)] p-3 sm:p-4">
-                    <div class="bg-[#111] dark:bg-[#0F172A] border-[2.5px] border-black rounded-[12px] p-4 font-mono text-sm text-[#FFFBF0] overflow-hidden">
+                    <div class="bg-[#172554] dark:bg-[#0F172A] border-[2.5px] border-black rounded-[12px] p-4 font-mono text-sm text-[#FFFBF0] overflow-hidden">
                         <div class="mb-3 flex items-center justify-between">
                             <div class="flex gap-1.5"><span class="h-3 w-3 rounded-full bg-[#FF5F56] border border-black"></span><span class="h-3 w-3 rounded-full bg-[#FFBD2E] border border-black"></span><span class="h-3 w-3 rounded-full bg-[#27C93F] border border-black"></span></div>
                             <span class="text-xs font-black uppercase tracking-wider bg-[#2563EB] text-white px-2 py-0.5 rounded border border-black">terminal</span>
@@ -110,19 +110,20 @@
                     </div>
                 </div>
             </div>
-            <div class="bg-black dark:bg-white text-white dark:text-black py-2 text-center font-mono text-xs font-black uppercase tracking-[0.12em]">
+            <div class="bg-[#172554] dark:bg-white text-white dark:text-black py-2 text-center font-mono text-xs font-black uppercase tracking-[0.12em] border-t-2 border-black">
                 ● STACK ● TOOLS ● INFRA ● AUTOMATION ● STACK ● TOOLS ● INFRA ●
             </div>
         </section>
     @endif
 
     <!-- Featured Projects -->
-    <section class="section-container pt-16 pb-16 sm:pt-20 sm:pb-24">
+    <section class="bg-[#DBEAFE] dark:bg-transparent border-y-[3px] border-black dark:border-0 dark:border-current my-4 dark:my-0">
+        <div class="section-container py-16 sm:py-24">
         <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-                <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">Featured Work</span>
-                <h2 class="mt-3 text-3xl font-black tracking-[-0.05em] text-black dark:text-[#FFFBF0] sm:text-4xl leading-none">{{ $homeSettings->featured_projects_title }}</h2>
-                <p class="mt-3 max-w-2xl text-sm leading-6 text-[#2a2a2a] dark:text-[#d6d6d6] font-medium">{{ $homeSettings->featured_projects_description }}</p>
+                <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-[#1E3A8A] text-white dark:bg-[#FFFBF0] dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">Featured Work</span>
+                <h2 class="mt-3 text-3xl font-black tracking-[-0.05em] text-[#0B1B3F] dark:text-[#FFFBF0] sm:text-4xl leading-none">{{ $homeSettings->featured_projects_title }}</h2>
+                <p class="mt-3 max-w-2xl text-sm leading-6 text-[#172554] dark:text-[#d6d6d6] font-medium">{{ $homeSettings->featured_projects_description }}</p>
             </div>
             <a href="{{ route('projects') }}" class="inline-flex items-center min-h-[44px] gap-1.5 brutal-btn brutal-btn--white text-xs px-5 py-2.5 self-start sm:self-auto">View all <span>→</span></a>
         </div>
@@ -150,22 +151,22 @@
                 <div class="brutal-card p-8 text-center font-bold text-[#666666] dark:text-[#adadad] md:col-span-3">No featured projects yet.</div>
             @endforelse
         </div>
+        </div>
     </section>
 
     <!-- Contact CTA Block — brutal punchy call-to-action -->
     <section class="section-container pb-16 sm:pb-24">
-        <div class="bg-[#111] dark:bg-[#1E293B] border-[3px] border-black dark:border-[#CBD5E1] rounded-[16px] shadow-[8px_8px_0_0_#111] dark:shadow-[6px_6px_0_0_rgba(203,213,225,0.9)] p-6 sm:p-8 lg:p-10 text-[#FFFBF0] overflow-hidden relative">
-            <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#2563EB] border-[3px] border-black rounded-full hidden sm:block"></div>
+        <div class="bg-[#2563EB] dark:bg-[#1E293B] border-[3px] border-black dark:border-[#CBD5E1] rounded-[16px] shadow-[8px_8px_0_0_#111] dark:shadow-[6px_6px_0_0_rgba(203,213,225,0.9)] p-6 sm:p-8 lg:p-10 text-white dark:text-[#FFFBF0] overflow-hidden relative">
+            <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#FFD23F] dark:bg-[#2563EB] border-[3px] border-black rounded-full hidden sm:block"></div>
             <div class="absolute -bottom-4 -left-4 w-14 h-14 bg-[#00D1FF] border-[3px] border-black rotate-12 hidden sm:block"></div>
             <div class="relative max-w-3xl">
-                <span class="inline-flex font-mono text-xs font-black uppercase tracking-wider bg-[#2563EB] text-white px-2.5 py-1 rounded-[6px] border-2 border-black">{{ $homeSettings->infrastructure_title ?: __('messages.ux_home.contact_cta_badge') }}</span>
-                <h2 class="mt-4 text-3xl font-black tracking-[-0.04em] leading-tight sm:text-4xl lg:text-5xl">{{ $homeSettings->cta_title }}</h2>
-                <p class="mt-4 max-w-2xl text-base leading-7 text-[#d6d6d6] font-medium">{{ $homeSettings->cta_description }}</p>
-                <div class="mt-7 flex flex-wrap items-center gap-3">
-                    <a href="{{ route('contact') }}" class="brutal-btn min-h-[44px] bg-[#2563EB] text-white border-2 border-black shadow-[4px_4px_0_0_#fff] hover:bg-white hover:text-black text-sm px-6 py-3">
+                <span class="inline-flex font-mono text-xs font-black uppercase tracking-wider bg-[#172554] text-white dark:bg-[#2563EB] px-2.5 py-1 rounded-[6px] border-2 border-black">{{ $homeSettings->infrastructure_title ?: __('messages.ux_home.contact_cta_badge') }}</span>
+                <h2 class="mt-4 text-3xl font-black tracking-[-0.04em] leading-tight sm:text-4xl lg:text-5xl text-white dark:text-[#FFFBF0]">{{ $homeSettings->cta_title }}</h2>
+                <p class="mt-4 max-w-2xl text-base leading-7 text-[#EFF6FF] dark:text-[#d6d6d6] font-medium">{{ $homeSettings->cta_description }}</p>
+                    <a href="{{ route('contact') }}" class="brutal-btn min-h-[44px] bg-white text-[#0B1B3F] dark:bg-[#2563EB] dark:text-white border-2 border-black shadow-[4px_4px_0_0_#fff] hover:bg-[#FFD23F] dark:hover:bg-white dark:hover:text-black text-sm px-6 py-3">
                         {{ $homeSettings->cta_primary_button_text ?: __('messages.ux_home.contact_cta_button') }} →
                     </a>
-                    <a href="{{ route('projects') }}" class="brutal-btn min-h-[44px] bg-white text-black border-2 border-black shadow-[4px_4px_0_0_#fff] hover:bg-[#2563EB] hover:text-white text-sm px-6 py-3">
+                    <a href="{{ route('projects') }}" class="brutal-btn min-h-[44px] bg-[#172554] text-white dark:bg-white dark:text-black border-2 border-black shadow-[4px_4px_0_0_#fff] hover:bg-white hover:text-[#0B1B3F] dark:hover:bg-[#2563EB] dark:hover:text-white text-sm px-6 py-3">
                         {{ __('messages.ux_home.explore_projects') }} →
                     </a>
                 </div>

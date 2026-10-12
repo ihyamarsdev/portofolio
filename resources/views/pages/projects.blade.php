@@ -3,7 +3,7 @@
     <section class="bg-[#FFFBF0] dark:bg-[#0F172A]">
         <div class="section-container py-12 sm:py-16">
             <div class="mb-8 max-w-3xl">
-                <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">Index — {{ str_pad($projects->count(), 2, '0', STR_PAD_LEFT) }}</span>
+                <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-[#1E3A8A] dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">Index — {{ str_pad($projects->count(), 2, '0', STR_PAD_LEFT) }}</span>
                 <h1 class="mt-3 text-4xl font-black tracking-[-0.06em] leading-none text-black dark:text-[#FFFBF0] sm:text-6xl">
                     {{ __('messages.projects.title') }}
                     <span class="inline-block bg-[#2563EB] border-[3px] border-black px-2 py-1 shadow-[5px_5px_0_0_#111] rotate-[-0.5deg] ml-1 text-3xl sm:text-5xl">.</span>
@@ -33,7 +33,7 @@
                             <h2 class="text-xl font-black tracking-[-0.03em] leading-tight text-black dark:text-white group-hover:underline decoration-[3px] underline-offset-4">{{ $project->title }}</h2>
                             <p class="mt-2 line-clamp-3 text-sm leading-6 text-[#2a2a2a] dark:text-[#d6d6d6] font-medium">{{ Str::limit(strip_tags($project->description), 160) }}</p>
                             <div class="relative z-20 mt-auto pt-4 flex flex-wrap items-center gap-2 text-sm font-black uppercase tracking-tight">
-                                <span class="inline-flex items-center gap-1 bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-3.5 py-2 rounded-[8px] border-2 border-black min-h-[44px]">Details <span class="group-hover:translate-x-1 transition-transform">→</span></span>
+                                <span class="inline-flex items-center gap-1 bg-[#1E3A8A] dark:bg-[#FFFBF0] text-white dark:text-black px-3.5 py-2 rounded-[8px] border-2 border-black min-h-[44px]">Details <span class="group-hover:translate-x-1 transition-transform">→</span></span>
                                 @if($project->repository_url)<a href="{{ $project->repository_url }}" target="_blank" rel="noopener noreferrer" class="underline decoration-2 underline-offset-4 hover:bg-[#2563EB] hover:text-white px-3 py-2 min-h-[44px] min-w-[44px] inline-flex items-center justify-center">Repo</a>@endif
                                 @if($project->live_url)<a href="{{ $project->live_url }}" target="_blank" rel="noopener noreferrer" class="underline decoration-2 underline-offset-4 hover:bg-[#00D1FF] hover:text-black px-3 py-2 min-h-[44px] min-w-[44px] inline-flex items-center justify-center">Live</a>@endif
                             </div>

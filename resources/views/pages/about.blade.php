@@ -13,7 +13,7 @@
                             </div>
                         </div>
                         <h1 class="mt-4 text-2xl font-black tracking-[-0.04em] text-black dark:text-white leading-none">{{ $profile?->name ?? 'DevOps Engineer' }}</h1>
-                        <p class="mt-1.5 inline-flex font-mono text-xs font-black uppercase tracking-wider bg-black dark:bg-[#2563EB] text-white px-2.5 py-1 rounded-full border-2 border-black">{{ $profile?->title ?? 'Building scalable infra' }}</p>
+                        <p class="mt-1.5 inline-flex font-mono text-xs font-black uppercase tracking-wider bg-[#1E3A8A] dark:bg-[#2563EB] text-white px-2.5 py-1 rounded-full border-2 border-black">{{ $profile?->title ?? 'Building scalable infra' }}</p>
                         <div class="mt-5 space-y-2.5 text-left">
                             <p class="brutal-card brutal-card--flat p-3 text-sm font-bold flex items-center gap-2 !shadow-[3px_3px_0_0_#111] dark:!shadow-[3px_3px_0_0_rgba(203,213,225,0.9)]"><span class="w-8 h-8 inline-flex items-center justify-center bg-[#2563EB] border-2 border-black rounded-full text-sm">📍</span> {{ $profile?->location ?? __('Indonesia') }}</p>
                             <p class="brutal-card brutal-card--flat p-3 text-sm font-bold flex items-center gap-2 !shadow-[3px_3px_0_0_#111] dark:!shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] bg-[#B8FF66] dark:bg-[#1E293B]"><span class="w-2 h-2 bg-black dark:bg-[#B8FF66] rounded-full animate-pulse"></span> {{ __('messages.about.open_opportunities') }}</p>
@@ -30,7 +30,7 @@
 
                 <div class="space-y-8">
                     <div class="brutal-card p-6 sm:p-8">
-                        <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">{{ __('messages.about.eyebrow') }} — 01</span>
+                        <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-[#1E3A8A] dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">{{ __('messages.about.eyebrow') }} — 01</span>
                         <h2 class="mt-3 text-3xl sm:text-5xl font-black tracking-[-0.06em] leading-[0.9] text-black dark:text-white">{{ __('messages.about.heading') }}</h2>
                         <div class="prose mt-6 max-w-none">
                             @if($profile?->biography)
@@ -82,7 +82,7 @@
                                                     <span class="text-sm font-black uppercase tracking-tight text-black dark:text-white">{{ $skill->name }}</span>
                                                     <span class="flex items-center gap-2 shrink-0">
                                                         <span class="font-mono text-xs font-bold text-[#2a2a2a] dark:text-[#d6d6d6]">{{ number_format((float) $skill->years_experience, 1) }}y</span>
-                                                        <span class="font-mono text-xs font-black uppercase px-2 py-0.5 rounded border-2 border-black bg-black text-white dark:bg-white dark:text-black">{{ $proficiencyLabels[$skill->proficiency] ?? $skill->proficiency }}</span>
+                                                        <span class="font-mono text-xs font-black uppercase px-2 py-0.5 rounded border-2 border-black bg-[#1E3A8A] text-white dark:bg-white dark:text-black">{{ $proficiencyLabels[$skill->proficiency] ?? $skill->proficiency }}</span>
                                                     </span>
                                                 </div>
                                                 <div class="h-3 w-full border-2 border-black dark:border-[#CBD5E1] rounded-sm bg-white dark:bg-[#111] overflow-hidden">
@@ -128,7 +128,7 @@
                                                 <p class="text-sm font-bold text-[#2a2a2a] dark:text-[#d6d6d6]">{{ $experience->company }}</p>
                                             </div>
                                             <div class="text-left sm:text-right">
-                                                <span class="inline-flex font-mono text-xs font-black uppercase tracking-wider bg-black dark:bg-white text-white dark:text-black px-2 py-1 rounded border-2 border-black">
+                                                <span class="inline-flex font-mono text-xs font-black uppercase tracking-wider bg-[#1E3A8A] dark:bg-white text-white dark:text-black px-2 py-1 rounded border-2 border-black">
                                                     {{ $experience->start_date->format('M Y') }} — {{ $experience->end_date ? $experience->end_date->format('M Y') : 'Present' }}
                                                 </span>
                                                 @if($experience->location)

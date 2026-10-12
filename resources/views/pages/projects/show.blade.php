@@ -41,12 +41,12 @@
                 @endif
 
                 @if($project->skills && $project->skills->count() > 0)
-                    <div class="brutal-card p-6 sm:p-7 mb-6 bg-[#2563EB] dark:bg-[#1E293B]">
-                        <h2 class="text-lg font-black uppercase tracking-tight flex items-center gap-2 mb-4"><span class="w-1.5 h-6 bg-black dark:bg-[#3B82F6] border-2 border-black rounded-full"></span> Tech Stack</h2>
+                    <div class="brutal-card !bg-[#2563EB] dark:!bg-[#1E293B] p-6 sm:p-7 mb-6">
+                        <h2 class="text-lg font-black uppercase tracking-tight flex items-center gap-2 mb-4 text-white"><span class="w-1.5 h-6 bg-[#FFD23F] dark:bg-[#3B82F6] border-2 border-black rounded-full"></span> Tech Stack</h2>
                         <div class="flex flex-wrap gap-2">
                             @foreach($project->skills as $skill)
-                                <span class="inline-flex items-center gap-1.5 bg-white dark:bg-[#1E293B] border-[2px] border-black dark:border-[#CBD5E1] rounded-full px-3 py-1.5 text-xs font-black uppercase tracking-tight">
-                                    <span class="w-2 h-2 rounded-full bg-black dark:bg-[#3B82F6]"></span> {{ $skill->name }}
+                                <span class="inline-flex items-center gap-1.5 bg-white dark:bg-[#1E293B] border-[2px] border-black dark:border-[#CBD5E1] rounded-full px-3 py-1.5 text-xs font-black uppercase tracking-tight text-[#0B1B3F] dark:text-white">
+                                    <span class="w-2 h-2 rounded-full bg-[#2563EB] dark:bg-[#3B82F6]"></span> {{ $skill->name }}
                                 </span>
                             @endforeach
                         </div>

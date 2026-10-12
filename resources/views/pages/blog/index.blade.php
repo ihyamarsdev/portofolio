@@ -19,10 +19,10 @@
                     <div class="{{ $firstImage ? 'md:col-span-7' : 'md:col-span-12' }} p-6 sm:p-8 flex flex-col justify-between flex-1">
                         <div>
                             <div class="mb-3 flex flex-wrap items-center gap-2">
-                                <span class="brutal-badge brutal-badge--yellow text-xs font-black">★ {{ __('messages.ux_pages.featured_post') }}</span>
+                                <span class="brutal-badge brutal-badge--sun dark:!bg-[var(--c-accent-blue-fill)] dark:!text-white text-xs font-black">★ {{ __('messages.ux_pages.featured_post') }}</span>
                                 @php($displayDate = $firstPost->published_at ?? $firstPost->updated_at ?? $firstPost->created_at)
                                 @if($displayDate)
-                                    <span class="inline-flex font-mono text-xs font-black uppercase tracking-widest bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-full border-2 border-black">{{ $displayDate->format('M j, Y') }}</span>
+                                    <span class="inline-flex font-mono text-xs font-black uppercase tracking-widest bg-[#1E3A8A] dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-full border-2 border-black">{{ $displayDate->format('M j, Y') }}</span>
                                 @endif
                                 <span class="inline-flex font-mono text-xs font-bold uppercase bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-full px-2.5 py-1">{{ ceil(str_word_count(strip_tags($firstPost->content)) / 200) }} min</span>
                                 @if($firstPost->category)<span class="brutal-badge brutal-badge--cyan text-xs">{{ $firstPost->category->name }}</span>@endif
@@ -31,7 +31,7 @@
                             <p class="mt-3 text-sm sm:text-base leading-6 sm:leading-7 font-medium text-[#2a2a2a] dark:text-[#d6d6d6]">{{ $firstPost->excerpt ?: Str::limit(strip_tags($firstPost->content), 240) }}</p>
                         </div>
                         <div class="mt-6 pt-2">
-                            <span class="inline-flex items-center gap-1 bg-black dark:bg-[#FFFBF0] text-white dark:text-black font-black uppercase text-xs tracking-tight px-4 py-2 min-h-[40px] rounded-[8px] border-2 border-black">{{ __('messages.blog.read_more') }} <span class="group-hover:translate-x-1 transition-transform">→</span></span>
+                            <span class="inline-flex items-center gap-1 bg-[#1E3A8A] dark:bg-[#FFFBF0] text-white dark:text-black font-black uppercase text-xs tracking-tight px-4 py-2 min-h-[40px] rounded-[8px] border-2 border-black">{{ __('messages.blog.read_more') }} <span class="group-hover:translate-x-1 transition-transform">→</span></span>
                         </div>
                     </div>
                 </article>
@@ -51,15 +51,15 @@
                                     @php($displayDate = $post->published_at ?? $post->updated_at ?? $post->created_at)
                                     <div class="mb-3 flex flex-wrap items-center gap-2">
                                         @if($displayDate)
-                                            <span class="inline-flex font-mono text-xs font-black uppercase tracking-wider bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2 py-1 rounded-full border-2 border-black">{{ $displayDate->format('M j, Y') }}</span>
+                                            <span class="inline-flex font-mono text-xs font-black uppercase tracking-wider bg-[#1E3A8A] dark:bg-[#FFFBF0] text-white dark:text-black px-2 py-1 rounded-full border-2 border-black">{{ $displayDate->format('M j, Y') }}</span>
                                         @endif
-                                        <span class="inline-flex font-mono text-xs font-bold uppercase bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-full px-2 py-1">{{ ceil(str_word_count(strip_tags($post->content)) / 200) }} min</span>
-                                        @if($post->category)<span class="brutal-badge brutal-badge--yellow text-xs">{{ $post->category->name }}</span>@endif
+                                        <span class="inline-flex font-mono text-xs font-bold uppercase bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-full px-2.5 py-1">{{ ceil(str_word_count(strip_tags($post->content)) / 200) }} min</span>
+                                        @if($post->category)<span class="brutal-badge brutal-badge--blue text-xs">{{ $post->category->name }}</span>@endif
                                     </div>
                                     <h2 class="text-xl font-black tracking-[-0.04em] leading-tight text-black dark:text-white group-hover:underline decoration-[3px] underline-offset-4">{{ $post->title }}</h2>
                                     <p class="mt-2 line-clamp-3 text-sm leading-6 font-medium text-[#2a2a2a] dark:text-[#d6d6d6]">{{ $post->excerpt ?: Str::limit(strip_tags($post->content), 180) }}</p>
                                     <div class="mt-auto pt-4">
-                                        <span class="inline-flex items-center gap-1 bg-black dark:bg-[#FFFBF0] text-white dark:text-black font-black uppercase text-xs tracking-tight px-3 py-1.5 min-h-[40px] rounded-[8px] border-2 border-black">{{ __('messages.blog.read_more') }} <span class="group-hover:translate-x-1 transition-transform">→</span></span>
+                                        <span class="inline-flex items-center gap-1 bg-[#1E3A8A] dark:bg-[#FFFBF0] text-white dark:text-black font-black uppercase text-xs tracking-tight px-3 py-1.5 min-h-[40px] rounded-[8px] border-2 border-black">{{ __('messages.blog.read_more') }} <span class="group-hover:translate-x-1 transition-transform">→</span></span>
                                     </div>
                                 </div>
                             </article>
@@ -74,14 +74,14 @@
                 <div class="brutal-card p-10 text-center font-black uppercase mb-8">{{ __('messages.blog.no_posts_yet') }}</div>
             @endif
 
-            <div class="mt-6 rounded-[16px] p-6 sm:p-7 bg-[#111] dark:bg-[#1E293B] text-[#FFFBF0] relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-[3px] border-black dark:border-[#CBD5E1] shadow-[6px_6px_0_0_#111] dark:shadow-[5px_5px_0_0_rgba(203,213,225,0.9)]">
+            <div class="mt-6 rounded-[16px] p-6 sm:p-7 bg-[#2563EB] dark:bg-[#1E293B] text-white dark:text-[#FFFBF0] relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-[3px] border-black dark:border-[#CBD5E1] shadow-[6px_6px_0_0_#111] dark:shadow-[5px_5px_0_0_rgba(203,213,225,0.9)]">
                 <div class="max-w-xl relative z-10">
-                    <span class="font-mono text-xs font-black uppercase tracking-[0.12em] bg-[#2563EB] text-white inline-flex px-2 py-1 rounded border-2 border-black">{{ __('messages.blog.subscribe') }}</span>
-                    <h3 class="mt-2 text-xl sm:text-2xl font-black tracking-[-0.03em] text-white">{{ __('messages.blog.stay_updated') }}</h3>
-                    <p class="mt-1 text-sm font-medium text-[#d6d6d6]">{{ __('messages.blog.subscribe_desc') }}</p>
+                    <span class="font-mono text-xs font-black uppercase tracking-[0.12em] bg-[#172554] text-white dark:bg-[#2563EB] inline-flex px-2 py-1 rounded border-2 border-black">{{ __('messages.blog.subscribe') }}</span>
+                    <h3 class="mt-2 text-xl sm:text-2xl font-black tracking-[-0.03em] text-white dark:text-white">{{ __('messages.blog.stay_updated') }}</h3>
+                    <p class="mt-1 text-sm font-medium text-[#EFF6FF] dark:text-[#d6d6d6]">{{ __('messages.blog.subscribe_desc') }}</p>
                 </div>
                 <div class="relative z-10 shrink-0">
-                    <a href="{{ route('contact') }}" class="brutal-btn bg-white text-black border-black text-xs sm:text-sm px-5 py-3 min-h-[44px] inline-flex items-center gap-2 hover:bg-[#00D1FF] transition-colors">
+                    <a href="{{ route('contact') }}" class="brutal-btn bg-white text-[#0B1B3F] dark:text-black border-2 border-black text-xs sm:text-sm px-5 py-3 min-h-[44px] inline-flex items-center gap-2 hover:bg-[#FFD23F] dark:hover:bg-[#00D1FF] transition-colors">
                         {{ __('messages.blog.contact_for_updates') }} →
                     </a>
                 </div>

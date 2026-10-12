@@ -13,7 +13,7 @@
                     @php($displayDate = $post->published_at ?? $post->updated_at ?? $post->created_at)
                     <div class="mt-4 flex flex-wrap items-center gap-2">
                         @if($displayDate)
-                            <span class="inline-flex font-mono text-xs font-black bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-full border-2 border-black">{{ $displayDate->format('F j, Y') }}</span>
+                            <span class="inline-flex font-mono text-xs font-black bg-[#1E3A8A] dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-full border-2 border-black">{{ $displayDate->format('F j, Y') }}</span>
                         @endif
                         <span class="inline-flex font-mono text-xs font-bold bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-full px-2.5 py-1">{{ ceil(str_word_count(strip_tags($post->content)) / 200) }} {{ __('messages.blog.min_read') }}</span>
                     </div>
@@ -34,10 +34,10 @@
 
                 <footer class="mt-6 brutal-card p-5 flex flex-wrap justify-between items-center gap-4 !bg-[#2563EB] dark:!bg-[#1E293B]">
                     <div class="text-sm font-bold text-white">
-                        Thanks for reading! Have questions? <a href="{{ route('contact') }}" class="underline decoration-[3px] underline-offset-4 bg-black text-white dark:bg-[#2563EB] dark:text-white px-1">Get in touch</a>.
+                        Thanks for reading! Have questions? <a href="{{ route('contact') }}" class="underline decoration-[3px] underline-offset-4 bg-[#172554] text-white dark:bg-[#2563EB] dark:text-white px-1">Get in touch</a>.
                     </div>
                     <div class="flex gap-2">
-                        <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($post->title) }}" target="_blank" rel="noopener noreferrer" class="w-11 h-11 min-w-[44px] min-h-[44px] inline-flex items-center justify-center bg-white dark:bg-[#1E293B] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-[8px] shadow-[2px_2px_0_0_#111] dark:shadow-[2px_2px_0_0_rgba(203,213,225,0.9)] hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors" title="Share on X">
+                        <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($post->title) }}" target="_blank" rel="noopener noreferrer" class="w-11 h-11 min-w-[44px] min-h-[44px] inline-flex items-center justify-center bg-white dark:bg-[#1E293B] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-[8px] shadow-[2px_2px_0_0_#111] dark:shadow-[2px_2px_0_0_rgba(203,213,225,0.9)] hover:bg-[#172554] hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors" title="Share on X">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                         </a>
                         <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(request()->url()) }}" target="_blank" rel="noopener noreferrer" class="w-11 h-11 min-w-[44px] min-h-[44px] inline-flex items-center justify-center bg-white dark:bg-[#1E293B] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-[8px] shadow-[2px_2px_0_0_#111] dark:shadow-[2px_2px_0_0_rgba(203,213,225,0.9)] hover:bg-[#00D1FF] hover:text-black transition-colors" title="Share on LinkedIn">

@@ -101,7 +101,7 @@
     </script>
 </head>
 
-<body class="min-h-screen bg-[#FFFBF0] dark:bg-[#0F172A] text-[#111] dark:text-[#FFFBF0] font-sans antialiased flex flex-col selection:bg-[#2563EB] selection:text-white">
+<body class="min-h-screen bg-[#FFFBF0] dark:bg-[#0F172A] text-[#0B1B3F] dark:text-[#FFFBF0] font-sans antialiased flex flex-col selection:bg-[#2563EB] selection:text-white">
     <!-- Navigation — Neo Brutalism -->
     <nav class="sticky top-0 z-50 bg-white dark:bg-[#1E293B] border-b-[3px] border-black dark:border-[#CBD5E1]">
         <div class="section-container">
@@ -129,11 +129,11 @@
                     <!-- Language Switcher — brutal pill -->
                     <div class="flex items-center gap-1 p-1 bg-white dark:bg-[#1E293B] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-[10px] shadow-[3px_3px_0_0_#111] dark:shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] text-xs font-black uppercase">
                         <a href="{{ route('lang.switch', 'en') }}"
-                            class="min-w-[44px] min-h-[44px] px-3 py-2 rounded-[6px] border-2 transition-all inline-flex items-center justify-center gap-1 {{ app()->getLocale() === 'en' ? 'bg-black text-white border-black dark:bg-[#2563EB] dark:text-white dark:border-[#CBD5E1] shadow-[2px_2px_0_0_#111]' : 'border-transparent text-[#666666] dark:text-[#adadad] hover:text-black dark:hover:text-white' }}">
+                            class="min-w-[44px] min-h-[44px] px-3 py-2 rounded-[6px] border-2 transition-all inline-flex items-center justify-center gap-1 {{ app()->getLocale() === 'en' ? 'bg-[#172554] text-white border-black dark:bg-[#2563EB] dark:text-white dark:border-[#CBD5E1] shadow-[2px_2px_0_0_#111]' : 'border-transparent text-[#666666] dark:text-[#adadad] hover:text-[#0B1B3F] dark:hover:text-white' }}">
                             <span>EN</span>
                         </a>
                         <a href="{{ route('lang.switch', 'id') }}"
-                            class="min-w-[44px] min-h-[44px] px-3 py-2 rounded-[6px] border-2 transition-all inline-flex items-center justify-center gap-1 {{ app()->getLocale() === 'id' ? 'bg-black text-white border-black dark:bg-[#2563EB] dark:text-white dark:border-[#CBD5E1] shadow-[2px_2px_0_0_#111]' : 'border-transparent text-[#666666] dark:text-[#adadad] hover:text-black dark:hover:text-white' }}">
+                            class="min-w-[44px] min-h-[44px] px-3 py-2 rounded-[6px] border-2 transition-all inline-flex items-center justify-center gap-1 {{ app()->getLocale() === 'id' ? 'bg-[#172554] text-white border-black dark:bg-[#2563EB] dark:text-white dark:border-[#CBD5E1] shadow-[2px_2px_0_0_#111]' : 'border-transparent text-[#666666] dark:text-[#adadad] hover:text-[#0B1B3F] dark:hover:text-white' }}">
                             <span>ID</span>
                         </a>
                     </div>
@@ -158,14 +158,14 @@
             <!-- Mobile Menu — brutal dropdown -->
             <div id="mobile-menu" class="hidden lg:hidden pb-4">
                 <div class="mt-2 bg-white dark:bg-[#1E293B] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-[12px] shadow-[5px_5px_0_0_#111] dark:shadow-[4px_4px_0_0_rgba(203,213,225,0.9)] p-2 space-y-1">
-                    <a href="{{ route('home') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('home') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.home') }}</a>
-                    <a href="{{ route('projects') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('projects*') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.projects') }}</a>
-                    <a href="{{ route('about') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('about') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.about') }}</a>
+                    <a href="{{ route('home') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('home') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-[#172554] hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.home') }}</a>
+                    <a href="{{ route('projects') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('projects*') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-[#172554] hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.projects') }}</a>
+                    <a href="{{ route('about') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('about') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-[#172554] hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.about') }}</a>
                     @if($hasCertificates)
-                        <a href="{{ route('certificates') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('certificates') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.certificates') }}</a>
+                        <a href="{{ route('certificates') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('certificates') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-[#172554] hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.certificates') }}</a>
                     @endif
-                    <a href="{{ route('blog') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('blog*') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.blog') }}</a>
-                    <a href="{{ route('contact') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('contact') ? 'bg-black text-white dark:bg-[#2563EB] dark:text-white border-2 border-black' : 'bg-[#2563EB] text-white border-2 border-black shadow-[3px_3px_0_0_#111] text-center mt-2' }}">{{ __('messages.nav.contact') }}</a>
+                    <a href="{{ route('blog') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('blog*') ? 'bg-[#2563EB] text-white border-2 border-black' : 'hover:bg-[#172554] hover:text-white dark:hover:bg-white dark:hover:text-black border-2 border-transparent' }}">{{ __('messages.nav.blog') }}</a>
+                    <a href="{{ route('contact') }}" class="block py-2.5 px-4 rounded-[8px] font-black uppercase text-sm tracking-tight {{ request()->routeIs('contact') ? 'bg-[#172554] text-white dark:bg-[#2563EB] dark:text-white border-2 border-black' : 'bg-[#2563EB] text-white border-2 border-black shadow-[3px_3px_0_0_#111] text-center mt-2' }}">{{ __('messages.nav.contact') }}</a>
                 </div>
             </div>
         </div>
@@ -177,7 +177,7 @@
     </main>
 
     <!-- Footer — brutal black bar -->
-    <footer class="mt-16 bg-[#111] dark:bg-[#0F172A] text-[#FFFBF0] border-t-[3px] border-black dark:border-[#CBD5E1]">
+    <footer class="mt-16 bg-[#172554] dark:bg-[#0F172A] text-[#FFFBF0] border-t-[3px] border-black dark:border-[#CBD5E1]">
         <div class="section-container py-12">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div>
@@ -189,7 +189,7 @@
                         {{ $homeSettings->site_title }} — cloud infrastructure, CI/CD pipelines, and container orchestration. Minimal, reliable, brutal.
                     </p>
                     <div class="mt-4 inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest bg-[#2563EB] text-white px-3 py-1.5 border-2 border-black rounded-full">
-                        <span class="w-2 h-2 bg-black rounded-full animate-pulse"></span> Available for work
+                        <span class="w-2 h-2 bg-[#FFD23F] dark:bg-black rounded-full animate-pulse"></span> Available for work
                     </div>
                 </div>
 
@@ -218,7 +218,7 @@
                 </div>
             </div>
 
-            <div class="mt-10 pt-6 border-t-[2px] border-[#2a2a2a] flex flex-col md:flex-row justify-between items-center gap-3">
+            <div class="mt-10 pt-6 border-t-[2px] border-[#2563EB]/40 dark:border-[#2a2a2a] flex flex-col md:flex-row justify-between items-center gap-3">
                 <p class="font-mono text-xs font-bold uppercase tracking-widest text-[#adadad]">
                     © {{ date('Y') }} {{ $homeSettings->footer_text }} — Built brutal, shipped minimal.
                 </p>
