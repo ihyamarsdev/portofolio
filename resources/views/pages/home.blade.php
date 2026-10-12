@@ -117,7 +117,7 @@
     @endif
 
     <!-- Featured Projects -->
-    <section class="section-container py-12 sm:py-16">
+    <section class="section-container pt-16 pb-16 sm:pt-20 sm:pb-24">
         <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
                 <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-black dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">Featured Work</span>
@@ -150,9 +150,10 @@
                 <div class="brutal-card p-8 text-center font-bold text-[#666666] dark:text-[#adadad] md:col-span-3">No featured projects yet.</div>
             @endforelse
         </div>
+    </section>
 
     <!-- Contact CTA Block — brutal punchy call-to-action -->
-    <section class="section-container pb-12 sm:pb-16">
+    <section class="section-container pb-16 sm:pb-24">
         <div class="bg-[#111] dark:bg-[#1E293B] border-[3px] border-black dark:border-[#CBD5E1] rounded-[16px] shadow-[8px_8px_0_0_#111] dark:shadow-[6px_6px_0_0_rgba(203,213,225,0.9)] p-6 sm:p-8 lg:p-10 text-[#FFFBF0] overflow-hidden relative">
             <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#2563EB] border-[3px] border-black rounded-full hidden sm:block"></div>
             <div class="absolute -bottom-4 -left-4 w-14 h-14 bg-[#00D1FF] border-[3px] border-black rotate-12 hidden sm:block"></div>
@@ -174,7 +175,7 @@
 
     <!-- Latest from the blog — standalone compact cards (only shown when published posts exist) -->
     @if($posts->isNotEmpty())
-        <section class="section-container pb-12 sm:pb-16">
+        <section class="section-container pb-16 sm:pb-24">
             <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                     <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-[#00D1FF] text-black px-2.5 py-1 rounded-[6px] border-2 border-black">{{ __('messages.ux_home.blog_section_badge') }}</span>
