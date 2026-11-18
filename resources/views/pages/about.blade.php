@@ -1,168 +1,174 @@
 <x-layouts.app title="About">
-    <section class="bg-[#FFFBF0] dark:bg-[#0F172A]">
-        <div class="section-container py-10 sm:py-14">
-            <div class="grid gap-8 lg:grid-cols-[22rem_1fr]">
-                <aside class="lg:sticky lg:top-[84px] lg:self-start">
-                    <div class="brutal-card p-6 text-center bg-white dark:bg-[#1E293B]">
-                        <div class="mx-auto h-32 w-32 overflow-hidden rounded-full border-[3px] border-black dark:border-[#CBD5E1] shadow-[4px_4px_0_0_#111] dark:shadow-[4px_4px_0_0_rgba(203,213,225,0.9)] bg-[#2563EB] p-1">
-                            <div class="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-[#FFFBF0] dark:bg-[#1E293B] text-5xl">
-                                @if($profile?->avatar)<img src="{{ Storage::url($profile->avatar) }}" alt="{{ $profile->name }}" class="h-full w-full object-cover">@else 👨‍💻 @endif
-                            </div>
+    <div class="section-container py-14 sm:py-20">
+        <div class="grid gap-12 lg:grid-cols-12 lg:gap-10">
+            <!-- Sticky profile sidebar -->
+            <aside class="lg:col-span-4">
+                <div class="lg:sticky lg:top-24">
+                    @if($profile?->avatar)
+                        <div class="h-28 w-28 overflow-hidden border border-line bg-subtle">
+                            <img src="{{ \Illuminate\Support\Facades\Storage::url($profile->avatar) }}" alt="{{ $profile->name }}" class="h-full w-full object-cover">
                         </div>
-                        <h1 class="mt-4 text-2xl font-black tracking-[-0.04em] text-black dark:text-white leading-none">{{ $profile?->name ?? 'DevOps Engineer' }}</h1>
-                        <p class="mt-1.5 inline-flex font-mono text-xs font-black uppercase tracking-wider bg-[#1E3A8A] dark:bg-[#2563EB] text-white px-2.5 py-1 rounded-full border-2 border-black">{{ $profile?->title ?? 'Building scalable infra' }}</p>
-                        <div class="mt-5 space-y-2.5 text-left">
-                            <p class="brutal-card brutal-card--flat p-3 text-sm font-bold flex items-center gap-2 !shadow-[3px_3px_0_0_#111] dark:!shadow-[3px_3px_0_0_rgba(203,213,225,0.9)]"><span class="w-8 h-8 inline-flex items-center justify-center bg-[#2563EB] border-2 border-black rounded-full text-sm">📍</span> {{ $profile?->location ?? __('Indonesia') }}</p>
-                            <p class="brutal-card brutal-card--flat p-3 text-sm font-bold flex items-center gap-2 !shadow-[3px_3px_0_0_#111] dark:!shadow-[3px_3px_0_0_rgba(203,213,225,0.9)] bg-[#B8FF66] dark:bg-[#1E293B]"><span class="w-2 h-2 bg-black dark:bg-[#B8FF66] rounded-full animate-pulse"></span> {{ __('messages.about.open_opportunities') }}</p>
-                        </div>
-                        <div class="mt-5 space-y-2.5">
-                            <a href="{{ route('cv.download') }}" class="brutal-btn brutal-btn--white w-full py-3.5 text-sm min-h-[44px] inline-flex items-center justify-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                {{ __('messages.ux_pages.download_cv') }}
-                            </a>
-                            <a href="{{ route('contact') }}" class="brutal-btn brutal-btn--primary w-full py-3.5 text-sm min-h-[44px] inline-flex items-center justify-center">{{ __('messages.about.get_in_touch') }} →</a>
-                        </div>
-                    </div>
-                </aside>
+                    @endif
 
-                <div class="space-y-8">
-                    <div class="brutal-card p-6 sm:p-8">
-                        <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-[#1E3A8A] dark:bg-[#FFFBF0] text-white dark:text-black px-2.5 py-1 rounded-[6px] border-2 border-black">{{ __('messages.about.eyebrow') }} — 01</span>
-                        <h2 class="mt-3 text-3xl sm:text-5xl font-black tracking-[-0.06em] leading-[0.9] text-black dark:text-white">{{ __('messages.about.heading') }}</h2>
-                        <div class="prose mt-6 max-w-none">
-                            @if($profile?->biography)
-                                {!! Str::markdown($profile->biography) !!}
-                            @else
-                                <p>I'm a DevOps Engineer passionate about automating everything and building reliable, scalable infrastructure.</p>
-                                <p>My focus areas include infrastructure as code, Kubernetes, observability, CI/CD, and backend systems.</p>
-                            @endif
-                        </div>
-                    </div>
+                    <h1 class="mt-6 text-3xl font-semibold leading-[1.08] tracking-[-0.03em] text-ink">{{ $profile?->name ?? __('messages.about.title') }}</h1>
+                    <p class="mt-2 font-mono text-xs uppercase tracking-[0.12em] text-accent">{{ $profile?->title ?? __('messages.about.profile_title_fallback') }}</p>
 
-                    <div>
-                        <div class="flex flex-wrap items-end justify-between gap-3 mb-3">
-                            <h3 class="text-2xl font-black tracking-[-0.04em] text-black dark:text-white flex items-center gap-2"><span class="w-1.5 h-7 bg-[#00D1FF] border-2 border-black rounded-full"></span> {{ __('messages.about.skills_matrix') }}</h3>
-                            <div class="flex gap-2">
-                                <span class="font-mono text-xs font-black uppercase bg-[#2563EB] text-white border-2 border-black px-2 py-1 rounded-full">{{ trans_choice('messages.about.categories_count', $skillGroups->count(), ['count' => $skillGroups->count()]) }}</span>
-                                <span class="font-mono text-xs font-black uppercase bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] px-2 py-1 rounded-full">{{ trans_choice('messages.about.skills_count', $skills->count(), ['count' => $skills->count()]) }}</span>
-                            </div>
-                        </div>
-                        <p class="mb-5 text-sm leading-6 font-medium text-[#2a2a2a] dark:text-[#d6d6d6]">{{ __('messages.about.skills_intro') }}</p>
+                    @if($homeSettings->availability_active)
+                        <p class="mt-5 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-2">
+                            <span class="inline-block h-1.5 w-1.5 rounded-full bg-accent"></span>
+                            {{ $homeSettings->availability_status }}
+                        </p>
+                    @endif
 
-                        @if($coreSkills->isNotEmpty())
-                            <div class="brutal-card p-4 sm:p-5 mb-5">
-                                <p class="mb-3 font-mono text-xs font-black uppercase tracking-wider text-[#0B1B3F] dark:text-white">{{ __('messages.about.core_stack') }}</p>
-                                <div class="flex flex-wrap gap-2">
-                                    @foreach($coreSkills as $coreSkill)
-                                        <span class="inline-flex items-center font-black text-sm px-3 py-1.5 rounded-full border-2 border-black dark:border-[#CBD5E1] bg-[#FFD23F] text-[#0B1B3F] dark:bg-[#2563EB] dark:text-white">{{ $coreSkill->name }}</span>
-                                    @endforeach
-                                </div>
+                    <dl class="mt-8 divide-y divide-line border-y border-line font-mono text-xs">
+                        @if($profile?->location)
+                            <div class="flex justify-between gap-4 py-3">
+                                <dt class="text-ink-3">{{ __('messages.contact.info_location') }}</dt>
+                                <dd class="text-right text-ink">{{ $profile->location }}</dd>
                             </div>
                         @endif
+                        @if($profile?->email)
+                            <div class="flex justify-between gap-4 py-3">
+                                <dt class="text-ink-3">{{ __('messages.contact.info_email') }}</dt>
+                                <dd class="break-all text-right text-ink">{{ $profile->email }}</dd>
+                            </div>
+                        @endif
+                    </dl>
 
-                        <div class="grid gap-4 md:grid-cols-2">
-                            @forelse($skillGroups as $category => $groupSkills)
-                                @php
-                                    $catColor = $groupSkills->first()?->category?->color ?? '#2563EB';
-                                @endphp
-                                <section class="brutal-card p-5">
-                                    <div class="mb-4 flex items-center justify-between gap-3 border-b-2 border-black dark:border-[#CBD5E1] pb-3">
-                                        <h4 class="font-black tracking-tight text-black dark:text-white uppercase text-sm flex items-center gap-2">
-                                            <span class="w-2.5 h-2.5 border-2 border-black rounded-full shrink-0" style="background: {{ $catColor }}"></span>
-                                            {{ $category }}
-                                        </h4>
-                                        <span class="brutal-badge brutal-badge--cyan">{{ $groupSkills->count() }}</span>
-                                    </div>
-                                    <div class="space-y-3.5">
-                                        @foreach($groupSkills as $skill)
-                                            <div>
-                                                <div class="flex items-center justify-between gap-3">
-                                                    <span class="text-sm font-black uppercase tracking-tight text-black dark:text-white">{{ $skill->name }}</span>
-                                                    @if((float) $skill->years_experience > 0)
-                                                        <span class="shrink-0 font-mono text-xs font-bold text-[#2a2a2a] dark:text-[#d6d6d6]">{{ trans_choice('messages.about.years', (float) $skill->years_experience, ['count' => rtrim(rtrim(number_format((float) $skill->years_experience, 1), '0'), '.')]) }}</span>
-                                                    @endif
-                                                </div>
-                                                @if($skill->projects->isNotEmpty() || $skill->experiences->isNotEmpty())
-                                                    <div class="mt-1.5 flex flex-wrap items-center gap-1.5">
-                                                        <span class="font-mono text-xs font-bold uppercase text-[#2a2a2a] dark:text-[#d6d6d6]">{{ __('messages.about.used_in') }}</span>
-                                                        @foreach($skill->projects as $project)
-                                                            <a href="{{ route('projects.show', $project->slug) }}" title="{{ $project->title }}" class="inline-flex items-center min-h-[44px] sm:min-h-[32px] px-3 text-xs font-bold rounded-full border-2 border-black dark:border-[#CBD5E1] text-[#0B1B3F] dark:text-white hover:underline bg-[#DBEAFE] dark:bg-[#1E293B]">{{ Str::limit($project->title, 28) }}</a>
-                                                        @endforeach
-                                                        @foreach($skill->experiences as $skillExperience)
-                                                            <a href="#experience-{{ $skillExperience->id }}" title="{{ $skillExperience->company }}" class="inline-flex items-center min-h-[44px] sm:min-h-[32px] px-3 text-xs font-bold rounded-full border-2 border-black dark:border-[#CBD5E1] text-[#0B1B3F] dark:text-white hover:underline bg-white dark:bg-[#1E293B]">{{ Str::limit($skillExperience->company, 28) }}</a>
-                                                        @endforeach
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </section>
-                            @empty
-                                <div class="brutal-card p-8 text-center font-black uppercase text-[#666666] dark:text-[#adadad] md:col-span-2">{{ __('messages.about.skills_empty') }}</div>
-                            @endforelse
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="mb-4 text-2xl font-black tracking-[-0.04em] text-black dark:text-white flex items-center gap-2"><span class="w-1.5 h-7 bg-[#FF90E8] border-2 border-black rounded-full"></span> {{ __('messages.about.experience') }}</h3>
-                        <div class="space-y-5">
-                            @php
-                                $experiences = \App\Models\Experience::orderBy('order', 'asc')->orderByDesc('start_date')->get();
-                            @endphp
-                            @forelse($experiences as $index => $experience)
-                                <div id="experience-{{ $experience->id }}" class="scroll-mt-24 relative pl-7 border-l-[3px] {{ $index === 0 ? 'border-black dark:border-[#2563EB]' : 'border-black/20 dark:border-white/20' }}">
-                                    <div class="absolute left-0 top-2 w-4 h-4 -translate-x-[9px] border-[2.5px] border-black dark:border-[#CBD5E1] rounded-full {{ $index === 0 ? 'bg-[#2563EB] shadow-[2px_2px_0_0_#111]' : 'bg-white dark:bg-[#1E293B]' }}"></div>
-                                    <div class="brutal-card p-5 sm:p-6 {{ $index === 0 ? 'bg-[#2563EB] dark:bg-[#1E293B]' : '' }}">
-                                        <div class="flex flex-wrap justify-between gap-2 mb-2">
-                                            <div>
-                                                <h4 class="font-black text-black dark:text-white text-lg leading-none tracking-tight">{{ $experience->position }}</h4>
-                                                <p class="text-sm font-bold text-[#2a2a2a] dark:text-[#d6d6d6]">{{ $experience->company }}</p>
-                                            </div>
-                                            <div class="text-left sm:text-right">
-                                                <span class="inline-flex font-mono text-xs font-black uppercase tracking-wider bg-[#1E3A8A] dark:bg-white text-white dark:text-black px-2 py-1 rounded border-2 border-black">
-                                                    {{ $experience->start_date->format('M Y') }} — {{ $experience->end_date ? $experience->end_date->format('M Y') : 'Present' }}
-                                                </span>
-                                                @if($experience->location)
-                                                    <p class="text-xs font-bold mt-1.5">📍 {{ $experience->location }}</p>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        @if($experience->description)
-                                            <p class="text-sm leading-6 font-medium text-[#2a2a2a] dark:text-[#d6d6d6]">{{ $experience->description }}</p>
-                                        @endif
-                                        @php($achievements = $experience->achievements ?? [])
-                                        @if(count($achievements) > 0)
-                                            <div class="mt-4">
-                                                <ul class="space-y-3 text-sm font-medium list-disc pl-4 marker:font-black leading-relaxed text-[#2a2a2a] dark:text-[#d6d6d6]">
-                                                    @foreach(array_slice($achievements, 0, 4) as $achievement)
-                                                        <li>{{ $achievement }}</li>
-                                                    @endforeach
-                                                </ul>
-                                                @if(count($achievements) > 4)
-                                                    <details class="group mt-3">
-                                                        <summary class="cursor-pointer font-mono text-xs font-black uppercase tracking-wider text-black dark:text-white bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-[6px] px-3 py-2 min-h-[44px] shadow-[2px_2px_0_0_#111] dark:shadow-[2px_2px_0_0_rgba(203,213,225,0.9)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all list-none inline-flex items-center gap-2 select-none">
-                                                            <span class="inline-block transition-transform duration-200 group-open:rotate-90">▶</span>
-                                                            <span class="group-open:hidden">{{ __('messages.ux_pages.show_more_achievements', ['count' => count($achievements) - 4]) }}</span>
-                                                            <span class="hidden group-open:inline">{{ __('messages.ux_pages.show_less') }}</span>
-                                                        </summary>
-                                                        <ul class="mt-3 space-y-3 text-sm font-medium list-disc pl-4 marker:font-black leading-relaxed text-[#2a2a2a] dark:text-[#d6d6d6]">
-                                                            @foreach(array_slice($achievements, 4) as $achievement)
-                                                                <li>{{ $achievement }}</li>
-                                                            @endforeach
-                                                        </ul>
-                                                    </details>
-                                                @endif
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="brutal-card p-8 text-center font-black uppercase md:col-span-2">{{ __('messages.about.experience_empty') }}</div>
-                            @endforelse
-                        </div>
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        <x-ui.button :href="route('cv.download')" variant="secondary" size="sm">{{ __('messages.ux_pages.download_cv') }}</x-ui.button>
+                        <x-ui.button :href="route('contact')" size="sm">{{ __('messages.about.get_in_touch') }}</x-ui.button>
                     </div>
                 </div>
+            </aside>
+
+            <div class="space-y-14 lg:col-span-8">
+                <!-- Bio -->
+                <section>
+                    <x-ui.section-header :index="'01 / '.__('messages.about.eyebrow')" :title="__('messages.about.heading')" />
+                    <div class="prose measure mt-6">
+                        @if($profile?->biography)
+                            {!! Str::markdown($profile->biography) !!}
+                        @else
+                            <p>{{ __('messages.about.subtitle') }}</p>
+                        @endif
+                    </div>
+                </section>
+
+                <!-- Skills -->
+                <section>
+                    <x-ui.section-header
+                        :index="'02 / '.__('messages.about.skills')"
+                        :title="__('messages.about.skills_matrix')"
+                        :description="__('messages.about.skills_intro')" />
+
+                    @if($coreSkills->isNotEmpty())
+                        <div class="mt-6 border border-line bg-surface p-5">
+                            <p class="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-3">{{ __('messages.about.core_stack') }}</p>
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                @foreach($coreSkills as $coreSkill)
+                                    <x-ui.tag :accent="true">{{ $coreSkill->name }}</x-ui.tag>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="mt-6 grid gap-x-8 gap-y-8 sm:grid-cols-2">
+                        @forelse($skillGroups as $category => $groupSkills)
+                            <section>
+                                <div class="flex items-baseline justify-between gap-3 border-b border-line pb-3">
+                                    <h3 class="font-mono text-[11px] uppercase tracking-[0.14em] text-ink">{{ $category }}</h3>
+                                    <span class="font-mono text-[11px] text-ink-3">{{ $groupSkills->count() }}</span>
+                                </div>
+                                <ul class="mt-3 divide-y divide-line">
+                                    @foreach($groupSkills as $skill)
+                                        <li class="flex items-baseline justify-between gap-3 py-2.5">
+                                            <span class="text-sm text-ink">{{ $skill->name }}</span>
+                                            @if((float) $skill->years_experience > 0)
+                                                <span class="shrink-0 font-mono text-[11px] text-ink-3">{{ trans_choice('messages.about.years', (float) $skill->years_experience, ['count' => rtrim(rtrim(number_format((float) $skill->years_experience, 1), '0'), '.')]) }}</span>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </section>
+                        @empty
+                            <p class="text-sm text-ink-2 sm:col-span-2">{{ __('messages.about.skills_empty') }}</p>
+                        @endforelse
+                    </div>
+                </section>
+
+                <!-- Experience -->
+                <section>
+                    <x-ui.section-header :index="'03 / '.__('messages.about.experience')" :title="__('messages.about.experience')" />
+
+                    @php($experiences = \App\Models\Experience::orderBy('order')->orderByDesc('start_date')->get())
+                    <div class="mt-6 divide-y divide-line border-y border-line">
+                        @forelse($experiences as $experience)
+                            <div id="experience-{{ $experience->id }}" class="scroll-mt-24 py-6">
+                                <div class="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+                                    <div>
+                                        <h3 class="font-semibold tracking-[-0.01em] text-ink">{{ $experience->position }}</h3>
+                                        <p class="mt-0.5 text-sm text-ink-2">{{ $experience->company }}</p>
+                                    </div>
+                                    <p class="shrink-0 font-mono text-[11px] uppercase tracking-wider text-ink-3">
+                                        {{ $experience->start_date?->format('M Y') }} — {{ $experience->end_date?->format('M Y') ?? 'Present' }}
+                                    </p>
+                                </div>
+
+                                @if($experience->description)
+                                    <p class="measure mt-3 text-sm leading-relaxed text-ink-2">{{ $experience->description }}</p>
+                                @endif
+
+                                @php($achievements = $experience->achievements ?? [])
+                                @if(count($achievements) > 0)
+                                    <ul class="measure mt-4 space-y-2 text-sm leading-relaxed text-ink-2">
+                                        @foreach(array_slice($achievements, 0, 4) as $achievement)
+                                            <li class="flex gap-3"><span class="text-accent">—</span><span>{{ $achievement }}</span></li>
+                                        @endforeach
+                                    </ul>
+                                    @if(count($achievements) > 4)
+                                        <details class="group mt-3">
+                                            <summary class="inline-flex cursor-pointer list-none items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-2 transition-colors duration-150 hover:text-accent">
+                                                <span class="inline-block transition-transform duration-150 group-open:rotate-90">→</span>
+                                                <span class="group-open:hidden">{{ __('messages.ux_pages.show_more_achievements', ['count' => count($achievements) - 4]) }}</span>
+                                                <span class="hidden group-open:inline">{{ __('messages.ux_pages.show_less') }}</span>
+                                            </summary>
+                                            <ul class="measure mt-3 space-y-2 text-sm leading-relaxed text-ink-2">
+                                                @foreach(array_slice($achievements, 4) as $achievement)
+                                                    <li class="flex gap-3"><span class="text-accent">—</span><span>{{ $achievement }}</span></li>
+                                                @endforeach
+                                            </ul>
+                                        </details>
+                                    @endif
+                                @endif
+                            </div>
+                        @empty
+                            <p class="py-6 text-sm text-ink-2">{{ __('messages.about.experience_empty') }}</p>
+                        @endforelse
+                    </div>
+                </section>
+
+                <!-- Education -->
+                @php($educations = \App\Models\Education::orderBy('order')->orderByDesc('start_date')->get())
+                @if($educations->isNotEmpty())
+                    <section>
+                        <x-ui.section-header :index="'04 / '.__('messages.about.education')" :title="__('messages.about.education')" />
+                        <div class="mt-6 divide-y divide-line border-y border-line">
+                            @foreach($educations as $education)
+                                <div class="flex flex-col gap-2 py-5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+                                    <div>
+                                        <h3 class="font-semibold tracking-[-0.01em] text-ink">{{ $education->degree }} {{ $education->field_of_study }}</h3>
+                                        <p class="mt-0.5 text-sm text-ink-2">{{ $education->institution }}</p>
+                                    </div>
+                                    <p class="shrink-0 font-mono text-[11px] uppercase tracking-wider text-ink-3">
+                                        {{ $education->start_date?->format('Y') }} — {{ $education->end_date?->format('Y') ?? '—' }}
+                                    </p>
+                                </div>
+                            @endforeach
+                        </div>
+                    </section>
+                @endif
             </div>
         </div>
-    </section>
+    </div>
 </x-layouts.app>

@@ -1,66 +1,99 @@
-<x-layouts.app title="Contact">
-    <section class="bg-[#FFFBF0] dark:bg-[#0F172A]">
-        <div class="section-container py-12 sm:py-16">
-            <div class="grid gap-8 lg:grid-cols-[.9fr_1.1fr] lg:items-start">
-                <div>
-                    <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-[#FF90E8] text-black px-2.5 py-1 rounded-[6px] border-[2.5px] border-black">{{ __('messages.contact.eyebrow') }}</span>
-                    <h1 class="mt-3 text-4xl font-black tracking-[-0.06em] leading-[0.9] text-black dark:text-[#FFFBF0] sm:text-6xl">{{ __('messages.contact.lead_title') }}</h1>
-                    <p class="mt-4 text-base leading-7 font-medium text-[#2a2a2a] dark:text-[#d6d6d6] border-l-[4px] border-black dark:border-[#CBD5E1] pl-4 sm:text-lg">{{ __('messages.contact.lead_desc') }}</p>
-                    <div class="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-                        @foreach([
-                            [__('messages.contact.info_email'), $profile?->email ?? 'contact@example.com', '📧', '#2563EB'],
-                            [__('messages.contact.info_location'), $profile?->location ?? __('Indonesia'), '📍', '#FF90E8'],
-                            [__('messages.contact.info_response'), __('messages.contact.response_time'), '⚡', '#B8FF66'],
-                        ] as [$label, $value, $icon, $bg])
-                            <div class="brutal-card p-4 flex items-center gap-3 !shadow-[3px_3px_0_0_#111] dark:!shadow-[3px_3px_0_0_rgba(203,213,225,0.9)]">
-                                <span class="w-10 h-10 inline-flex items-center justify-center border-[2.5px] border-black rounded-[8px] text-lg shrink-0" style="background: {{ $bg }}">{{ $icon }}</span>
-                                <div class="min-w-0">
-                                    <p class="font-mono text-xs font-black uppercase tracking-wider text-[#666666] dark:text-[#adadad]">{{ $label }}</p>
-                                    <p class="break-words text-sm font-black tracking-tight text-black dark:text-white">{{ $value }}</p>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
+<x-layouts.app title="{{ __('messages.contact.title') }}">
+    <div class="section-container py-14 sm:py-20">
+        <div class="grid gap-12 lg:grid-cols-12 lg:gap-12">
+            <!-- Direct contact info -->
+            <div class="lg:col-span-5">
+                <x-ui.section-header
+                    :index="__('messages.contact.eyebrow')"
+                    :as="'h1'"
+                    :title="__('messages.contact.lead_title')"
+                    :description="__('messages.contact.lead_desc')" />
 
-                <div class="brutal-card p-6 sm:p-7 bg-white dark:bg-[#1E293B] shadow-[6px_6px_0_0_#111] dark:shadow-[5px_5px_0_0_rgba(203,213,225,0.9)]">
-                    <div class="flex items-center gap-3 mb-1">
-                        <span class="w-2 h-8 bg-[#2563EB] border-2 border-black rounded-full"></span>
-                        <h2 class="text-2xl font-black tracking-[-0.04em] text-black dark:text-white">{{ __('messages.contact.form_title') }}</h2>
-                    </div>
-                    <p class="font-mono text-xs font-bold uppercase tracking-widest text-[#666666] dark:text-[#adadad] ml-5">We reply fast — brutal honesty</p>
-                    @if(session('success'))
-                        <div class="mt-5 bg-[#B8FF66] border-[2.5px] border-black rounded-[10px] p-3 text-sm font-black">✓ {{ session('success') }}</div>
+                <dl class="mt-10 divide-y divide-line border-y border-line">
+                    @if($profile?->email)
+                        <div class="py-4">
+                            <dt class="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-3">{{ __('messages.contact.info_email') }}</dt>
+                            <dd class="mt-1.5"><a href="mailto:{{ $profile->email }}" class="text-sm text-ink transition-colors duration-150 hover:text-accent">{{ $profile->email }}</a></dd>
+                        </div>
                     @endif
-                    <form action="{{ route('contact.store') }}" method="POST" class="mt-6 space-y-4">
+                    @if($profile?->phone)
+                        <div class="py-4">
+                            <dt class="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-3">{{ __('messages.contact.info_phone') }}</dt>
+                            <dd class="mt-1.5 text-sm text-ink">{{ $profile->phone }}</dd>
+                        </div>
+                    @endif
+                    @if($profile?->location)
+                        <div class="py-4">
+                            <dt class="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-3">{{ __('messages.contact.info_location') }}</dt>
+                            <dd class="mt-1.5 text-sm text-ink">{{ $profile->location }}</dd>
+                        </div>
+                    @endif
+                    <div class="py-4">
+                        <dt class="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-3">{{ __('messages.contact.info_response') }}</dt>
+                        <dd class="mt-1.5 text-sm text-ink">{{ __('messages.contact.response_time') }}</dd>
+                    </div>
+                </dl>
+
+                <div class="mt-8 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-wider">
+                    @if($profile?->github_url)
+                        <a href="{{ str_starts_with($profile->github_url, 'http') ? $profile->github_url : 'https://github.com/'.$profile->github_url }}" target="_blank" rel="noopener noreferrer" class="text-ink-2 transition-colors duration-150 hover:text-accent">GitHub ↗</a>
+                    @endif
+                    @if($profile?->linkedin_url)
+                        <a href="{{ str_starts_with($profile->linkedin_url, 'http') ? $profile->linkedin_url : 'https://linkedin.com/in/'.$profile->linkedin_url }}" target="_blank" rel="noopener noreferrer" class="text-ink-2 transition-colors duration-150 hover:text-accent">LinkedIn ↗</a>
+                    @endif
+                    @if($profile?->twitter_url)
+                        <a href="{{ str_starts_with($profile->twitter_url, 'http') ? $profile->twitter_url : 'https://x.com/'.$profile->twitter_url }}" target="_blank" rel="noopener noreferrer" class="text-ink-2 transition-colors duration-150 hover:text-accent">X ↗</a>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Form -->
+            <div class="lg:col-span-7">
+                <div class="border border-line bg-surface p-6 sm:p-8">
+                    <h2 class="text-xl font-semibold tracking-[-0.02em] text-ink">{{ __('messages.contact.form_title') }}</h2>
+
+                    @if(session('success'))
+                        <div role="status" class="mt-5 border border-accent/40 bg-accent/5 px-4 py-3 text-sm text-accent">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('contact.store') }}" method="POST" class="mt-7 space-y-5">
                         @csrf
-                        <div class="grid gap-4 sm:grid-cols-2">
+                        <div class="grid gap-5 sm:grid-cols-2">
                             <div>
-                                <label for="name" class="font-mono text-xs font-black uppercase tracking-widest">{{ __('messages.contact.name') }} *</label>
-                                <input id="name" name="name" type="text" required value="{{ old('name') }}" placeholder="{{ __('messages.contact.placeholder_name') }}" class="brutal-input mt-1.5">
-                                @error('name')<p class="mt-1 text-xs font-black text-red-600 border-2 border-red-600 bg-red-50 rounded px-2 py-1">{{ $message }}</p>@enderror
+                                <label for="name" class="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-2">{{ __('messages.contact.name') }} *</label>
+                                <input id="name" name="name" type="text" required value="{{ old('name') }}" placeholder="{{ __('messages.contact.placeholder_name') }}" class="mt-2 w-full rounded-md border border-line bg-canvas px-3 py-2.5 text-sm text-ink outline-none transition-colors duration-150 placeholder:text-ink-3 focus:border-accent @error('name') border-error @enderror">
+                                @error('name')<p class="mt-1.5 text-xs text-error">{{ $message }}</p>@enderror
                             </div>
                             <div>
-                                <label for="email" class="font-mono text-xs font-black uppercase tracking-widest">{{ __('messages.contact.email') }} *</label>
-                                <input id="email" name="email" type="email" required value="{{ old('email') }}" placeholder="{{ __('messages.contact.placeholder_email') }}" class="brutal-input mt-1.5">
-                                @error('email')<p class="mt-1 text-xs font-black text-red-600 border-2 border-red-600 bg-red-50 rounded px-2 py-1">{{ $message }}</p>@enderror
+                                <label for="email" class="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-2">{{ __('messages.contact.email') }} *</label>
+                                <input id="email" name="email" type="email" required value="{{ old('email') }}" placeholder="{{ __('messages.contact.placeholder_email') }}" class="mt-2 w-full rounded-md border border-line bg-canvas px-3 py-2.5 text-sm text-ink outline-none transition-colors duration-150 placeholder:text-ink-3 focus:border-accent @error('email') border-error @enderror">
+                                @error('email')<p class="mt-1.5 text-xs text-error">{{ $message }}</p>@enderror
                             </div>
                         </div>
+
                         <div>
-                            <label for="subject" class="font-mono text-xs font-black uppercase tracking-widest">{{ __('messages.contact.subject') }} *</label>
-                            <input id="subject" name="subject" type="text" required value="{{ old('subject') }}" placeholder="{{ __('messages.contact.placeholder_subject') }}" class="brutal-input mt-1.5">
-                            @error('subject')<p class="mt-1 text-xs font-black text-red-600 border-2 border-red-600 bg-red-50 rounded px-2 py-1">{{ $message }}</p>@enderror
+                            <label for="subject" class="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-2">{{ __('messages.contact.subject') }} *</label>
+                            <input id="subject" name="subject" type="text" required value="{{ old('subject') }}" placeholder="{{ __('messages.contact.placeholder_subject') }}" class="mt-2 w-full rounded-md border border-line bg-canvas px-3 py-2.5 text-sm text-ink outline-none transition-colors duration-150 placeholder:text-ink-3 focus:border-accent @error('subject') border-error @enderror">
+                            @error('subject')<p class="mt-1.5 text-xs text-error">{{ $message }}</p>@enderror
                         </div>
+
                         <div>
-                            <label for="message" class="font-mono text-xs font-black uppercase tracking-widest">{{ __('messages.contact.message') }} *</label>
-                            <textarea id="message" name="message" rows="6" required placeholder="{{ __('messages.contact.placeholder_message') }}" class="brutal-input mt-1.5 resize-none">{{ old('message') }}</textarea>
-                            @error('message')<p class="mt-1 text-xs font-black text-red-600 border-2 border-red-600 bg-red-50 rounded px-2 py-1">{{ $message }}</p>@enderror
+                            <label for="message" class="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-2">{{ __('messages.contact.message') }} *</label>
+                            <textarea id="message" name="message" rows="6" required placeholder="{{ __('messages.contact.placeholder_message') }}" class="mt-2 w-full resize-y rounded-md border border-line bg-canvas px-3 py-2.5 text-sm leading-relaxed text-ink outline-none transition-colors duration-150 placeholder:text-ink-3 focus:border-accent @error('message') border-error @enderror">{{ old('message') }}</textarea>
+                            @error('message')<p class="mt-1.5 text-xs text-error">{{ $message }}</p>@enderror
                         </div>
-                        <button type="submit" class="brutal-btn brutal-btn--primary w-full py-3.5 text-sm shadow-[4px_4px_0_0_#111] dark:shadow-[4px_4px_0_0_rgba(203,213,225,0.9)]">{{ __('messages.contact.send') }} →</button>
-                        <p class="text-center font-mono text-xs font-bold uppercase tracking-wider text-[#666666] dark:text-[#adadad]">Throttled: 5 / minute</p>
+
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-md border border-accent bg-accent px-5 py-2.5 text-sm font-medium text-accent-contrast transition-colors duration-150 hover:bg-transparent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas">
+                                {{ __('messages.contact.send') }} <span class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+                            </button>
+                            <p class="font-mono text-[11px] uppercase tracking-wider text-ink-3">5 / min</p>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 </x-layouts.app>

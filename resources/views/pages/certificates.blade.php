@@ -1,51 +1,53 @@
-<x-layouts.app title="Certificates">
+<x-layouts.app title="{{ __('messages.certificates.title') }}">
     @php($certificates = \App\Models\Certificate::orderBy('issue_date', 'desc')->get())
-    <section class="bg-[#FFFBF0] dark:bg-[#0F172A]">
-        <div class="section-container py-12 sm:py-16">
-            <div class="mb-8 max-w-3xl">
-                <span class="inline-flex font-mono text-xs font-black uppercase tracking-[0.12em] bg-[#00D1FF] text-black px-2.5 py-1 rounded-[6px] border-[2.5px] border-black">Credentials — {{ str_pad($certificates->count(),2,'0',STR_PAD_LEFT) }}</span>
-                <h1 class="mt-3 text-4xl font-black tracking-[-0.06em] leading-none text-black dark:text-[#FFFBF0] sm:text-6xl">Certificates &<br><span class="bg-[#2563EB] dark:bg-[#2563EB] text-white dark:text-white px-2 border-[3px] border-black dark:border-[#CBD5E1] shadow-[5px_5px_0_0_#111] dark:shadow-[4px_4px_0_0_rgba(203,213,225,0.9)] inline-block rotate-[-0.5deg]">proof of practice.</span></h1>
-                <p class="mt-4 text-base leading-7 font-medium text-[#2a2a2a] dark:text-[#d6d6d6] border-l-[4px] border-black dark:border-[#CBD5E1] pl-4 sm:text-lg">Validated cloud, security, infrastructure, and engineering credentials.</p>
-            </div>
-            <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                @forelse($certificates as $certificate)
-                    <article class="brutal-card p-5 flex flex-col">
-                        <div class="mb-4 flex items-start justify-between gap-4">
-                            <div class="flex h-12 w-12 items-center justify-center bg-[#2563EB] border-[2.5px] border-black rounded-[10px] shadow-[3px_3px_0_0_#111] text-white"><x-heroicon-o-check-badge class="h-7 w-7" /></div>
-                            @if($certificate->is_active && !$certificate->isExpired())
-                                <span class="brutal-badge brutal-badge--lime">● Active</span>
-                            @else
-                                <span class="brutal-badge brutal-badge--white">Expired</span>
+
+    <div class="section-container py-14 sm:py-20">
+        <x-ui.section-header
+            :index="'Credentials — '.str_pad($certificates->count(), 2, '0', STR_PAD_LEFT)"
+            :as="'h1'"
+            :title="__('messages.certificates.title')"
+            :description="__('messages.certificates.subtitle')" />
+
+        @if($certificates->isNotEmpty())
+            <div class="mt-10 border-t border-line">
+                <div class="hidden grid-cols-12 gap-4 border-b border-line py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-3 md:grid">
+                    <div class="col-span-2">Year</div>
+                    <div class="col-span-5">{{ __('messages.certificates.title') }}</div>
+                    <div class="col-span-3">{{ __('messages.certificates.issued_by') }}</div>
+                    <div class="col-span-2 text-right">Status</div>
+                </div>
+
+                @foreach($certificates as $certificate)
+                    @php($active = $certificate->is_active && ! $certificate->isExpired())
+                    <div class="grid gap-2 border-b border-line py-5 transition-colors duration-150 hover:bg-subtle md:grid-cols-12 md:gap-4">
+                        <div class="font-mono text-xs text-ink-3 md:col-span-2">{{ $certificate->issue_date?->format('Y') ?? '—' }}</div>
+                        <div class="md:col-span-5">
+                            <h2 class="font-medium leading-snug text-ink">{{ $certificate->name }}</h2>
+                            @if($certificate->credential_id)
+                                <p class="mt-1 font-mono text-[11px] text-ink-3">{{ $certificate->credential_id }}</p>
+                            @endif
+                            @if($certificate->credential_url)
+                                <a href="{{ $certificate->credential_url }}" target="_blank" rel="noopener noreferrer" class="mt-2 inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-accent transition-colors duration-150 hover:text-ink">
+                                    {{ __('messages.certificates.view_certificate') }} ↗
+                                </a>
                             @endif
                         </div>
-                        <h2 class="text-lg font-black tracking-[-0.02em] leading-tight text-black dark:text-white">{{ $certificate->name }}</h2>
-                        <p class="mt-1 text-sm font-bold text-[#2a2a2a] dark:text-[#d6d6d6]">{{ $certificate->issuer }}</p>
-                        <dl class="mt-4 grid grid-cols-2 gap-3 text-sm">
-                            <div class="bg-[#FFFBF0] dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-[8px] p-2"><dt class="font-mono text-xs font-black uppercase tracking-wider">Issued</dt><dd class="font-black">{{ $certificate->issue_date->format('M Y') }}</dd></div>
-                            <div class="bg-white dark:bg-[#1E293B] border-2 border-black dark:border-[#CBD5E1] rounded-[8px] p-2"><dt class="font-mono text-xs font-black uppercase tracking-wider">Expires</dt><dd class="font-black">{{ $certificate->expiry_date?->format('M Y') ?? 'Never' }}</dd></div>
-                        </dl>
-                        @if($certificate->credential_url)
-                            <a href="{{ $certificate->credential_url }}" target="_blank" class="mt-4 inline-flex items-center self-start brutal-btn brutal-btn--white text-xs px-4 py-2 min-h-[44px]">Verify →</a>
-                        @endif
-                    </article>
-                @empty
-                    <div class="brutal-card p-8 sm:p-12 text-center sm:col-span-2 xl:col-span-3 bg-white dark:bg-[#1E293B] shadow-[6px_6px_0_0_#111] dark:shadow-[5px_5px_0_0_rgba(203,213,225,0.9)]">
-                        <div class="mx-auto w-16 h-16 flex items-center justify-center bg-[#00D1FF] border-[3px] border-black rounded-[14px] shadow-[4px_4px_0_0_#111] text-3xl mb-4">
-                            📜
-                        </div>
-                        <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-black dark:text-white uppercase">{{ __('messages.ux_pages.no_certificates_title') }}</h2>
-                        <p class="mt-3 max-w-xl mx-auto text-sm sm:text-base leading-6 font-medium text-[#2a2a2a] dark:text-[#d6d6d6]">{{ __('messages.ux_pages.no_certificates_desc') }}</p>
-                        <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-                            <a href="{{ route('about') }}" class="brutal-btn brutal-btn--primary text-xs sm:text-sm px-5 py-3 min-h-[44px] inline-flex items-center gap-2">
-                                {{ __('messages.ux_pages.view_about') }} →
-                            </a>
-                            <a href="{{ route('contact') }}" class="brutal-btn brutal-btn--white text-xs sm:text-sm px-5 py-3 min-h-[44px] inline-flex items-center gap-2">
-                                {{ __('messages.ux_pages.contact_me') }}
-                            </a>
+                        <div class="text-sm text-ink-2 md:col-span-3">{{ $certificate->issuer }}</div>
+                        <div class="font-mono text-[11px] uppercase tracking-wider md:col-span-2 md:text-right {{ $active ? 'text-accent' : 'text-ink-3' }}">
+                            {{ $active ? 'Active' : 'Expired' }}
                         </div>
                     </div>
-                @endforelse
+                @endforeach
             </div>
-        </div>
-    </section>
+        @else
+            <div class="mt-10 border border-line bg-surface p-10 text-center">
+                <h2 class="text-xl font-semibold tracking-[-0.02em] text-ink">{{ __('messages.ux_pages.no_certificates_title') }}</h2>
+                <p class="measure mx-auto mt-3 text-sm leading-relaxed text-ink-2">{{ __('messages.ux_pages.no_certificates_desc') }}</p>
+                <div class="mt-6 flex flex-wrap justify-center gap-3">
+                    <x-ui.button :href="route('about')" variant="secondary" size="sm">{{ __('messages.ux_pages.view_about') }}</x-ui.button>
+                    <x-ui.button :href="route('contact')" size="sm">{{ __('messages.ux_pages.contact_me') }}</x-ui.button>
+                </div>
+            </div>
+        @endif
+    </div>
 </x-layouts.app>
