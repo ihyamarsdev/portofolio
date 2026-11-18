@@ -18,31 +18,33 @@ class CVController extends Controller
 
     public function download(Request $request)
     {
-        $template = $request->query('template', 'ats');
         $profile = $this->getPrimaryProfile();
 
         if (! $profile) {
             return back()->with('error', 'Please create a profile first.');
         }
 
+        $template = $this->resolveTemplate($request, $profile);
+
         $cvData = $this->cvService->buildCvData($profile);
-        extract($cvData);
+        $cvData['selectedTemplate'] = $template;
 
         $filename = 'cv-'.str()->slug($profile->name ?? 'candidate').'.pdf';
 
-        return Pdf::loadView("cv.{$template}", compact('profile', 'experiences', 'educations', 'skills') + ['isPdf' => true])
+        return Pdf::loadView("cv.{$template}", $cvData + ['isPdf' => true])
             ->setPaper('a4')
             ->download($filename);
     }
 
     public function downloadDOCX(Request $request)
     {
-        $template = $request->query('template', 'ats');
         $profile = $this->getPrimaryProfile();
 
         if (! $profile) {
             return back()->with('error', 'Please create a profile first.');
         }
+
+        $template = $this->resolveTemplate($request, $profile);
 
         $docxContent = $this->cvService->generateDOCX($template, $profile);
 
@@ -91,7 +93,7 @@ class CVController extends Controller
 
         $template = $this->resolveTemplate($request, $profile);
 
-        return view("cv.{$template}", $this->cvService->buildCvData($profile) + ['isPdf' => false]);
+        return view("cv.{$template}", $this->cvService->buildCvData($profile) + ['isPdf' => false, 'selectedTemplate' => $template]);
     }
 
     protected function resolveTemplate(Request $request, Profile $profile): string

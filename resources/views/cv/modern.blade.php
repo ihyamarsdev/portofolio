@@ -1,578 +1,189 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $profile->name ?? 'Candidate' }} | CV</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        @page {
-            size: A4;
-            margin-top: 2.2cm;
-            margin-bottom: 2cm;
-            margin-left: 0;
-            margin-right: 0;
-        }
-        @page :first {
-            margin: 0;
-        }
+        @include('cv.partials._base_styles')
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 10pt;
-            line-height: 1.6;
-            color: #1e293b;
-            background: #0f172a;
+        :root {
+            --cv-font: 'IBM Plex Sans', sans-serif;
+            --cv-font-display: 'IBM Plex Mono', monospace;
+            --cv-font-mono: 'IBM Plex Mono', monospace;
+            --cv-body-size: 9.8pt;
+            --cv-body-leading: 1.45;
+            --cv-section-gap: 20px;
+            --cv-accent: #0891b2;
+            --cv-accent-soft: #164e63;
+            --cv-text: #0f172a;
+            --cv-text-soft: #334155;
+            --cv-muted: #64748b;
+            --cv-rule: #cbd5e1;
+            --cv-sheet: #f8fafc;
+            --cv-page-bg: #020617;
         }
 
-        .page {
-            width: 210mm;
-            min-height: 297mm;
-            display: flex;
-            flex-direction: row;
-            background: #0f172a;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            margin: 0 auto;
-        }
+        .page { display: flex; flex-direction: row; }
 
-        @media screen {
-            body {
-                background: #020617;
-                padding: 2rem 0 6rem 0;
-            }
-
-            .page {
-                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
-            }
-        }
-
-        /* ═══════════════════════════════════════════════
-           SIDEBAR - 35% width
-           ═══════════════════════════════════════════════ */
         .sidebar {
-            width: 35%;
-            padding: 28px 22px;
+            width: 34%;
+            padding: 24px 20px;
             background: #0f172a;
             color: #e2e8f0;
             position: relative;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-
         .sidebar::after {
             content: '';
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: #06b6d4;
+            position: absolute; right: 0; top: 0; bottom: 0;
+            width: 3px; background: #06b6d4;
         }
 
-        /* Terminal Prompt */
-        .prompt {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 9pt;
-            color: #06b6d4;
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
+        .prompt { font-family: var(--cv-font-mono); font-size: 8.5pt; color: #22d3ee; margin-bottom: 3px; }
+        .prompt::before { content: '$ '; color: #67e8f9; }
 
-        .prompt::before {
-            content: '$ ';
-            color: #67e8f9;
-        }
+        .name { font-family: var(--cv-font-mono); font-size: 20pt; font-weight: 700; color: #fff; line-height: 1.2; }
+        .title { font-size: 10pt; color: #22d3ee; margin: 4px 0 20px; }
 
-        /* Identity Section */
-        .identity {
-            margin-bottom: 28px;
-            page-break-inside: avoid;
-        }
+        .contact-block { margin-bottom: 22px; padding-top: 12px; border-top: 1px solid #334155; }
+        .contact-line { font-family: var(--cv-font-mono); font-size: 8.5pt; color: #94a3b8; line-height: 1.7; }
+        .contact-line a { color: #67e8f9; text-decoration: none; }
+        .contact-line::before { content: '> '; color: #22d3ee; }
 
-        .name {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 22pt;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 6px;
-            line-height: 1.2;
-            letter-spacing: -0.5px;
-        }
-
-        .title {
-            font-family: 'IBM Plex Sans', sans-serif;
-            font-size: 11pt;
-            color: #06b6d4;
-            font-weight: 400;
-            margin-bottom: 20px;
-        }
-
-        /* Contact Block */
-        .contact-block {
-            margin-bottom: 28px;
-            padding-top: 16px;
-            border-top: 1px solid #334155;
-            page-break-inside: avoid;
-        }
-
-        .contact-item {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 9pt;
-            color: #94a3b8;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-        }
-
-        .contact-item::before {
-            content: '>';
-            color: #06b6d4;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        .contact-link {
-            color: #67e8f9;
-            text-decoration: none;
-            word-break: break-all;
-        }
-
-        /* Skills in Sidebar */
-        .skills-section {
-            page-break-inside: avoid;
-        }
-
-        .skills-header {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 9pt;
-            color: #06b6d4;
-            margin-bottom: 16px;
-            font-weight: 600;
-            padding-bottom: 8px;
+        .sidebar .section-title {
+            font-family: var(--cv-font-mono);
+            font-size: 8.5pt;
+            color: #22d3ee;
             border-bottom: 1px solid #334155;
+            padding-bottom: 6px;
         }
+        .sidebar .skill-line { color: #cbd5e1; font-size: 8.5pt; }
+        .sidebar .skill-line-label { color: #e2e8f0; }
+        .sidebar .skill-years { color: #22d3ee; }
 
-        .skills-header::before {
-            content: '$ ';
-            color: #67e8f9;
-            font-weight: 500;
-        }
+        .main-content { width: 66%; padding: 24px 22px; background: #f8fafc; }
 
-        .skill-category {
-            margin-bottom: 18px;
-            page-break-inside: avoid;
-        }
-
-        .category-name {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 8pt;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-
-        .skill-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .skill-item {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 8.5pt;
-            color: #e2e8f0;
-            padding: 4px 8px;
-            background: #1e293b;
-            border-left: 2px solid #06b6d4;
-            margin-bottom: 2px;
-        }
-
-        .skill-years {
-            color: #06b6d4;
-            font-weight: 500;
-            margin-left: 4px;
-        }
-
-        /* ═══════════════════════════════════════════════
-           MAIN CONTENT - 65% width
-           ═══════════════════════════════════════════════ */
-        .main-content {
-            width: 65%;
-            padding: 28px 28px 28px 32px;
-            background: #f8fafc;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-
-        /* Section Headers */
-        .section {
-            margin-bottom: 24px;
-        }
-
-        .section-header {
-            font-family: 'IBM Plex Mono', monospace;
+        .main-content .section-title {
+            font-family: var(--cv-font-mono);
             font-size: 9pt;
             color: #0f172a;
-            margin-bottom: 14px;
-            padding-bottom: 8px;
             border-bottom: 2px dashed #06b6d4;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            padding-bottom: 6px;
         }
+        .main-content .section-title::before { content: '// '; color: #0891b2; }
 
-        .section-header::before {
-            content: '// ';
-            color: #06b6d4;
-            font-weight: 500;
+        .experience-item { margin-bottom: 16px; padding-left: 12px; border-left: 3px solid #06b6d4; position: relative; }
+        .experience-item::before {
+            content: '■'; position: absolute; left: -6px; top: 1px;
+            color: #06b6d4; font-size: 8pt;
         }
+        .entry-role { font-size: 10.5pt; font-weight: 600; }
+        .entry-date { font-family: var(--cv-font-mono); font-size: 8.5pt; color: #0e7490; background: #e0f2fe; padding: 2px 6px; }
+        .company-location { font-size: 9.5pt; margin-top: 2px; }
+        .description { font-size: 9.5pt; }
 
-        /* Summary */
-        .summary {
-            color: #334155;
-            line-height: 1.7;
-            text-align: justify;
-        }
-
-        /* Experience Items */
-        .item {
-            margin-bottom: 20px;
-            padding-left: 14px;
-            border-left: 3px solid #06b6d4;
-            position: relative;
-            page-break-inside: avoid;
-        }
-
-        .item::before {
-            content: '■';
-            position: absolute;
-            left: -6px;
-            top: 2px;
-            color: #06b6d4;
-            font-size: 8pt;
-        }
-
-        .item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 4px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .position {
-            font-family: 'IBM Plex Sans', sans-serif;
-            font-size: 11pt;
-            font-weight: 600;
-            color: #0f172a;
-        }
-
-        .date {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 8.5pt;
-            color: #06b6d4;
-            font-weight: 500;
-            background: #e0f2fe;
-            padding: 2px 8px;
-        }
-
-        .company-location {
-            margin-bottom: 8px;
-            font-size: 10pt;
-        }
-
-        .company {
-            font-weight: 500;
-            color: #334155;
-        }
-
-        .location {
-            color: #64748b;
-            font-style: italic;
-        }
-
-        .description {
-            color: #475569;
-            line-height: 1.6;
-            margin-top: 8px;
-        }
-
-        /* Achievement Lists */
-        ul {
-            margin-top: 10px;
-            padding-left: 18px;
-        }
-
-        li {
-            color: #475569;
-            margin-bottom: 4px;
-            line-height: 1.5;
-        }
-
-        li::marker {
-            color: #06b6d4;
-            font-size: 8pt;
-        }
-
-        /* Education */
-        .education-item {
-            margin-bottom: 16px;
-            padding-left: 14px;
-            border-left: 3px solid #06b6d4;
-            position: relative;
-            page-break-inside: avoid;
-        }
-
+        .education-item { margin-bottom: 14px; padding-left: 12px; border-left: 3px solid #06b6d4; position: relative; }
         .education-item::before {
-            content: '■';
-            position: absolute;
-            left: -6px;
-            top: 2px;
-            color: #06b6d4;
-            font-size: 8pt;
+            content: '■'; position: absolute; left: -6px; top: 1px;
+            color: #06b6d4; font-size: 8pt;
         }
+        .degree { font-size: 9.8pt; }
+        .institution { font-weight: 600; color: #0f172a; font-size: 10pt; }
+        .meta { font-size: 8.5pt; color: var(--cv-muted); }
 
-        .institution {
-            font-weight: 600;
-            color: #0f172a;
-            font-size: 10.5pt;
-        }
-
-        .degree {
-            color: #334155;
-            font-size: 10pt;
-            margin-top: 2px;
-        }
-
-        .meta-info {
-            margin-top: 6px;
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 8.5pt;
-            color: #64748b;
-        }
-
-        .meta-label {
-            color: #06b6d4;
-            font-weight: 500;
-        }
-
-        /* Social Links */
-        .social-links {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #334155;
-        }
-
-        .social-item {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 8.5pt;
-            color: #94a3b8;
-            margin-bottom: 6px;
-        }
-
-        .social-item a {
-            color: #67e8f9;
-            text-decoration: none;
-        }
-
-        /* Print Optimization */
-        @media print {
-            body {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            .page {
-                break-after: page;
-                min-height: auto !important;
-                height: auto !important;
-            }
-
-            .item,
-            .education-item,
-            .skill-category {
-                break-inside: avoid;
-            }
-        }
+        .project-description { font-size: 9.5pt; }
+        .certificate-ledger { list-style: none; }
+        .certificate-ledger li { font-size: 9pt; }
     </style>
 </head>
-
 <body>
     <div class="page">
-        {{-- ═══════════════════════════════════════════════
-        SIDEBAR
-        ═══════════════════════════════════════════════ --}}
         <div class="sidebar">
-            {{-- Identity --}}
             <div class="identity">
                 <div class="prompt">whoami</div>
                 <div class="name">{{ $profile->name ?? 'YOUR NAME' }}</div>
                 <div class="title">{{ $profile->title ?? 'Professional Title' }}</div>
             </div>
 
-            {{-- Contact --}}
             <div class="contact-block">
                 <div class="prompt">contact</div>
-                @if($profile->email ?? false)
-                    <div class="contact-item">
-                        <a href="mailto:{{ $profile->email }}" class="contact-link">{{ $profile->email }}</a>
-                    </div>
-                @endif
-                @if($profile->phone ?? false)
-                    <div class="contact-item">{{ $profile->phone }}</div>
-                @endif
-                @if($profile->location ?? false)
-                    <div class="contact-item">{{ $profile->location }}</div>
-                @endif
-
-                @if(isset($profile->social_links) && count($profile->social_links) > 0)
-                    <div class="social-links">
-                        @foreach($profile->social_links as $link)
-                            @if(isset($link['platform']) && isset($link['url']))
-                                <div class="social-item">
-                                    {{ strtoupper($link['platform']) }}: <a href="{{ $link['url'] }}">{{ $link['url'] }}</a>
-                                </div>
-                            @endif
-                        @endforeach
-                    </div>
-                @endif
+                <div class="contact-line">
+                    @php
+                        $contact = array_filter([$profile->email ?? null, $profile->phone ?? null, $profile->location ?? null]);
+                    @endphp
+                    {{ implode(' | ', $contact) }}
+                </div>
             </div>
 
-            {{-- Skills --}}
             @if($skills->count() > 0)
-                <div class="skills-section">
-                    <div class="skills-header">skills --list</div>
-                    @php
-                        $groupedSkills = $skills->groupBy(fn($skill) => $skill->category_name ?? $skill->category?->name ?? (is_string($skill->category ?? null) ? $skill->category : 'General'));
-                    @endphp
-                    @foreach($groupedSkills as $categoryName => $categorySkills)
-                        <div class="skill-category">
-                            <div class="category-name">{{ $categoryName }}</div>
-                            <div class="skill-list">
-                                @foreach($categorySkills as $skill)
-                                    <div class="skill-item">
-                                        {{ $skill->name }}
-                                        @if($skill->years_experience > 0)
-                                            @php
-                                                $years = floatval($skill->years_experience);
-                                                $displayYears = fmod($years, 1) > 0 ? number_format($years, 1) : intval($years);
-                                                $yearText = $years == 1 ? 'y' : 'y';
-                                            @endphp
-                                            <span class="skill-years">{{ $displayYears }}{{ $yearText }}</span>
-                                        @endif
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endforeach
+                <div class="section">
+                    <h2 class="section-title">skills --list</h2>
+                    @include('cv.partials._skills', ['heading' => '', 'section_class' => '', 'heading_class' => 'section-title'])
                 </div>
             @endif
         </div>
 
-        {{-- ═══════════════════════════════════════════════
-        MAIN CONTENT
-        ═══════════════════════════════════════════════ --}}
         <div class="main-content">
-            {{-- Professional Summary --}}
             @if($profile->biography ?? false)
-                <div class="section">
-                    <div class="section-header">PROFESSIONAL SUMMARY</div>
-                    <div class="summary">
-                        {{ strip_tags($profile->biography) }}
-                    </div>
-                </div>
+                <section class="section">
+                    <h2 class="section-title">PROFESSIONAL SUMMARY</h2>
+                    <p class="summary">{{ strip_tags($profile->biography) }}</p>
+                </section>
             @endif
 
-            {{-- Experience --}}
             @if($experiences->count() > 0)
-                <div class="section">
-                    <div class="section-header">EXPERIENCE</div>
+                <section class="section">
+                    <h2 class="section-title">EXPERIENCE</h2>
                     @foreach($experiences as $experience)
-                        <div class="item">
-                            <div class="item-header">
-                                <span class="position">{{ $experience->position }}</span>
-                                <span class="date">{{ $experience->start_date->format('Y.m') }} —
-                                    {{ $experience->end_date ? $experience->end_date->format('Y.m') : 'Present' }}</span>
+                        <div class="experience-item">
+                            <div class="entry-head">
+                                <span class="entry-role">{{ $experience->position }}</span>
+                                <span class="entry-date">{{ $experience->start_date->format('Y.m') }} – {{ $experience->end_date ? $experience->end_date->format('Y.m') : 'Present' }}</span>
                             </div>
-                            <div class="company-location">
-                                <span class="company">{{ $experience->company }}</span>
-                                @if($experience->location)
-                                    <span class="location"> · {{ $experience->location }}</span>
-                                @endif
-                            </div>
-                            @if($experience->description)
-                                <div class="description">
-                                    {!! nl2br(e(strip_tags($experience->description))) !!}
-                                </div>
-                            @endif
+                            <div class="company-location">{{ $experience->company }}@if($experience->location) · {{ $experience->location }}@endif</div>
+                            @if($experience->description)<p class="description">{{ strip_tags($experience->description) }}</p>@endif
                             @if($experience->achievements && count($experience->achievements) > 0)
-                                <ul>
-                                    @foreach($experience->achievements as $achievement)
-                                        <li>{{ $achievement }}</li>
-                                    @endforeach
-                                </ul>
+                                <ul class="bullets">@foreach($experience->achievements as $achievement)<li>{{ $achievement }}</li>@endforeach</ul>
                             @endif
                         </div>
                     @endforeach
                     @if(isset($totalExperiences) && $totalExperiences > 3)
-                        <div class="cv-note" style="font-size: 8pt; color: #64748b; font-style: italic; margin-top: 12px; border-top: 1px dashed #cbd5e1; padding-top: 12px;">
-                            * Note: Showing only the 3 latest experiences. View the remaining {{ $totalExperiences - 3 }} experiences on my website: <a href="{{ route('about') }}" style="color: #06b6d4; text-decoration: none;">{{ str_replace(['http://', 'https://'], '', route('about')) }}</a>
-                        </div>
+                        <div class="cv-note">* Showing 3 most recent of {{ $totalExperiences }} roles. Full history: {{ route('about') }}</div>
                     @endif
-                </div>
+                </section>
             @endif
 
-            {{-- Education --}}
+            @include('cv.partials._projects')
+
             @if($educations->count() > 0)
-                <div class="section">
-                    <div class="section-header">EDUCATION</div>
+                <section class="section">
+                    <h2 class="section-title">EDUCATION</h2>
                     @foreach($educations as $education)
                         <div class="education-item">
-                            <div class="item-header">
+                            <div class="entry-head">
                                 <span class="institution">{{ $education->institution }}</span>
-                                <span class="date">{{ $education->start_date->format('Y') }} —
-                                    {{ $education->end_date ? $education->end_date->format('Y') : 'Present' }}</span>
+                                <span class="entry-date">{{ $education->start_date->format('Y') }} – {{ $education->end_date ? $education->end_date->format('Y') : 'Present' }}</span>
                             </div>
                             <div class="degree">{{ $education->degree }} in {{ $education->field_of_study }}</div>
                             @if($education->grade || $education->activities)
-                                <div class="meta-info">
-                                    @if($education->grade)
-                                        <span class="meta-label">GPA:</span> {{ $education->grade }}
-                                    @endif
-                                    @if($education->grade && $education->activities)
-                                        <span> · </span>
-                                    @endif
-                                    @if($education->activities)
-                                        <span class="meta-label">Activities:</span> {{ $education->activities }}
-                                    @endif
-                                </div>
+                                <div class="meta">@if($education->grade)GPA: {{ $education->grade }}@endif@if($education->grade && $education->activities) · @endif@if($education->activities)Activities: {{ $education->activities }}@endif</div>
                             @endif
                         </div>
                     @endforeach
                     @if(isset($totalEducations) && $totalEducations > 3)
-                        <div class="cv-note" style="font-size: 8pt; color: #64748b; font-style: italic; margin-top: 12px; border-top: 1px dashed #cbd5e1; padding-top: 12px;">
-                            * Note: Showing only the 3 latest education histories. View the remaining {{ $totalEducations - 3 }} education histories on my website: <a href="{{ route('about') }}" style="color: #06b6d4; text-decoration: none;">{{ str_replace(['http://', 'https://'], '', route('about')) }}</a>
-                        </div>
+                        <div class="cv-note">* Showing 3 most recent of {{ $totalEducations }} education entries. Full history: {{ route('about') }}</div>
                     @endif
-                </div>
+                </section>
             @endif
+
+            @include('cv.partials._certificates')
         </div>
     </div>
     @include('cv.partials._toolbar')
 </body>
-
 </html>

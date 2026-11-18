@@ -108,6 +108,21 @@ return [
             ],
         ],
     ],
+    'exec' => [
+        'readiness' => 'HR Readiness',
+        'ats' => 'ATS Compatible',
+        'coverage' => 'Match Coverage',
+        'density' => 'A4 Density',
+        'words' => ':count words',
+        'priority_title' => 'Priority Fixes',
+        'priority_hint' => 'Top concrete fixes, highest impact first.',
+        'before' => 'Before',
+        'after' => 'After',
+        'deep_dive' => 'Full Breakdown',
+        'deep_dive_hint' => 'Rubric, requirements, keywords and evidence tiers.',
+        'no_priority' => 'No critical fixes detected — your CV is in good shape.',
+    ],
+
 
     'bands' => [
         'Strong Match' => 'Strong Match',

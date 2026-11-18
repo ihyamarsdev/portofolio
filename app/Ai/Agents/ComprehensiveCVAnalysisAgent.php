@@ -80,13 +80,40 @@ Follow this rubric exactly.
 
 SCORING RUBRIC (0-100 each):
 - ATS Score: formatting safety, standard sections, keyword discoverability, parseability.
-- Format Score: clarity, scannability, section ordering, date consistency, concise bullet structure, ATS-safe formatting.
+- Format Score: clarity, scannability (6-10 second HR scan), section ordering, date consistency, concise bullet structure, ATS-safe formatting.
 - About Me Score: strength of value proposition, specificity, professional tone, seniority alignment, avoidance of clichés.
 - Impact Score: quantified outcomes, ownership, scope, scale, business/reliability/security impact.
 - Role Alignment Score: fit for the target role and seniority based on demonstrated work, not keyword stuffing.
 - Security Score: DevSecOps/security maturity, secure SDLC, IAM, secrets handling, vulnerability management, container/cloud security.
 - Reliability Score: SRE maturity, SLI/SLO awareness, incident response, observability, MTTR/availability, resilience engineering.
 - Cloud Score: cloud architecture depth, provider-native services, networking, HA/DR, scalability, cost-awareness.
+
+IMPACT & QUANTIFICATION (XYZ FORMULA):
+- Evaluate every experience/project bullet against the XYZ pattern: "Accomplished [X] as measured by [Y], by doing [Z]".
+- Flag passive, duty-based bullets ("responsible for", "tasked with", "worked on", "helped with", "involved in") and rewrite them into outcome-first statements using ONLY facts already present in the CV content or the VERIFIED SKILL EVIDENCE block.
+- In rewrite_hint and rewrite_priorities, prefer a concrete Before -> After pair: quote the original weak bullet, then give a stronger version. If a metric is genuinely absent, use a placeholder token such as [insert % improvement], [insert server count], or [insert latency reduction] — NEVER invent a number.
+- Reward bullets that combine an action verb + scope/scale + measurable result. Penalize bullets that list tools without an outcome.
+
+ANTI-AI-SLOP & CLICHÉ DETECTION (apply to About Me Score, Impact Score, and Role Alignment Score):
+- Explicitly penalize and flag generic buzzwords with no evidence: "passionate", "results-driven", "synergy", "cutting-edge", "seasoned professional", "hard-working", "team player", "go-getter", "thought leader", "dynamic", "innovative", "best-in-class", "world-class", "leverage", "utilize", "spearheaded", "gamification", "rockstar", "ninja", "detail-oriented", "self-starter", "proven track record".
+- For each cliché detected, name the exact phrase and replace it with a direct, concrete statement grounded in the candidate's real role, tools, or outcomes. Put these rewrites in rewrite_priorities and the relevant experience_review.rewrite_hint.
+- Do not reward keyword stuffing: repeating a technology many times without supporting evidence must LOWER the score, not raise it.
+
+HR SCANNABILITY & DENSITY CHECK (apply to Format Score and About Me Score):
+- Professional summary: ideal 3-4 lines / 40-60 words. Flag summaries longer than ~80 words as too dense and shorter than ~25 words as too thin.
+- Bullets per role: ideal 3-5. Flag roles with 1-2 bullets as under-explained and roles with 7+ as a wall of text.
+- Tense consistency: previous roles use past tense; the current role (end date "Present"/"Now") uses present tense. Flag mixed or incorrect tense.
+- Estimated A4 page fit: estimate whether the content fits 1 page or requires 2. Flag content likely to spill to a second page with a trim suggestion (cut low-value bullets, shorten summary, merge duplicate skills). Put the estimate in suggestions and the trim advice in rewrite_priorities.
+- Date format consistency and reverse-chronological order are required for a high Format Score.
+
+EVIDENCE TIERS (GROUNDING — never fabricate):
+- The CV content may include a "VERIFIED SKILL EVIDENCE" block generated from the database experience_skill and project_skill links. Treat it as ground truth: a skill listed there is Verified Evidence.
+- Classify each claimed skill/requirement into exactly one tier in your reasoning and in keywords.weak_evidence / keywords.found:
+  1) Verified Evidence — backed by an explicit database link or a quantified CV bullet.
+  2) Transferable / Adjacent — a closely related skill implied by the work but not explicitly linked (e.g. Docker experience implies containerization concepts). Label it clearly as adjacent; never present it as verified.
+  3) Missing — no support anywhere in the CV or evidence block.
+- NEVER invent a skill, tool, certification, employer, date, or metric that is not present in the CV content or evidence block. If you cannot cite it, it is Missing.
+- Before -> After rewrites must only reshuffle and sharpen existing facts; they must never add a new claim.
 
 JOB MATCH SCORING POLICY:
 - You must NEVER output a numeric job match score. The objective match score is computed
@@ -195,8 +222,8 @@ PROMPT;
 
         $section = "\n\nJOB MATCH VERIFICATION (EVIDENCE-BASED):\n";
         $section .= "For EACH requirement below, assign exactly one status based ONLY on the CV content:\n";
-        $section .= "- \"verified\": the requirement is demonstrated WITH quantified evidence (metrics, percentages, scale, outcomes).\n";
-        $section .= "- \"claimed\": the skill/requirement is mentioned but without measurable proof.\n";
+        $section .= "- \"verified\": the requirement is demonstrated WITH quantified evidence (metrics, percentages, scale, outcomes) OR appears in the VERIFIED SKILL EVIDENCE block (database-linked skill).\n";
+        $section .= "- \"claimed\": the skill/requirement is mentioned but without measurable proof, OR is only a transferable/adjacent skill implied by related work. State \"adjacent\" in reasoning when it is transferable rather than directly demonstrated.\n";
         $section .= "- \"missing\": not present in the CV.\n\n";
         $section .= "STRICT CITATION RULES:\n";
         $section .= "1. For \"verified\" and \"claimed\" you MUST provide evidence_quote copied VERBATIM from the CV content. Never fabricate or paraphrase quotes.\n";

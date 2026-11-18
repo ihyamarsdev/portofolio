@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Certificate;
 use App\Models\Education;
 use App\Models\Experience;
 use App\Models\Profile;
+use App\Models\Project;
 use App\Models\Skill;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Collection;
@@ -16,17 +18,18 @@ class CVGeneratorService
 {
     public function generateHTML(string $template, Profile $profile, Collection|array|null $experiences = null, Collection|array|null $educations = null, Collection|array|null $skills = null): string
     {
-        ['experiences' => $experiences, 'educations' => $educations, 'skills' => $skills] = $this->buildCvData($profile, $experiences, $educations, $skills);
+        $cvData = $this->buildCvData($profile, $experiences, $educations, $skills);
 
-        return View::make("cv.{$template}", compact('profile', 'experiences', 'educations', 'skills'))->render();
+        return View::make("cv.{$template}", $cvData + ['isPdf' => false, 'selectedTemplate' => $template])->render();
     }
 
     public function generatePDF(string $template, Profile $profile, Collection|array|null $experiences = null, Collection|array|null $educations = null, Collection|array|null $skills = null)
     {
-        ['experiences' => $experiences, 'educations' => $educations, 'skills' => $skills] = $this->buildCvData($profile, $experiences, $educations, $skills);
+        $cvData = $this->buildCvData($profile, $experiences, $educations, $skills);
 
-        return Pdf::loadView("cv.{$template}", compact('profile', 'experiences', 'educations', 'skills'));
+        return Pdf::loadView("cv.{$template}", $cvData + ['isPdf' => true, 'selectedTemplate' => $template]);
     }
+
 
     public function generateDOCX(string $template, Profile $profile, Collection|array|null $experiences = null, Collection|array|null $educations = null, Collection|array|null $skills = null): string
     {
@@ -220,7 +223,37 @@ class CVGeneratorService
             'educations' => $allEducations->take(3),
             'totalEducations' => $allEducations->count(),
             'skills' => $this->normalizeSkills($skills ?? $this->getSkills()),
+            'projects' => $this->getProjects(),
+            'certificates' => $this->getCertificates(),
         ];
+    }
+
+    /**
+     * Featured projects with their linked skills, for the Selected Projects
+     * section. Falls back to the most recently ordered projects when none are
+     * explicitly featured so the section is populated by default.
+     */
+    protected function getProjects(): Collection
+    {
+        $query = Project::query()->with('skills');
+        $projects = (clone $query)->where('is_featured', true)
+            ->orderBy('order')
+            ->take(3)
+            ->get();
+
+        if ($projects->isEmpty()) {
+            $projects = $query->orderBy('order')->take(3)->get();
+        }
+
+        return $projects;
+    }
+
+    protected function getCertificates(): Collection
+    {
+        return Certificate::query()
+            ->orderByDesc('issue_date')
+            ->take(6)
+            ->get();
     }
 
     public function buildCVContent(Profile $profile): string
@@ -262,7 +295,64 @@ class CVGeneratorService
             $cvContent .= '- '.$skill->name.' ('.$skill->category.')'.$yearsExp."\n";
         }
 
+        $cvContent .= $this->buildVerifiedEvidenceSection($experiences, $skills);
+
         return $cvContent;
+    }
+
+    /**
+     * Build a grounded evidence ledger from the experience_skill and
+     * project_skill pivot tables. This lets the analysis engine distinguish
+     * skills actually demonstrated in work from skills merely listed — and
+     * prevents the AI from inventing experience that is not in the database.
+     */
+    protected function buildVerifiedEvidenceSection(Collection $experiences, Collection $skills): string
+    {
+        if ($skills->isEmpty()) {
+            return '';
+        }
+
+        $projects = $this->getProjects();
+        $lines = [];
+
+        // Load all pivot links once per entry instead of once per skill/entry.
+        $experienceSkillIds = [];
+        foreach ($experiences as $exp) {
+            $experienceSkillIds[$exp->id] = $exp->skills()->pluck('skills.id')->all();
+        }
+        $projectSkillIds = [];
+        foreach ($projects as $project) {
+            $projectSkillIds[$project->id] = $project->skills()->pluck('skills.id')->all();
+        }
+
+        foreach ($skills as $skill) {
+            if (empty($skill->id)) {
+                continue;
+            }
+
+            $usedIn = [];
+            foreach ($experiences as $exp) {
+                if (in_array($skill->id, $experienceSkillIds[$exp->id] ?? [], false)) {
+                    $usedIn[] = 'role "'.trim(($exp->position ?? '').' at '.($exp->company ?? '')).'"';
+                }
+            }
+            foreach ($projects as $project) {
+                if (in_array($skill->id, $projectSkillIds[$project->id] ?? [], false)) {
+                    $usedIn[] = 'project "'.($project->title ?? '').'"';
+                }
+            }
+
+            if ($usedIn !== []) {
+                $lines[] = '- VERIFIED: "'.$skill->name.'" is linked in the database to '.implode('; ', $usedIn).'.';
+            }
+        }
+
+        if ($lines === []) {
+            return '';
+        }
+
+        return "\nVERIFIED SKILL EVIDENCE (from experience/project links — only these are backed by records):\n"
+            .implode("\n", $lines)."\n";
     }
 
     protected function getExperiences(): Collection

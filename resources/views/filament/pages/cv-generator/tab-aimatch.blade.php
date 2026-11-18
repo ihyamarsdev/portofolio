@@ -202,9 +202,97 @@
                                 $rewritePriorities = is_array($analysisResult['rewrite_priorities'] ?? null) ? $analysisResult['rewrite_priorities'] : [];
                                 $experienceReview = is_array($analysisResult['experience_review'] ?? null) ? array_values(array_filter($analysisResult['experience_review'])) : [];
                                 $industryMatch = is_array($analysisResult['industry_match'] ?? null) ? $analysisResult['industry_match'] : [];
+                                // Executive-first data.
+                                $density = is_array($detail['density'] ?? null) ? $detail['density'] : null;
+                                $evidenceTiers = is_array($detail['evidence_tiers'] ?? null) ? $detail['evidence_tiers'] : [];
+                                $rewriteSuggestions = is_array($detail['rewrite_suggestions'] ?? null) ? $detail['rewrite_suggestions'] : [];
+                                $readinessScore = is_numeric($analysisResult['ats_score'] ?? null) ? (int) $analysisResult['ats_score'] : null;
+                                $coverageScore = $overall;
+                                // Priority fixes: deterministic Before -> After first, then top focus areas.
+                                $priorityFixes = [];
+                                foreach (array_slice($rewriteSuggestions, 0, 5) as $rw) {
+                                    if (is_array($rw) && !empty($rw['after'])) {
+                                        $priorityFixes[] = [
+                                            'title' => (string) ($rw['requirement'] ?? ''),
+                                            'before' => (string) ($rw['before'] ?? ''),
+                                            'after' => (string) ($rw['after'] ?? ''),
+                                        ];
+                                    }
+                                }
+                                foreach ($focusAreas as $area) {
+                                    if (count($priorityFixes) >= 5) { break; }
+                                    $priorityFixes[] = [
+                                        'title' => (string) ($area['label'] ?? ''),
+                                        'before' => (string) ($area['desc'] ?? ''),
+                                        'after' => __('cv-aimatch.improvements.lowest_scoring').': '.(int) $area['value'].'% — '.(string) ($area['desc'] ?? ''),
+                                    ];
+                                }
                             @endphp
 
                             <div class="am-result">
+                                {{-- 1. Executive Summary Strip --}}
+                                <div class="am-card am-exec-strip">
+                                    <div class="am-exec-stat">
+                                        <span class="am-exec-value am-tone-{{ $readinessScore !== null && $readinessScore >= 70 ? 'ok' : 'warn' }}">{{ $readinessScore ?? '-' }}%</span>
+                                        <span class="am-exec-label">{{ __('cv-aimatch.exec.readiness') }}</span>
+                                    </div>
+                                    <div class="am-exec-stat">
+                                        <span class="am-exec-value am-tone-{{ $readinessScore !== null && $readinessScore >= 70 ? 'ok' : 'warn' }}">{{ $readinessScore ?? '-' }}%</span>
+                                        <span class="am-exec-label">{{ __('cv-aimatch.exec.ats') }}</span>
+                                    </div>
+                                    <div class="am-exec-stat">
+                                        <span class="am-exec-value am-tone-{{ $coverageScore !== null && $coverageScore >= 70 ? 'ok' : 'warn' }}">{{ $coverageScore ?? '-' }}%</span>
+                                        <span class="am-exec-label">{{ __('cv-aimatch.exec.coverage') }}</span>
+                                    </div>
+                                    <div class="am-exec-stat">
+                                        <span class="am-exec-value am-tone-neutral">{{ $density['pages'] ?? 1 }}</span>
+                                        <span class="am-exec-label">{{ __('cv-aimatch.exec.density') }} @if($density)· {{ __('cv-aimatch.exec.words', ['count' => $density['words']]) }}@endif</span>
+                                    </div>
+                                </div>
+
+                                {{-- 2. Priority Actionable Fixes --}}
+                                <div class="am-card am-priority">
+                                    <div class="am-card-head">
+                                        <span class="am-ico"><x-heroicon-o-bolt class="w-4.5 h-4.5" /></span>
+                                        <div>
+                                            <h3 class="am-title">{{ __('cv-aimatch.exec.priority_title') }}</h3>
+                                            <p class="am-hint">{{ __('cv-aimatch.exec.priority_hint') }}</p>
+                                        </div>
+                                    </div>
+                                    @if($priorityFixes !== [])
+                                        <div class="am-priority-list">
+                                            @foreach($priorityFixes as $fix)
+                                                <div class="am-priority-item">
+                                                    <h5 class="am-subtitle">{{ $fix['title'] }}</h5>
+                                                    <div class="am-ba">
+                                                        <div class="am-ba-col am-ba-before">
+                                                            <span class="am-ba-tag">{{ __('cv-aimatch.exec.before') }}</span>
+                                                            <p>{{ $fix['before'] }}</p>
+                                                        </div>
+                                                        <div class="am-ba-col am-ba-after">
+                                                            <span class="am-ba-tag">{{ __('cv-aimatch.exec.after') }}</span>
+                                                            <p>{{ $fix['after'] }}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <p class="am-hint">{{ __('cv-aimatch.exec.no_priority') }}</p>
+                                    @endif
+                                </div>
+
+                                {{-- 3. Deep-dive (existing sections) --}}
+                                <details class="am-section" open>
+                                    <summary class="am-section-head">
+                                        <span class="am-section-title">
+                                            <x-heroicon-o-chart-bar class="w-4.5 h-4.5" />
+                                            <span>{{ __('cv-aimatch.exec.deep_dive') }}</span>
+                                        </span>
+                                        <span class="am-section-meta">{{ __('cv-aimatch.exec.deep_dive_hint') }}</span>
+                                        <x-heroicon-o-chevron-down class="am-chevron w-4 h-4" />
+                                    </summary>
+                                    <div class="am-section-body">
                                 {{-- Ringkasan utama --}}
                                 <div class="am-card am-summary">
                                     <div class="am-summary-top">
@@ -618,6 +706,8 @@
                                         </div>
                                     </details>
                                 @endif
+                                    </div>
+                                </details>
                             </div>
                         @elseif($isAnalyzing)
                             <div class="am-card am-skeleton">

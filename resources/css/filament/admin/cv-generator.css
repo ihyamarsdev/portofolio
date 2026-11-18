@@ -402,6 +402,33 @@ html:not(.dark) input[type="range"].accent-cyan-500 {
         .am-scope .am-quick-value { font-family: var(--font-mono, monospace); font-weight: 700; font-size: 1rem; }
         .am-scope .am-quick-label { font-size: 0.68rem; color: var(--am-text-faint); }
 
+        /* Executive-first summary strip */
+        .am-scope .am-exec-strip {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;
+        }
+        @media (min-width: 640px) { .am-scope .am-exec-strip { grid-template-columns: repeat(4, 1fr); } }
+        .am-scope .am-exec-stat {
+            display: flex; flex-direction: column; gap: 0.2rem;
+            padding: 0.7rem 0.8rem; border-radius: 10px;
+            background: var(--am-bg-soft); border: 1px solid var(--am-border);
+        }
+        .am-scope .am-exec-value { font-family: var(--font-mono, monospace); font-weight: 700; font-size: 1.25rem; line-height: 1.1; }
+        .am-scope .am-exec-label { font-size: 0.68rem; color: var(--am-text-faint); line-height: 1.4; }
+
+        /* Priority fixes: Before -> After */
+        .am-scope .am-priority-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .am-scope .am-priority-item { border: 1px solid var(--am-border); border-radius: 10px; padding: 0.7rem 0.8rem; background: var(--am-bg-soft); }
+        .am-scope .am-ba { display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-top: 0.5rem; }
+        @media (min-width: 768px) { .am-scope .am-ba { grid-template-columns: repeat(2, 1fr); } }
+        .am-scope .am-ba-col { padding: 0.55rem 0.65rem; border-radius: 8px; border: 1px solid var(--am-border); background: var(--am-bg); }
+        .am-scope .am-ba-col p { font-size: 0.76rem; color: var(--am-text-muted); line-height: 1.55; margin-top: 0.3rem; }
+        .am-scope .am-ba-tag {
+            display: inline-block; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em;
+            text-transform: uppercase; color: var(--am-text-faint);
+        }
+        .am-scope .am-ba-after { border-color: var(--am-success-border, var(--am-accent-border)); background: var(--am-success-soft, var(--am-accent-soft)); }
+        .am-scope .am-ba-after .am-ba-tag { color: var(--am-success-text, var(--am-accent-text, var(--am-text))); }
+
         /* Metrics */
         .am-scope .am-metrics { display: grid; grid-template-columns: 1fr; gap: 0.7rem; }
         @media (min-width: 640px) { .am-scope .am-metrics { grid-template-columns: repeat(2, 1fr); } }

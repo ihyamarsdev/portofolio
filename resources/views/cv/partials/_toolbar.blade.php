@@ -56,6 +56,19 @@
         background: #111827;
     }
 
+    .cv-hint {
+        background: #1e293b;
+        color: #94a3b8;
+        border: 1px solid #334155;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        font-variant-numeric: tabular-nums;
+    }
+
     .page {
         transform: scale(var(--cv-zoom, 1));
         transform-origin: top center;
@@ -92,6 +105,12 @@
 </style>
 
 <div class="cv-toolbar no-print" data-cv-zoom-toolbar>
+    <span class="cv-hint" title="Approximate content density for A4 print">A4 · ~1 page</span>
+    <select class="cv-btn" aria-label="Template" onchange="if(this.value) window.location.search='?template='+encodeURIComponent(this.value)">
+        @foreach(config('cv-templates', []) as $key => $tpl)
+            <option value="{{ $key }}" @if(($selectedTemplate ?? 'ats') === $key) selected @endif>{{ $tpl['name'] ?? $key }}</option>
+        @endforeach
+    </select>
     <button type="button" data-cv-zoom-out class="cv-btn" title="Zoom out">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>

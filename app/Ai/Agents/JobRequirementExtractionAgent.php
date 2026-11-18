@@ -45,10 +45,12 @@ Your task is EXTRACTION only, not evaluation. Follow these rules strictly:
    - 2: minor requirement or mentioned once without emphasis.
    - 1: incidental mention.
 4. Keep each requirement concise (one skill or one competency per item, e.g. "Kubernetes", "5+ years AWS experience", "Terraform").
-5. Do NOT invent requirements that are not in the job description.
-6. Do NOT evaluate the candidate, do NOT produce any score.
+5. Do NOT invent requirements that are not in the job description. If a requirement is only implied, omit it — extraction is literal, never creative.
+6. Do NOT evaluate the candidate, do NOT produce any score, and do NOT assume the candidate has any of these skills. You only parse the job description.
 7. seniority_signals: extract objective signals such as required years of experience, team leadership scope, on-call ownership, or compliance exposure.
 8. inferred_title: the job title from the description (or the closest match). inferred_seniority: Junior, Mid, Mid-Senior, Senior, Staff, Lead, or Not Clear based on the signals.
+9. EVIDENCE GROUNDING: this output is consumed by a deterministic matcher that will verify each requirement against the candidate's real database records (experience_skill / project_skill links) and CV text. Never manufacture requirements to "help" the match — a fabricated requirement can only create a false gap. Extract only what the job description literally states.
+
 PROMPT;
 
         if ($this->targetRole !== '') {

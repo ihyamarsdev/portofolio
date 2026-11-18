@@ -838,6 +838,13 @@ class CVGenerator extends Page
                 $jobMatchScore = $jobMatchDetail['overall'];
             }
 
+            // Executive-first density estimate (word count + A4 page fit) is
+            // stored inside the existing job_match_detail JSON — no migration.
+            $density = $this->estimateCvDensity($cvContent);
+            if (is_array($jobMatchDetail)) {
+                $jobMatchDetail['density'] = $density;
+            }
+
             $targetedJobTitle = $result['job_title_targeted'] ?? null;
             if (empty($targetedJobTitle) || trim($targetedJobTitle) === '') {
                 $targetedJobTitle = $this->targetRole;
@@ -1156,5 +1163,24 @@ class CVGenerator extends Page
     protected function buildCVContent(Profile $profile): string
     {
         return $this->cvService->buildCVContent($profile);
+    }
+
+    /**
+     * Estimate CV word count and A4 page fit from the analysis text.
+     * ~450-550 words fits one A4 page at 9.5-10pt with 13mm margins.
+     */
+    protected function estimateCvDensity(string $cvContent): array
+    {
+        $plain = strip_tags($cvContent);
+        $words = str_word_count($plain);
+        $lines = count(preg_split('/\R+/', trim($plain)) ?: []);
+        $pages = $words <= 550 ? 1 : (int) ceil($words / 500);
+
+        return [
+            'words' => $words,
+            'lines' => $lines,
+            'pages' => $pages,
+            'label' => $pages <= 1 ? '1 page' : $pages.' pages',
+        ];
     }
 }

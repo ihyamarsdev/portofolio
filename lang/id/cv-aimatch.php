@@ -108,6 +108,21 @@ return [
             ],
         ],
     ],
+    'exec' => [
+        'readiness' => 'Kesiapan HR',
+        'ats' => 'Kompatibel ATS',
+        'coverage' => 'Cakupan Kecocokan',
+        'density' => 'Kepadatan A4',
+        'words' => ':count kata',
+        'priority_title' => 'Perbaikan Prioritas',
+        'priority_hint' => 'Perbaikan konkret paling berdampak terlebih dahulu.',
+        'before' => 'Sebelum',
+        'after' => 'Sesudah',
+        'deep_dive' => 'Rincian Lengkap',
+        'deep_dive_hint' => 'Rubrik, requirement, keyword, dan tier bukti.',
+        'no_priority' => 'Tidak ada perbaikan kritis — CV Anda sudah baik.',
+    ],
+
 
     'bands' => [
         'Strong Match' => 'Kecocokan Kuat',

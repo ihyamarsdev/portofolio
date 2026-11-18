@@ -341,7 +341,146 @@ class JobMatchService
             'evidence_quality' => (int) round($evidenceQuality * 100),
             'counts' => $counts,
             'requirements' => $matches,
+            'evidence_tiers' => $this->classifyEvidenceTiers($matches),
+            'rewrite_suggestions' => $this->buildRewriteSuggestions($matches),
         ];
+    }
+
+    /**
+     * Classify matched requirements into the three HR-facing evidence tiers:
+     * verified (backed by a record or a quantified bullet), transferable /
+     * adjacent (implied by related work), and missing (no support at all).
+     *
+     * This is presentation-only: it does NOT alter the deterministic status or
+     * score, so stored analyses and widgets stay compatible.
+     *
+     * @return array{verified: array<int,string>, adjacent: array<int,string>, missing: array<int,string>}
+     */
+    public function classifyEvidenceTiers(array $matches): array
+    {
+        $tiers = ['verified' => [], 'adjacent' => [], 'missing' => []];
+
+        foreach ($matches as $match) {
+            $requirement = trim((string) ($match['requirement'] ?? ''));
+            if ($requirement === '') {
+                continue;
+            }
+
+            $status = $match['status'] ?? 'missing';
+            $reasoning = mb_strtolower((string) ($match['reasoning'] ?? ''));
+
+            if ($status === 'verified') {
+                $tiers['verified'][] = $requirement;
+            } elseif ($status === 'missing') {
+                $tiers['missing'][] = $requirement;
+            } elseif (str_contains($reasoning, 'adjacent') || str_contains($reasoning, 'transferable')) {
+                $tiers['adjacent'][] = $requirement;
+            } else {
+                // A "claimed" match is an unquantified mention — treat it as
+                // transferable/adjacent evidence, never as verified.
+                $tiers['adjacent'][] = $requirement;
+            }
+        }
+
+        return $tiers;
+    }
+
+    /**
+     * Build copy-ready Before -> After bullet rewrites for the most valuable
+     * gaps. Only requirements with a real evidence quote can be rewritten —
+     * missing requirements get a placeholder-based suggestion instead, so no
+     * skill or result is ever fabricated.
+     *
+     * @return array<int, array{requirement: string, before: string, after: string}>
+     */
+    public function buildRewriteSuggestions(array $matches, int $limit = 5): array
+    {
+        $suggestions = [];
+
+        foreach ($matches as $match) {
+            if (count($suggestions) >= $limit) {
+                break;
+            }
+
+            $requirement = trim((string) ($match['requirement'] ?? ''));
+            if ($requirement === '') {
+                continue;
+            }
+
+            $status = $match['status'] ?? 'missing';
+            $quote = trim((string) ($match['evidence_quote'] ?? ''));
+
+            if ($status === 'missing') {
+                $suggestions[] = [
+                    'requirement' => $requirement,
+                    'before' => '(no evidence of '.$requirement.' in the CV)',
+                    'after' => 'Add a truthful bullet showing where you used '.$requirement
+                        .' and its outcome, e.g. "Used '.$requirement.' to [insert task] with [insert measurable result]". Only add this if it is factually true.',
+                ];
+
+                continue;
+            }
+
+            if ($quote === '') {
+                continue;
+            }
+
+            $before = $quote;
+            $after = $this->strengthenBullet($before, $requirement);
+
+            if ($after === $before) {
+                continue;
+            }
+
+            $suggestions[] = [
+                'requirement' => $requirement,
+                'before' => $before,
+                'after' => $after,
+            ];
+        }
+
+        return $suggestions;
+    }
+
+    /**
+     * Deterministically strengthen a duty-style bullet into an outcome-first
+     * XYZ-style statement. Never invents a metric — absent numbers become
+     * explicit [insert ...] placeholders the candidate must fill truthfully.
+     */
+    protected function strengthenBullet(string $bullet, string $requirement): string
+    {
+        $text = trim(preg_replace('/^\s*[-•*+\d.]+\s+/', '', $bullet) ?? $bullet);
+        $lower = mb_strtolower($text);
+
+        $dutyPhrases = [
+            'responsible for',
+            'tasked with',
+            'worked on',
+            'helped with',
+            'involved in',
+            'worked with',
+        ];
+
+        $isDuty = false;
+        foreach ($dutyPhrases as $phrase) {
+            if (str_contains($lower, $phrase)) {
+                $isDuty = true;
+                $text = preg_replace('/'.preg_quote($phrase, '/').'/i', 'Delivered', $text) ?? $text;
+
+                break;
+            }
+        }
+
+        $hasMetric = (bool) preg_match('/\d/', $text);
+
+        if (! $hasMetric) {
+            $text = rtrim($text, '. ').' — measured by [insert result/metric, e.g. latency, uptime, or time saved].';
+        } elseif (! $isDuty) {
+            // Already quantified and action-led: sharpen the leading verb only.
+            $text = preg_replace('/^Used\b/i', 'Delivered with', $text) ?? $text;
+        }
+
+        return $text;
     }
 
     /**
