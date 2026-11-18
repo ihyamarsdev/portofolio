@@ -14,7 +14,7 @@
                     <div class="space-y-4 relative before:absolute before:left-6 before:top-4 before:bottom-4 before:w-[2px] before:bg-[#2d2d3a]">
                         @foreach($educations as $edu)
                             <div class="glass-card p-5 relative pl-14 hover:border-cyan-500/30 transition-all group">
-                                <div class="absolute left-[18px] top-6 w-3 h-3 rounded-full bg-[#2d2d3a] border border-[#12121a] group-hover:bg-cyan-400 group-hover:shadow-[0_0_8px_#06b6d4] transition-all"></div>
+                                <div class="absolute left-[18px] top-6 w-3 h-3 rounded-full bg-zinc-600 border border-zinc-700 group-hover:bg-zinc-300 transition-colors"></div>
 
                                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
                                     <div>

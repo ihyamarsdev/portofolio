@@ -1,5 +1,4 @@
 <x-filament-panels::page>
-    @include('filament.pages.cv-generator.gradients')
 
     <div class="cv-workspace-container space-y-8 font-space-grotesk text-slate-700 dark:text-slate-300">
         @include('filament.pages.cv-generator.header')
@@ -9,8 +8,8 @@
         <div class="relative min-h-[400px]">
             {{-- Panel loading indicator --}}
             <div wire:loading.delay wire:target="switchTab" class="absolute inset-x-0 top-0 z-20 flex justify-center pt-6 pointer-events-none">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 dark:bg-slate-950/80 backdrop-blur border border-cyan-500/30 text-cyan-400 text-xs font-mono shadow-lg shadow-cyan-500/10">
-                    <x-filament::loading-indicator class="w-3.5 h-3.5 text-cyan-400" />
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-zinc-900 dark:bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-mono">
+                    <x-filament::loading-indicator class="w-3.5 h-3.5 text-zinc-300" />
                     <span>{{ __('cv-workspace.page.loading') }}</span>
                 </div>
             </div>

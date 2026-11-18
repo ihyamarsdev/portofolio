@@ -10,13 +10,13 @@
             
             <div class="flex items-center gap-3">
                 @if($activeTab !== 'aimatch')
-                    <x-filament::button wire:click="analyze" color="primary" :loading="$isAnalyzing" class="btn-workspace-action glow-cyan-hover">
+                    <x-filament::button wire:click="analyze" color="primary" :loading="$isAnalyzing" class="btn-workspace-action">
                         <x-heroicon-o-sparkles class="w-4 h-4 mr-1.5" />
                         <span>{{ __('cv-workspace.header.run_analysis') }}</span>
                     </x-filament::button>
                 @endif
 
-                <x-filament::button wire:click="downloadCv" color="success" class="btn-workspace-action glow-green-hover">
+                <x-filament::button wire:click="downloadCv" color="success" class="btn-workspace-action">
                     <x-heroicon-o-arrow-down-tray class="w-4 h-4 mr-1.5" />
                     <span>{{ __('cv-workspace.header.download_pdf') }}</span>
                 </x-filament::button>

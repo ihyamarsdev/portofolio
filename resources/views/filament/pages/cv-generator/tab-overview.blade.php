@@ -7,7 +7,7 @@
                             <div class="score-circle-container mb-3">
                                 <svg viewBox="0 0 120 120" class="w-24 h-24">
                                     <circle class="stroke-slate-300 dark:stroke-slate-700/40 fill-none" stroke-width="5" cx="60" cy="60" r="50" />
-                                    <circle class="stroke-cyan-500 fill-none transition-all duration-1000" stroke-linecap="round" stroke-width="5" stroke-dasharray="314.159" stroke-dashoffset="{{ 314.159 - (314.159 * $analysisResult['ats_score']) / 100 }}" cx="60" cy="60" r="50" transform="rotate(-90 60 60)" style="stroke: url(#atsGradient);" />
+                                    <circle class="stroke-zinc-500 dark:stroke-zinc-400 fill-none transition-all duration-300" stroke-linecap="round" stroke-width="5" stroke-dasharray="314.159" stroke-dashoffset="{{ 314.159 - (314.159 * $analysisResult['ats_score']) / 100 }}" cx="60" cy="60" r="50" transform="rotate(-90 60 60)" />
                                     <text x="60" y="60" text-anchor="middle" dominant-baseline="central" class="fill-slate-900 dark:fill-white font-bold text-xl font-mono">{{ $analysisResult['ats_score'] }}%</text>
                                 </svg>
                             </div>
@@ -18,7 +18,7 @@
                             <div class="score-circle-container mb-3">
                                 <svg viewBox="0 0 120 120" class="w-24 h-24">
                                     <circle class="stroke-slate-300 dark:stroke-slate-700/40 fill-none" stroke-width="5" cx="60" cy="60" r="50" />
-                                    <circle class="stroke-blue-500 fill-none transition-all duration-1000" stroke-linecap="round" stroke-width="5" stroke-dasharray="314.159" stroke-dashoffset="{{ 314.159 - (314.159 * $analysisResult['format_score']) / 100 }}" cx="60" cy="60" r="50" transform="rotate(-90 60 60)" style="stroke: url(#formatGradient);" />
+                                    <circle class="stroke-zinc-500 dark:stroke-zinc-400 fill-none transition-all duration-300" stroke-linecap="round" stroke-width="5" stroke-dasharray="314.159" stroke-dashoffset="{{ 314.159 - (314.159 * $analysisResult['format_score']) / 100 }}" cx="60" cy="60" r="50" transform="rotate(-90 60 60)" />
                                     <text x="60" y="60" text-anchor="middle" dominant-baseline="central" class="fill-slate-900 dark:fill-white font-bold text-xl font-mono">{{ $analysisResult['format_score'] }}%</text>
                                 </svg>
                             </div>
@@ -29,7 +29,7 @@
                             <div class="score-circle-container mb-3">
                                 <svg viewBox="0 0 120 120" class="w-24 h-24">
                                     <circle class="stroke-slate-300 dark:stroke-slate-700/40 fill-none" stroke-width="5" cx="60" cy="60" r="50" />
-                                    <circle class="stroke-purple-500 fill-none transition-all duration-1000" stroke-linecap="round" stroke-width="5" stroke-dasharray="314.159" stroke-dashoffset="{{ 314.159 - (314.159 * ($analysisResult['about_me_score'] ?? 0)) / 100 }}" cx="60" cy="60" r="50" transform="rotate(-90 60 60)" style="stroke: url(#aboutmeGradient);" />
+                                    <circle class="stroke-zinc-500 dark:stroke-zinc-400 fill-none transition-all duration-300" stroke-linecap="round" stroke-width="5" stroke-dasharray="314.159" stroke-dashoffset="{{ 314.159 - (314.159 * ($analysisResult['about_me_score'] ?? 0)) / 100 }}" cx="60" cy="60" r="50" transform="rotate(-90 60 60)" />
                                     <text x="60" y="60" text-anchor="middle" dominant-baseline="central" class="fill-slate-900 dark:fill-white font-bold text-xl font-mono">{{ $analysisResult['about_me_score'] ?? 0 }}%</text>
                                 </svg>
                             </div>
@@ -40,7 +40,7 @@
                             <div class="score-circle-container mb-3">
                                 <svg viewBox="0 0 120 120" class="w-24 h-24">
                                     <circle class="stroke-slate-300 dark:stroke-slate-700/40 fill-none" stroke-width="5" cx="60" cy="60" r="50" />
-                                    <circle class="stroke-amber-500 fill-none transition-all duration-1000" stroke-linecap="round" stroke-width="5" stroke-dasharray="314.159" stroke-dashoffset="{{ 314.159 - (314.159 * ($analysisResult['job_match_score'] ?? 0)) / 100 }}" cx="60" cy="60" r="50" transform="rotate(-90 60 60)" style="stroke: url(#jobmatchGradient);" />
+                                    <circle class="stroke-zinc-500 dark:stroke-zinc-400 fill-none transition-all duration-300" stroke-linecap="round" stroke-width="5" stroke-dasharray="314.159" stroke-dashoffset="{{ 314.159 - (314.159 * ($analysisResult['job_match_score'] ?? 0)) / 100 }}" cx="60" cy="60" r="50" transform="rotate(-90 60 60)" />
                                     <text x="60" y="60" text-anchor="middle" dominant-baseline="central" class="fill-slate-900 dark:fill-white font-bold text-xl font-mono">{{ ($analysisResult['job_match_score'] ?? null) === null ? __('cv-workspace.overview.scores.not_available') : $analysisResult['job_match_score'].'%' }}</text>
                                 </svg>
                             </div>

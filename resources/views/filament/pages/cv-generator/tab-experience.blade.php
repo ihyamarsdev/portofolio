@@ -28,7 +28,7 @@
                                      }
                                  "
                                  :class="{ 'opacity-40 border-dashed border-cyan-500/50 bg-cyan-950/10 shadow-inner scale-[0.98]': dragging }">
-                                <div class="absolute left-[18px] top-6 w-3 h-3 rounded-full bg-[#2d2d3a] border border-[#12121a] group-hover:bg-cyan-400 group-hover:shadow-[0_0_8px_#06b6d4] transition-all"></div>
+                                <div class="absolute left-[18px] top-6 w-3 h-3 rounded-full bg-zinc-600 border border-zinc-700 group-hover:bg-zinc-300 transition-colors"></div>
                                 
                                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-[#2d2d3a]/50 pb-3 mb-3">
                                     <div>

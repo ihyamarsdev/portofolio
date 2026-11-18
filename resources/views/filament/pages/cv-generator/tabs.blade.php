@@ -1,4 +1,4 @@
-        {{-- Glowing Cyberpunk Tab Navigation --}}
+        {{-- Workspace tab navigation --}}
         <div x-data="{
                 activeTab: @entangle('activeTab').live,
                 optimisticTab: '{{ $activeTab }}',
@@ -74,8 +74,8 @@
             {{-- Left scroll hint --}}
             <div x-cloak
                  x-show="canScrollLeft"
-                 class="pointer-events-none absolute left-0 top-0 bottom-2 w-8 sm:w-12 bg-gradient-to-r from-slate-100 via-slate-100/90 dark:from-[#0d0d14] dark:via-[#0d0d14]/90 to-transparent z-10 transition-opacity duration-200 flex items-center pl-1 text-cyan-500">
-                <x-heroicon-m-chevron-left class="w-4 h-4 drop-shadow" />
+                 class="pointer-events-none absolute left-0 top-0 bottom-2 w-8 sm:w-12 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700 z-10 flex items-center pl-1 text-zinc-500">
+                <x-heroicon-m-chevron-left class="w-4 h-4" />
             </div>
 
             <div x-ref="tabList"
@@ -205,7 +205,7 @@
             {{-- Right scroll hint --}}
             <div x-cloak
                  x-show="canScrollRight"
-                 class="pointer-events-none absolute right-0 top-0 bottom-2 w-8 sm:w-12 bg-gradient-to-l from-slate-100 via-slate-100/90 dark:from-[#0d0d14] dark:via-[#0d0d14]/90 to-transparent z-10 transition-opacity duration-200 flex items-center justify-end pr-1 text-cyan-500">
-                <x-heroicon-m-chevron-right class="w-4 h-4 drop-shadow" />
+                 class="pointer-events-none absolute right-0 top-0 bottom-2 w-8 sm:w-12 bg-zinc-50 dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-700 z-10 flex items-center justify-end pr-1 text-zinc-500">
+                <x-heroicon-m-chevron-right class="w-4 h-4" />
             </div>
         </div>
