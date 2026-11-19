@@ -37,7 +37,7 @@
     --cv-body-leading: 1.4;
     --cv-section-gap: 20px;
     --cv-header-align: left;
-    --cv-divider: 1px solid var(--cv-rule);
+    --cv-screen-pad: 0;
 }
 
 html {
@@ -66,6 +66,8 @@ body {
         margin: 0 auto;
         background: var(--cv-sheet);
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        padding-left: var(--cv-screen-pad);
+        padding-right: var(--cv-screen-pad);
     }
 }
 
@@ -87,7 +89,7 @@ body {
         min-height: 0 !important;
         height: auto !important;
         margin: 0 !important;
-        box-shadow: none !important;
+        padding: 0 !important;
     }
 
     /* Section headings never print at the bottom of a page alone. */

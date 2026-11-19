@@ -15,7 +15,7 @@
             --cv-body-leading: 1.4;
             --cv-section-gap: 20px;
             --cv-accent: #1d4ed8;
-            --cv-text: #0f172a;
+            --cv-screen-pad: 14mm;
             --cv-text-soft: #334155;
             --cv-muted: #64748b;
         }

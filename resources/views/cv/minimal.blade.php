@@ -15,7 +15,7 @@
             --cv-font-display: 'Space Grotesk', sans-serif;
             --cv-body-size: 10pt;
             --cv-body-leading: 1.45;
-            --cv-section-gap: 20px;
+            --cv-screen-pad: 14mm;
             --cv-accent: #b45309;
             --cv-text: #18181b;
             --cv-text-soft: #3f3f46;
