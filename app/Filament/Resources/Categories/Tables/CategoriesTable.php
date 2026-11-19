@@ -7,7 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\HtmlString;
+use Filament\Support\Colors\Color;
 
 class CategoriesTable
 {
@@ -18,12 +18,8 @@ class CategoriesTable
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable()
-                    ->formatStateUsing(fn ($record) => new HtmlString(
-                        '<div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full border border-slate-700 shadow-sm shrink-0" style="background-color: '.e($record->color ?? '#06b6d4').'; box-shadow: 0 0 8px '.e($record->color ?? '#06b6d4').'"></span>
-                            <span class="font-semibold text-white">'.e($record->name).'</span>
-                         </div>'
-                    )),
+                    ->badge()
+                    ->color(fn ($record): array => Color::hex($record->color ?? '#6366f1')),
                 TextColumn::make('slug')
                     ->fontFamily('mono')
                     ->searchable()
@@ -51,6 +47,10 @@ class CategoriesTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading('No categories yet')
+            ->emptyStateDescription('Create a category to organize your content.')
+            ->emptyStateIcon('heroicon-o-tag')
+            ->defaultSort('name', 'asc');
     }
 }

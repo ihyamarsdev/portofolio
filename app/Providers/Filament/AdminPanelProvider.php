@@ -10,6 +10,8 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
+use Filament\Navigation\NavigationGroup;
+use Filament\Support\Icons\Heroicon;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -33,13 +35,27 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->profile(EditProfile::class)
             ->maxContentWidth('7xl')
+            ->sidebarCollapsibleOnDesktop()
+            ->globalSearch()
             ->colors([
                 'primary' => Color::Sky,
-                'gray' => Color::Slate,
+                'gray' => Color::Zinc,
                 'danger' => Color::Rose,
                 'success' => Color::Emerald,
                 'warning' => Color::Amber,
                 'info' => Color::Blue,
+            ])
+            ->navigationGroups([
+                NavigationGroup::make('Content & Communication')
+                    ->icon(Heroicon::OutlinedNewspaper),
+                NavigationGroup::make('Career & CV')
+                    ->icon(Heroicon::OutlinedSparkles),
+                NavigationGroup::make('Career Data')
+                    ->icon(Heroicon::OutlinedFolderOpen)
+                    ->collapsed(),
+                NavigationGroup::make('Settings')
+                    ->icon(Heroicon::OutlinedCog6Tooth)
+                    ->collapsed(),
             ])
             ->discoverResources(
                 in: app_path('Filament/Resources'),

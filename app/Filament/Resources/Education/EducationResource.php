@@ -18,7 +18,7 @@ class EducationResource extends Resource
 {
     protected static ?string $model = Education::class;
 
-    protected static bool $shouldRegisterNavigation = false;
+    protected static bool $shouldRegisterNavigation = true;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
 
@@ -26,8 +26,10 @@ class EducationResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'CV Management';
+        return 'Career Data';
     }
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

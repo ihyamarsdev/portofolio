@@ -7,24 +7,25 @@ use App\Models\Profile;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 
 class ManageProfile extends Page
 {
-    protected static bool $shouldRegisterNavigation = false;
+    protected static bool $shouldRegisterNavigation = true;
 
     public static function getNavigationIcon(): string|\BackedEnum|null
     {
-        return 'heroicon-o-user-circle';
+        return Heroicon::OutlinedUserCircle;
     }
 
     public static function getNavigationGroup(): string|\UnitEnum|null
     {
-        return 'CV Management';
+        return 'Settings';
     }
 
     public static function getNavigationSort(): ?int
     {
-        return 2;
+        return 1;
     }
 
     protected string $view = 'filament.pages.manage-profile';

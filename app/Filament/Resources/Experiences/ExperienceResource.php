@@ -18,7 +18,7 @@ class ExperienceResource extends Resource
 {
     protected static ?string $model = Experience::class;
 
-    protected static bool $shouldRegisterNavigation = false;
+    protected static bool $shouldRegisterNavigation = true;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBriefcase;
 
@@ -26,8 +26,10 @@ class ExperienceResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'CV Management';
+        return 'Career Data';
     }
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
     {

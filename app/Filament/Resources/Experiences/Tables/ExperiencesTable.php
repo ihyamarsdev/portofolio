@@ -44,6 +44,9 @@ class ExperiencesTable
                     DeleteBulkAction::make(),
                 ]),
             ])
+            ->emptyStateHeading('No experiences yet')
+            ->emptyStateDescription('Add your work experience to build your career history.')
+            ->emptyStateIcon('heroicon-o-briefcase')
             ->defaultSort('order', 'asc');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Posts\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -38,11 +39,9 @@ class PostsTable
                 TextColumn::make('category.name')
                     ->label('Category')
                     ->sortable()
-                    ->formatStateUsing(fn ($record) => $record->category ? new HtmlString(
-                        '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border bg-slate-900/50 shrink-0" style="color: '.e($record->category->color).'; border-color: '.e($record->category->color).'60; box-shadow: 0 0 6px '.e($record->category->color).'30">
-                            '.e($record->category->name).'
-                         </span>'
-                    ) : new HtmlString('<span class="text-slate-500">-</span>')),
+                    ->badge()
+                    ->color(fn ($record): array => Color::hex($record?->category?->color ?? '#6366f1'))
+                    ->placeholder('-'),
 
                 TextColumn::make('reading_specs')
                     ->label('Specs')
@@ -75,9 +74,8 @@ class PostsTable
                     }),
 
                 TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->since(),
+                    ->dateTime('M j, Y')
+                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('status')
@@ -101,6 +99,9 @@ class PostsTable
                     DeleteBulkAction::make(),
                 ]),
             ])
+            ->emptyStateHeading('No posts yet')
+            ->emptyStateDescription('Create your first post to start publishing.')
+            ->emptyStateIcon('heroicon-o-document-text')
             ->defaultSort('created_at', 'desc');
     }
 }

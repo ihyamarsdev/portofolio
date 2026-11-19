@@ -218,3 +218,104 @@ html:not(.dark) input[type="range"].accent-cyan-500 {
     border-color: #cbd5e1 !important;
     accent-color: #0284c7 !important;
 }
+
+/* ====================================================
+   Light-mode compatibility for CV workspace dark utilities.
+   Scoped to .cv-workspace-container so other Filament surfaces
+   keep their native theme. Kept here (not in theme.css) because
+   the CV Blade views still emit these dark-only utility classes.
+   ==================================================== */
+html:not(.dark) .bg-\[\#0b0b10\],
+html:not(.dark) .bg-\[\#08080c\],
+html:not(.dark) .bg-\[\#12121a\],
+html:not(.dark) .bg-\[\#050508\],
+html:not(.dark) .bg-\[\#0e0e13\],
+html:not(.dark) .bg-\[\#111119\],
+html:not(.dark) .bg-\[\#111119\]\/40,
+html:not(.dark) .bg-slate-800,
+html:not(.dark) .bg-slate-800\/50,
+html:not(.dark) .bg-\[\#1e1e2d\],
+html:not(.dark) .bg-\[\#1a1a24\],
+html:not(.dark) .bg-\[\#1a1a24\]\/40,
+html:not(.dark) .bg-\[\#1a1a24\]\/30,
+html:not(.dark) .bg-\[\#181824\],
+html:not(.dark) .bg-\[\#181824\]\/50,
+html:not(.dark) .bg-\[\#181824\]\/60,
+html:not(.dark) .bg-\[\#181824\]\/40 {
+    background: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+}
+
+html:not(.dark) .border-\[\#2d2d3a\] { border-color: #e2e8f0 !important; }
+html:not(.dark) .before\:bg-\[\#2d2d3a\]::before { background-color: #e2e8f0 !important; }
+html:not(.dark) .bg-\[\#2d2d3a\] { background-color: #e2e8f0 !important; }
+html:not(.dark) .cv-workspace-container { color: #334155 !important; }
+html:not(.dark) .cv-workspace-container .text-slate-300 { color: #475569 !important; }
+
+html:not(.dark) .bg-\[\#12121a\]\/40,
+html:not(.dark) .bg-\[\#12121a\]\/60,
+html:not(.dark) .bg-\[\#12121a\]\/70,
+html:not(.dark) .bg-\[\#12121a\]\/80,
+html:not(.dark) .bg-\[\#1e1e2d\]\/60,
+html:not(.dark) .bg-\[\#1c1c2a\]\/60,
+html:not(.dark) .bg-black\/30 {
+    background: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+}
+
+html:not(.dark) .bg-emerald-950\/40,
+html:not(.dark) .bg-emerald-950\/30,
+html:not(.dark) .bg-emerald-950\/10 { background: #ecfdf5 !important; border-color: #a7f3d0 !important; }
+html:not(.dark) .bg-amber-950\/40,
+html:not(.dark) .bg-amber-950\/30,
+html:not(.dark) .bg-amber-950\/10 { background: #fffbeb !important; border-color: #fde68a !important; }
+html:not(.dark) .bg-rose-950\/40,
+html:not(.dark) .bg-rose-950\/30,
+html:not(.dark) .bg-rose-950\/10 { background: #fff1f2 !important; border-color: #fecdd3 !important; }
+html:not(.dark) .bg-cyan-950\/40,
+html:not(.dark) .bg-cyan-950\/30,
+html:not(.dark) .bg-cyan-950\/60,
+html:not(.dark) .bg-cyan-950\/10 { background: #f4f4f5 !important; border-color: #d4d4d8 !important; }
+html:not(.dark) .bg-blue-950\/40 { background: #f4f4f5 !important; border-color: #d4d4d8 !important; }
+html:not(.dark) .bg-fuchsia-950\/30,
+html:not(.dark) .bg-fuchsia-950\/20 { background: #f4f4f5 !important; border-color: #d4d4d8 !important; }
+html:not(.dark) .bg-sky-950\/10,
+html:not(.dark) .bg-sky-950\/20 { background: #f4f4f5 !important; border-color: #d4d4d8 !important; }
+html:not(.dark) .bg-slate-950\/60,
+html:not(.dark) .bg-slate-900\/40 { background: #f4f4f5 !important; border-color: #d4d4d8 !important; }
+
+html:not(.dark) .cv-workspace-container .bg-cyan-900,
+html:not(.dark) .cv-workspace-container .hover\:bg-cyan-900:hover { background: #e4e4e7 !important; border-color: #a1a1aa !important; }
+html:not(.dark) .cv-workspace-container .hover\:bg-slate-800\/60:hover { background: #e4e4e7 !important; }
+
+html:not(.dark) .cv-workspace-container .text-cyan-300,
+html:not(.dark) .cv-workspace-container .text-cyan-400 { color: #52525b !important; }
+html:not(.dark) .cv-workspace-container .text-emerald-300 { color: #047857 !important; }
+html:not(.dark) .cv-workspace-container .text-emerald-400 { color: #059669 !important; }
+html:not(.dark) .cv-workspace-container .text-amber-300 { color: #b45309 !important; }
+html:not(.dark) .cv-workspace-container .text-amber-400 { color: #b45309 !important; }
+html:not(.dark) .cv-workspace-container .text-rose-300 { color: #be123c !important; }
+html:not(.dark) .cv-workspace-container .text-rose-400 { color: #e11d48 !important; }
+html:not(.dark) .cv-workspace-container .text-sky-300,
+html:not(.dark) .cv-workspace-container .text-sky-400,
+html:not(.dark) .cv-workspace-container .text-blue-300,
+html:not(.dark) .cv-workspace-container .text-blue-400,
+html:not(.dark) .cv-workspace-container .text-fuchsia-300,
+html:not(.dark) .cv-workspace-container .text-fuchsia-400,
+html:not(.dark) .cv-workspace-container .text-purple-400,
+html:not(.dark) .cv-workspace-container .text-orange-400 { color: #52525b !important; }
+
+html:not(.dark) .cv-workspace-container .bg-emerald-950 { background: #ecfdf5 !important; border-color: #a7f3d0 !important; }
+html:not(.dark) .cv-workspace-container .bg-amber-950 { background: #fffbeb !important; border-color: #fde68a !important; }
+html:not(.dark) .cv-workspace-container .bg-rose-950 { background: #fff1f2 !important; border-color: #fecdd3 !important; }
+html:not(.dark) .cv-workspace-container .bg-cyan-950 { background: #f4f4f5 !important; border-color: #d4d4d8 !important; }
+
+html:not(.dark) .cv-workspace-container .hover\:bg-slate-700:hover { background: #e2e8f0 !important; }
+html:not(.dark) .cv-workspace-container .hover\:bg-rose-950:hover { background: #fff1f2 !important; }
+html:not(.dark) .cv-workspace-container .hover\:bg-slate-800\/20:hover { background: #f1f5f9 !important; }
+html:not(.dark) .cv-workspace-container .hover\:border-slate-600:hover { border-color: #cbd5e1 !important; }
+html:not(.dark) .cv-workspace-container .hover\:text-white:hover { color: #0f172a !important; }
+
+html:not(.dark) .cv-workspace-container .border-slate-700 { border-color: #cbd5e1 !important; }
+html:not(.dark) .cv-workspace-container .border-slate-600 { border-color: #cbd5e1 !important; }
+html:not(.dark) .cv-workspace-container .divide-\[\#1e1e2d\] > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0 !important; }

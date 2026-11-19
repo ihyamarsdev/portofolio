@@ -58,7 +58,12 @@ class CVGenerator extends Page
 
     public static function getNavigationGroup(): ?string
     {
-        return __('cv-workspace.page.navigation_group');
+        return 'Career & CV';
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 1;
     }
 
     protected string $view = 'filament.pages.cv-generator';

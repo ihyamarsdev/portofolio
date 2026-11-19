@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Inboxes\Pages;
 
 use App\Filament\Resources\Inboxes\InboxResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListInboxes extends ListRecords
@@ -12,8 +11,6 @@ class ListInboxes extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            CreateAction::make(),
-        ];
+        return [];
     }
 }

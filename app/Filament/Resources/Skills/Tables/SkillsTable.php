@@ -74,6 +74,10 @@ class SkillsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading('No skills yet')
+            ->emptyStateDescription('Add your first skill to start building your profile.')
+            ->emptyStateIcon('heroicon-o-bolt')
+            ->defaultSort('name', 'asc');
     }
 }

@@ -18,14 +18,14 @@ class StackResource extends Resource
 {
     protected static ?string $model = Stack::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCube;
+    protected static bool $shouldRegisterNavigation = true;
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Portfolio';
+        return 'Career Data';
     }
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 5;
 
     protected static ?string $recordTitleAttribute = 'name';
 

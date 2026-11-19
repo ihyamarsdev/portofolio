@@ -71,8 +71,8 @@ trait HasPostAiGeneration
 
     protected function generatePostWithAi(array $data, $livewire): void
     {
-        $title = $livewire->data['title'] ?? '';
-        $currentContent = $livewire->data['content'] ?? '';
+        $title = $livewire->data['title']['en'] ?? $livewire->data['title'] ?? '';
+        $currentContent = $livewire->data['content']['en'] ?? $livewire->data['content'] ?? '';
 
         if (is_array($currentContent)) {
             $currentContent = json_encode($currentContent);
@@ -127,19 +127,38 @@ trait HasPostAiGeneration
             $updateData = $livewire->data;
 
             if (isset($result['content'])) {
-                $updateData['content'] = $result['content'];
+                if (isset($updateData['content']) && is_array($updateData['content'])) {
+                    $updateData['content']['en'] = $result['content'];
+                } else {
+                    $updateData['content'] = $result['content'];
+                }
             }
 
             if (isset($result['excerpt'])) {
-                $updateData['excerpt'] = Str::limit($result['excerpt'], 160, '');
+                $excerpt = Str::limit($result['excerpt'], 160, '');
+                if (isset($updateData['excerpt']) && is_array($updateData['excerpt'])) {
+                    $updateData['excerpt']['en'] = $excerpt;
+                } else {
+                    $updateData['excerpt'] = $excerpt;
+                }
             }
 
             if (isset($result['meta_title'])) {
-                $updateData['meta_title'] = Str::limit($result['meta_title'], 60, '');
+                $metaTitle = Str::limit($result['meta_title'], 60, '');
+                if (isset($updateData['meta_title']) && is_array($updateData['meta_title'])) {
+                    $updateData['meta_title']['en'] = $metaTitle;
+                } else {
+                    $updateData['meta_title'] = $metaTitle;
+                }
             }
 
             if (isset($result['meta_description'])) {
-                $updateData['meta_description'] = Str::limit($result['meta_description'], 160, '');
+                $metaDescription = Str::limit($result['meta_description'], 160, '');
+                if (isset($updateData['meta_description']) && is_array($updateData['meta_description'])) {
+                    $updateData['meta_description']['en'] = $metaDescription;
+                } else {
+                    $updateData['meta_description'] = $metaDescription;
+                }
             }
 
             $livewire->form->fill($updateData);

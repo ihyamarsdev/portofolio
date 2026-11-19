@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Stacks\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -22,19 +23,9 @@ class StacksTable
                     ->weight('bold'),
                 TextColumn::make('category.name')
                     ->sortable()
-                    ->formatStateUsing(function ($state, $record) {
-                        if (! $record->category) {
-                            return '—';
-                        }
-
-                        $color = $record->category->color;
-
-                        return new HtmlString(
-                            '<span style="color: '.$color.'; border: 1px solid '.$color.'60; background: '.$color.'10; box-shadow: 0 1px 3px '.$color.'30; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">'
-                            .e($state).
-                            '</span>'
-                        );
-                    }),
+                    ->badge()
+                    ->color(fn ($record): array => Color::hex($record?->category?->color ?? '#6366f1'))
+                    ->placeholder('—'),
                 TextColumn::make('icon')
                     ->label('Icon')
                     ->formatStateUsing(function (?string $state): HtmlString {
@@ -47,7 +38,7 @@ class StacksTable
                         }
 
                         if (str_starts_with($state, 'devicon-')) {
-                            return new HtmlString('<i class="'.e($state).'" style="font-size: 28px; color: #0ea5e9;"></i>');
+                            return new HtmlString('<i class="'.e($state).'" style="font-size: 28px;"></i>');
                         }
 
                         return new HtmlString('<span style="font-size: 28px; line-height: 1;">'.e($state).'</span>');
@@ -71,6 +62,9 @@ class StacksTable
                     DeleteBulkAction::make(),
                 ]),
             ])
+            ->emptyStateHeading('No stacks yet')
+            ->emptyStateDescription('Add your first technology stack to organize your skills.')
+            ->emptyStateIcon('heroicon-o-server')
             ->defaultSort('name', 'asc');
     }
 }

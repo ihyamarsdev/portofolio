@@ -22,7 +22,7 @@ class PostResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Content';
+        return 'Content & Communication';
     }
 
     protected static ?int $navigationSort = 1;

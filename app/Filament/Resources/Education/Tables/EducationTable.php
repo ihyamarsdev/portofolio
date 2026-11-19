@@ -48,6 +48,9 @@ class EducationTable
                     DeleteBulkAction::make(),
                 ]),
             ])
+            ->emptyStateHeading('No education records yet')
+            ->emptyStateDescription('Add your educational background to build your profile.')
+            ->emptyStateIcon('heroicon-o-academic-cap')
             ->defaultSort('order', 'asc');
     }
 }

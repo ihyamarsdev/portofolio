@@ -18,16 +18,16 @@ class SkillResource extends Resource
 {
     protected static ?string $model = Skill::class;
 
-    protected static bool $shouldRegisterNavigation = false;
+    protected static bool $shouldRegisterNavigation = true;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
 
     public static function getNavigationGroup(): ?string
     {
-        return 'CV Management';
+        return 'Career Data';
     }
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $recordTitleAttribute = 'name';
 

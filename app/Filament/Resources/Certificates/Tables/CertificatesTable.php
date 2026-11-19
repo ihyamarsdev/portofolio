@@ -50,6 +50,10 @@ class CertificatesTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading('No certificates yet')
+            ->emptyStateDescription('Add your first certificate to showcase your credentials.')
+            ->emptyStateIcon('heroicon-o-trophy')
+            ->defaultSort('issue_date', 'desc');
     }
 }

@@ -105,6 +105,9 @@ class CVAnalysesTable
                     DeleteBulkAction::make(),
                 ]),
             ])
+            ->emptyStateHeading('No analyses yet')
+            ->emptyStateDescription('Analyze a CV to see ATS insights and scores here.')
+            ->emptyStateIcon('heroicon-o-document-chart-bar')
             ->defaultSort('created_at', 'desc');
     }
 }
