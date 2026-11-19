@@ -22,7 +22,7 @@ class StackResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Career Data';
+        return 'Content & Communication';
     }
 
     protected static ?int $navigationSort = 5;

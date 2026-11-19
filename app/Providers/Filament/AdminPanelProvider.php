@@ -50,9 +50,6 @@ class AdminPanelProvider extends PanelProvider
                     ->icon(Heroicon::OutlinedNewspaper),
                 NavigationGroup::make('Career & CV')
                     ->icon(Heroicon::OutlinedSparkles),
-                NavigationGroup::make('Career Data')
-                    ->icon(Heroicon::OutlinedFolderOpen)
-                    ->collapsed(),
                 NavigationGroup::make('Settings')
                     ->icon(Heroicon::OutlinedCog6Tooth)
                     ->collapsed(),
