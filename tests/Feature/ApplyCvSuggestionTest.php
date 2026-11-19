@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
+use App\Models\CVAnalysis;
 use App\Models\Experience;
 use App\Models\Profile;
 use App\Models\Skill;
