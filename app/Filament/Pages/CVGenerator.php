@@ -110,6 +110,8 @@ class CVGenerator extends Page
 
     public string $exp_employment_type = 'Full-time';
 
+    public ?string $exp_location = '';
+
     public bool $exp_is_featured = false;
 
     public ?string $exp_start_date = '';

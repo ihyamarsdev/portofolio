@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Pages\CVGenerator;
 use App\Models\Experience;
 use App\Models\Profile;
 use App\Models\User;
 use App\Services\CVGeneratorService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class FeaturedExperienceCvTest extends TestCase
@@ -108,5 +110,27 @@ class FeaturedExperienceCvTest extends TestCase
             ->get('/admin/experiences/create')
             ->assertSuccessful()
             ->assertSee('Tampilkan di CV');
+    }
+
+    public function test_save_experience_via_livewire_persists_featured_flag(): void
+    {
+        $user = User::factory()->create(['is_admin' => true]);
+        $this->actingAs($user);
+
+        Livewire::test(CVGenerator::class)
+            ->set('exp_company', 'Test Corp')
+            ->set('exp_position', 'Platform Engineer')
+            ->set('exp_employment_type', 'Full-time')
+            ->set('exp_location', 'Jakarta')
+            ->set('exp_start_date', '2023-01-01')
+            ->set('exp_is_featured', true)
+            ->call('saveExperience');
+
+        $this->assertDatabaseHas('experiences', [
+            'company' => json_encode(['en' => 'Test Corp']),
+            'position' => json_encode(['en' => 'Platform Engineer']),
+            'location' => json_encode(['en' => 'Jakarta']),
+            'is_featured' => true,
+        ]);
     }
 }
