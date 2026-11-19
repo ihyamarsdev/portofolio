@@ -196,7 +196,7 @@ return [
             'start_date' => 'Tanggal Mulai *',
             'end_date' => 'Tanggal Selesai (Kosongkan jika masih berlangsung)',
             'is_featured' => 'Tampilkan di CV',
-            'is_featured_hint' => 'Centang untuk menyertakan pengalaman ini di CV. Jika tidak ada yang dicentang, semua pengalaman tetap ditampilkan.',
+            'is_featured_hint' => 'Centang untuk menyertakan pengalaman ini di CV. Hanya pengalaman yang dicentang yang akan tampil di CV.',
             'description' => 'Deskripsi',
             'description_placeholder' => 'Jelaskan cakupan kerja atau tanggung jawab umum dalam format Markdown...',
             'achievements_title' => 'Pencapaian Utama & Poin Penting',

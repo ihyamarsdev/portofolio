@@ -36,7 +36,7 @@ class FeaturedExperienceCvTest extends TestCase
         $this->assertSame(1, $data['totalExperiences']);
     }
 
-    public function test_all_experiences_appear_when_none_are_featured(): void
+    public function test_no_experiences_appear_when_none_are_featured(): void
     {
         Profile::factory()->create(['is_primary' => true]);
 
@@ -46,8 +46,8 @@ class FeaturedExperienceCvTest extends TestCase
         $data = $this->app->make(CVGeneratorService::class)
             ->buildCvData(Profile::where('is_primary', true)->firstOrFail());
 
-        $this->assertCount(2, $data['experiences']);
-        $this->assertSame(2, $data['totalExperiences']);
+        $this->assertCount(0, $data['experiences']);
+        $this->assertSame(0, $data['totalExperiences']);
     }
 
     public function test_featured_experience_renders_in_preview_and_text_export(): void

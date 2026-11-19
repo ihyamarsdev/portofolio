@@ -356,18 +356,10 @@ class CVGeneratorService
 
     protected function getExperiences(): Collection
     {
-        $query = Experience::query();
-        $featured = (clone $query)->where('is_featured', true)
+        return Experience::where('is_featured', true)
             ->orderBy('order', 'asc')
             ->orderBy('start_date', 'desc')
             ->get();
-
-        // Only use the explicit selection when at least one experience is
-        // featured; otherwise keep the previous behaviour so existing CVs stay
-        // populated.
-        return $featured->isNotEmpty()
-            ? $featured
-            : $query->orderBy('order', 'asc')->orderBy('start_date', 'desc')->get();
     }
 
     protected function getEducations(): Collection

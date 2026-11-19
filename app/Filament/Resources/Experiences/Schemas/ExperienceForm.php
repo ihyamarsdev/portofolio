@@ -99,7 +99,7 @@ class ExperienceForm
                             ->schema([
                                 Toggle::make('is_featured')
                                     ->label('Tampilkan di CV')
-                                    ->helperText('Centang untuk menyertakan experience ini di CV yang dihasilkan. Jika tidak ada yang dicentang, semua experience tetap ditampilkan.')
+                                    ->helperText('Centang untuk menyertakan experience ini di CV. Hanya experience yang dicentang yang akan tampil di CV.')
                                     ->default(false)
                                     ->inline(false)
                                     ->columnSpanFull(),

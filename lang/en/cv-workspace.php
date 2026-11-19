@@ -196,7 +196,7 @@ return [
             'start_date' => 'Start Date *',
             'end_date' => 'End Date (Leave blank if current)',
             'is_featured' => 'Include in CV',
-            'is_featured_hint' => 'Check to include this experience in the generated CV. If none are checked, all experiences are shown.',
+            'is_featured_hint' => 'Check to include this experience in the CV. Only checked experiences appear in the CV.',
             'description' => 'Description',
             'description_placeholder' => 'Introduce your scope of work or general duties in Markdown format...',
             'achievements_title' => 'Key Achievements & Bullet Points',
