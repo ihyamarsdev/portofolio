@@ -1,5 +1,5 @@
 <x-layouts.app title="{{ __('messages.certificates.title') }}">
-    @php($certificates = \App\Models\Certificate::orderBy('issue_date', 'desc')->get())
+    @php($certificates = $certificates ?? \App\Models\Certificate::orderBy('issue_date', 'desc')->get())
 
     <div class="section-container py-14 sm:py-20">
         <x-ui.section-header

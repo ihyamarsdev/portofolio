@@ -1,11 +1,12 @@
 @php
+    $cache = app(\App\Services\PortfolioCacheService::class);
     if (!isset($homeSettings) || !$homeSettings) {
-        $homeSettings = \App\Models\HomeSettings::getSettings();
+        $homeSettings = $cache->settings();
     }
     if (!isset($profile) || !$profile) {
-        $profile = \App\Models\Profile::where('is_primary', true)->first();
+        $profile = $cache->primaryProfile();
     }
-    $hasCertificates = \App\Models\Certificate::query()->exists();
+    $hasCertificates = $cache->hasCertificates();
     $currentUrl = preg_replace('/^http:\/\/[^\/]+/', 'https://ihyamars.my.id', url()->current());
     $siteBrand = $homeSettings?->site_brand ?? 'ihyamars';
     $siteTitle = $homeSettings?->site_title ?? 'DevOps Engineer';
@@ -46,8 +47,11 @@
     <meta name="twitter:description" content="{{ $metaDesc }}">
     <meta name="twitter:image" content="{{ $ogImg }}">
 
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23141413'/><text x='50' y='68' text-anchor='middle' font-family='monospace' font-size='52' fill='%23C84B1F'>&gt;_</text></svg>">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#141413">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

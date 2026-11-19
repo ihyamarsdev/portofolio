@@ -237,10 +237,46 @@ Behavior:
 - DOCX export uses PhpWord
 - text and markdown exports are generated in service code
 
+## Environments and deployment (authoritative)
+
+This repository has **three distinct run paths**. They are not interchangeable —
+`scripts/deploy.sh` is decoupled from both compose files, so changing a compose
+file never changes a live deploy.
+
+| Path | Authoritative files | Used for | Invoked by |
+|---|---|---|---|
+| Local, bare metal (default) | `composer dev` / `composer setup` | everyday development on host PHP | `composer dev` (serve :8888, queue, Pail, Vite) |
+| Local, containers (optional) | root `compose.yaml` | Laravel Sail dev (port 80, bind mount, Xdebug/Vite) | `./vendor/bin/sail up` |
+| Production, containers | `docker/docker-compose.yml` + `docker/Dockerfile` + `docker/Dockerfile.base` | FrankenPHP + Postgres + Dragonfly + Traefik (port 8888) | documented command below |
+| Production, live (bare metal) | `scripts/deploy.sh` → systemd `portofolio-web`, `portofolio-queue` | the actual live deploy | `./scripts/deploy.sh` |
+
+### Which compose file should I use?
+
+- `compose.yaml` (root) is the **Laravel Sail** file for local development only.
+  It builds from `vendor/laravel/sail/runtimes/8.4`, mounts the repo, and exposes
+  port 80 + Vite 5173. It has no database or cache service.
+- `docker/docker-compose.yml` is the **production container** stack. It runs the
+  app image built by `docker/Dockerfile` on port 8888 with Postgres and Dragonfly,
+  and expects an external network named `backend`.
+
+Do not merge them: they share no service names, networks, or Dockerfiles.
+`scripts/deploy.sh` uses neither — it deploys to host systemd services, so the
+container stack is only used when you opt into it.
+
+### Web server rewrites (.htaccess)
+
+- `public/.htaccess` is the authoritative Laravel front-controller rewrite
+  (header forwarding, trailing-slash redirect, dispatch to `index.php`).
+- Root `.htaccess` is a legacy shared-hosting fallback: it forwards requests
+  into `public/` when Apache's `DocumentRoot` points at the project root.
+  It is harmless when `DocumentRoot` is `public/` or when Caddy/FrankenPHP serves
+  the app (Caddyfile handles rewrites; neither `.htaccess` is read).
+
 ## Docker deployment
 
 Files:
 - `docker/Dockerfile`
+- `docker/Dockerfile.base` (build once: `docker/build-base.sh 8.4`, consumed as `PHP_BASE_IMAGE`)
 - `docker/docker-compose.yml`
 - `docker/docker-entrypoint.sh`
 
@@ -265,6 +301,14 @@ From the `docker/` directory:
 ```bash
 docker compose up -d --build
 ```
+
+### Bare-metal deploy (live production)
+`scripts/deploy.sh` performs a host-native deploy: fast-forward merge, conditional
+`composer install`, `npm ci && npm run build`, `php artisan migrate --force`,
+cache/route/view/component warming, `storage:link`, then restarts the systemd
+units `portofolio-web` and `portofolio-queue` and checks `http://127.0.0.1:8888/`.
+It never invokes Docker; the queue worker exists only as a systemd unit, not as a
+compose service.
 
 ## Admin content model
 

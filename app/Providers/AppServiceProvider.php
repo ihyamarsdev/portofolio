@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use App\Ai\Gateway\CvOpenAiCompatibleGateway;
 use App\Mail\Transports\MailtrapSdkTransport;
+use App\Observers\PortfolioCacheObserver;
+use App\Support\Filament\AssetManager as FilteredAssetManager;
+use Filament\Support\Assets\AssetManager;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
@@ -18,7 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Drop unused RicherEditor highlighter scripts (9.65 MB Shiki bundle)
+        // from runtime registration and filament:assets republishing.
+        $this->app->scoped(AssetManager::class, fn () => new FilteredAssetManager);
     }
 
     /**
@@ -26,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        foreach (PortfolioCacheObserver::watchedModels() as $model) {
+            $model::observe(PortfolioCacheObserver::class);
+        }
+
         Ai::extend('cv-openai-compatible', fn ($app, array $config): OpenAiProvider => new OpenAiProvider(
             new CvOpenAiCompatibleGateway($app['events']),
             $config,

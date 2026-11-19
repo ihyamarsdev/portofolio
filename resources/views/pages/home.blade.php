@@ -1,11 +1,12 @@
 <x-layouts.app title="Home">
     @php
-        $homeSettings = $homeSettings ?? \App\Models\HomeSettings::getSettings();
-        $profile = $profile ?? \App\Models\Profile::query()->where('is_primary', true)->first() ?? \App\Models\Profile::query()->first();
+        $cache = app(\App\Services\PortfolioCacheService::class);
+        $homeSettings = $homeSettings ?? $cache->settings();
+        $profile = $profile ?? $cache->primaryProfile();
         $resumeTemplate = $profile?->cv_template ?: 'ats';
-        $projects = \App\Models\Project::query()->with('skills', 'media')->where('is_featured', true)->orderBy('order')->latest()->take(3)->get();
-        $posts = \App\Models\Post::published()->latest('published_at')->take(3)->get();
-        $experiences = \App\Models\Experience::orderBy('order')->orderByDesc('start_date')->take(3)->get();
+        $projects = $featuredProjects;
+        $posts = $latestPosts;
+        $experiences = $latestExperiences;
     @endphp
 
     <!-- Hero -->
@@ -45,7 +46,7 @@
                             </div>
                             <div class="flex justify-between gap-4 py-3">
                                 <dt class="text-ink-3">{{ __('messages.projects.title') }}</dt>
-                                <dd class="text-right text-ink">{{ \App\Models\Project::count() }}</dd>
+                                <dd class="text-right text-ink">{{ $projectCount }}</dd>
                             </div>
                             <div class="flex justify-between gap-4 py-3">
                                 <dt class="text-ink-3">{{ __('messages.nav.contact') }}</dt>

@@ -23,7 +23,7 @@
 
             @if($imageSrc)
                 <div class="mt-8 overflow-hidden border border-line bg-subtle">
-                    <img src="{{ $imageSrc }}" alt="{{ $post->title }}" fetchpriority="high" decoding="async" class="aspect-video w-full object-cover">
+                    <img src="{{ $imageSrc }}" alt="{{ $post->title }}" width="1600" height="900" fetchpriority="high" decoding="async" class="aspect-video w-full object-cover">
                 </div>
             @endif
 

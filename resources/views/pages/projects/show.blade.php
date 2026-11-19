@@ -1,7 +1,7 @@
 <x-layouts.app :title="$project->title">
     @php
         $imageSrc = $project->imageSrc();
-        $allProjects = \App\Models\Project::orderBy('order')->get();
+        $allProjects = $allProjects ?? \App\Models\Project::orderBy('order')->get();
         $currentIndex = $allProjects->search(fn ($item) => $item->id === $project->id);
         $previous = $currentIndex !== false ? $allProjects->get($currentIndex - 1) : null;
         $next = $currentIndex !== false ? $allProjects->get($currentIndex + 1) : null;
@@ -43,7 +43,7 @@
 
         @if($imageSrc)
             <div class="mt-8 overflow-hidden border border-line bg-subtle">
-                <img src="{{ $imageSrc }}" alt="{{ $project->title }}" fetchpriority="high" decoding="async" class="aspect-video w-full object-cover">
+                <img src="{{ $imageSrc }}" alt="{{ $project->title }}" width="1600" height="900" fetchpriority="high" decoding="async" class="aspect-video w-full object-cover">
             </div>
         @endif
 

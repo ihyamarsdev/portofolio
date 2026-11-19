@@ -14,7 +14,7 @@
     <a href="{{ route('projects.show', $project->slug) }}" class="group flex h-full flex-col border border-line bg-surface transition-colors duration-150 hover:border-ink">
         @if($image)
             <div class="aspect-[16/9] overflow-hidden border-b border-line bg-subtle">
-                <img src="{{ $image }}" alt="{{ $project->title }}" loading="lazy" decoding="async" class="h-full w-full object-cover">
+                <img src="{{ $image }}" alt="{{ $project->title }}" width="800" height="450" loading="lazy" decoding="async" class="h-full w-full object-cover">
             </div>
         @endif
         <div class="flex flex-1 flex-col p-5">

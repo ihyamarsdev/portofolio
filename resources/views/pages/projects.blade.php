@@ -1,5 +1,5 @@
 <x-layouts.app title="{{ __('messages.projects.title') }}">
-    @php($projects = \App\Models\Project::with('skills', 'media')->orderBy('order')->latest()->get())
+    @php($projects = $projects ?? \App\Models\Project::with('skills', 'media')->orderBy('order')->latest()->get())
 
     <div class="section-container py-14 sm:py-20">
         <x-ui.section-header

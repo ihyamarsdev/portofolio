@@ -24,7 +24,7 @@
                 </div>
                 @if($firstImage)
                     <div class="aspect-video overflow-hidden border border-line bg-subtle md:col-span-5">
-                        <img src="{{ $firstImage }}" alt="{{ $firstPost->title }}" loading="lazy" decoding="async" class="h-full w-full object-cover">
+                        <img src="{{ $firstImage }}" alt="{{ $firstPost->title }}" width="800" height="450" loading="lazy" decoding="async" class="h-full w-full object-cover">
                     </div>
                 @endif
             </a>

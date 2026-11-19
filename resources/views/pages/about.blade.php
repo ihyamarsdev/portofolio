@@ -6,7 +6,7 @@
                 <div class="lg:sticky lg:top-24">
                     @if($profile?->avatar)
                         <div class="h-28 w-28 overflow-hidden border border-line bg-subtle">
-                            <img src="{{ \Illuminate\Support\Facades\Storage::url($profile->avatar) }}" alt="{{ $profile->name }}" class="h-full w-full object-cover">
+                            <img src="{{ \Illuminate\Support\Facades\Storage::url($profile->avatar) }}" alt="{{ $profile->name }}" width="112" height="112" loading="lazy" decoding="async" class="h-full w-full object-cover">
                         </div>
                     @endif
 
