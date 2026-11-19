@@ -1,10 +1,10 @@
-{{-- Selected Projects Partial — compact, ATS-safe, single column.
+{{-- Projects Partial — compact, ATS-safe, single column.
      Shows title, stack summary, concise impact description, and links.
      Variables: $projects (collection with ->skills relation), $heading
 --}}
 @if(($projects ?? collect())->count() > 0)
     <div class="section">
-        <h2 class="section-title">{{ $heading ?? 'Selected Projects' }}</h2>
+        <h2 class="section-title">{{ $heading ?? 'Projects' }}</h2>
         @foreach($projects as $project)
             <div class="project-item">
                 <div class="entry-head">
