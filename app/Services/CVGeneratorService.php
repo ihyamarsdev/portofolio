@@ -30,7 +30,6 @@ class CVGeneratorService
         return Pdf::loadView("cv.{$template}", $cvData + ['isPdf' => true, 'selectedTemplate' => $template]);
     }
 
-
     public function generateDOCX(string $template, Profile $profile, Collection|array|null $experiences = null, Collection|array|null $educations = null, Collection|array|null $skills = null): string
     {
         ['experiences' => $experiences, 'educations' => $educations, 'skills' => $skills] = $this->buildCvData($profile, $experiences, $educations, $skills);
@@ -357,7 +356,18 @@ class CVGeneratorService
 
     protected function getExperiences(): Collection
     {
-        return Experience::orderBy('order', 'asc')->orderBy('start_date', 'desc')->get();
+        $query = Experience::query();
+        $featured = (clone $query)->where('is_featured', true)
+            ->orderBy('order', 'asc')
+            ->orderBy('start_date', 'desc')
+            ->get();
+
+        // Only use the explicit selection when at least one experience is
+        // featured; otherwise keep the previous behaviour so existing CVs stay
+        // populated.
+        return $featured->isNotEmpty()
+            ? $featured
+            : $query->orderBy('order', 'asc')->orderBy('start_date', 'desc')->get();
     }
 
     protected function getEducations(): Collection

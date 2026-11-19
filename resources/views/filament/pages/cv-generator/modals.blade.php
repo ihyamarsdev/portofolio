@@ -118,6 +118,15 @@
                         </div>
                     </div>
 
+                    <div class="border-t border-[#2d2d3a]/50 pt-4">
+                        <label class="inline-flex items-center gap-2 text-xs font-semibold text-slate-300 cursor-pointer">
+                            <input type="checkbox" wire:model.defer="exp_is_featured" class="cyber-checkbox" />
+                            {{ __('cv-workspace.modals.experience.is_featured') }}
+                        </label>
+                        <p class="mt-1 text-[11px] text-slate-500">{{ __('cv-workspace.modals.experience.is_featured_hint') }}</p>
+                    </div>
+
+
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase">{{ __('cv-workspace.modals.experience.description') }}</label>
                         <textarea wire:model.defer="exp_description" rows="4" class="cyber-textarea w-full" placeholder="{{ __('cv-workspace.modals.experience.description_placeholder') }}"></textarea>

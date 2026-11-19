@@ -28,6 +28,7 @@ class Experience extends Model
         'description',
         'achievements',
         'order',
+        'is_featured',
     ];
 
     protected $casts = [
@@ -35,6 +36,7 @@ class Experience extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'order' => 'integer',
+        'is_featured' => 'boolean',
     ];
 
     /**

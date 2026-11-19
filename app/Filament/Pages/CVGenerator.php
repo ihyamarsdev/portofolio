@@ -110,7 +110,7 @@ class CVGenerator extends Page
 
     public string $exp_employment_type = 'Full-time';
 
-    public string $exp_location = '';
+    public bool $exp_is_featured = false;
 
     public ?string $exp_start_date = '';
 
@@ -407,7 +407,7 @@ class CVGenerator extends Page
             $this->exp_employment_type = $exp->employment_type ?? 'Full-time';
             $this->exp_location = $exp->location ?? '';
             $this->exp_start_date = $exp->start_date ? $exp->start_date->format('Y-m-d') : '';
-            $this->exp_end_date = $exp->end_date ? $exp->end_date->format('Y-m-d') : '';
+            $this->exp_is_featured = (bool) $exp->is_featured;
             $this->exp_description = $exp->description ?? '';
             $this->exp_achievements = $exp->achievements ?? [];
             $this->exp_order = $exp->order;
@@ -415,7 +415,7 @@ class CVGenerator extends Page
         } else {
             $this->exp_company = '';
             $this->exp_position = '';
-            $this->exp_employment_type = 'Full-time';
+            $this->exp_is_featured = false;
             $this->exp_location = '';
             $this->exp_start_date = '';
             $this->exp_end_date = '';
@@ -468,7 +468,7 @@ class CVGenerator extends Page
                 'start_date' => Carbon::parse($this->exp_start_date),
                 'end_date' => $this->exp_end_date ? Carbon::parse($this->exp_end_date) : null,
                 'description' => $this->exp_description,
-                'achievements' => $this->exp_achievements,
+                'is_featured' => $this->exp_is_featured,
                 'order' => $order,
             ]
         );

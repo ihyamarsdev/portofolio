@@ -32,6 +32,12 @@ class ExperienceFactory extends Factory
                 fake()->sentence(),
             ],
             'order' => fake()->numberBetween(0, 10),
+            'is_featured' => false,
         ];
+    }
+
+    public function featured(): static
+    {
+        return $this->state(fn (array $attributes): array => ['is_featured' => true]);
     }
 }

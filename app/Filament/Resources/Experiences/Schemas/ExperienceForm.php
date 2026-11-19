@@ -7,6 +7,7 @@ use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -96,6 +97,13 @@ class ExperienceForm
                         Section::make('Settings')
                             ->icon('heroicon-o-cog-6-tooth')
                             ->schema([
+                                Toggle::make('is_featured')
+                                    ->label('Tampilkan di CV')
+                                    ->helperText('Centang untuk menyertakan experience ini di CV yang dihasilkan. Jika tidak ada yang dicentang, semua experience tetap ditampilkan.')
+                                    ->default(false)
+                                    ->inline(false)
+                                    ->columnSpanFull(),
+
                                 TextInput::make('order')
                                     ->numeric()
                                     ->default(0)

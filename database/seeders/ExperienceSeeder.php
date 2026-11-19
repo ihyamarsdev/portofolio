@@ -111,7 +111,8 @@ class ExperienceSeeder extends Seeder
             ],
         ];
 
-        foreach ($experiences as $expData) {
+        foreach ($experiences as $index => $expData) {
+            $expData['is_featured'] = $index < 3;
             $skills = $expData['skills'];
             unset($expData['skills']);
 
