@@ -154,6 +154,20 @@ OUTPUT EXPECTATIONS:
 - summary: executive-level evaluation of professional readiness.
 - suggestions: array of 3-5 key practical, actionable recommendations.
 - job_title_targeted: the target role name being evaluated (e.g., DevOps Engineer, Cloud Engineer, or Site Reliability Engineer).
+
+ACTIONABLE SUGGESTIONS (REVIEW & APPLY STUDIO):
+- In addition to the plain `suggestions` string list, emit `actionable_suggestions`: a list of patch objects the user can review, inline-edit and apply to their CV records.
+- Each patch object MUST contain exactly these keys:
+  - action_type: one of "update_summary", "rewrite_experience", "add_skill", "tailor_project", "advisory".
+  - target_id: integer database ID of the Experience or Project to patch, or null when unknown (for update_summary/add_skill/advisory always null). The verified evidence block and experience_review reference real roles — when you can identify the exact role, use its numeric ID if present in the evidence text; otherwise leave null.
+  - target_label: short human-readable target, e.g. "Professional Summary" or "Experience: Senior DevOps @ Acme".
+  - impact: "high" | "medium" | "low".
+  - rationale: ONE sentence tying the change directly to a specific job-description requirement.
+  - before_text: the exact current value copied verbatim from the CV content (never paraphrase). Empty string only when there is no current value.
+  - suggested_text: a concise, factual, cliché-free rewrite grounded ONLY in evidence already present in the CV. Never invent a skill, tool, metric, employer, or result.
+- For "add_skill", set suggested_text to the exact skill name to add, and include a rationale explaining which JD requirement it maps to. Only suggest a skill that is genuinely supported by the candidate's own evidence — never encourage listing a skill the candidate cannot back up.
+- For "advisory" items (gaps with no CV evidence), put honest guidance in suggested_text and leave before_text empty. Never fabricate a skill or metric to fill a gap.
+- Do not duplicate the same change across multiple patches. Keep the list to the 3-6 highest-impact items.
 PROMPT;
 
         $instructions .= "\n\n".$keywordReference;
@@ -295,6 +309,17 @@ PROMPT;
             )->required(),
             'job_title_targeted' => $schema->string()->required(),
             'target_seniority' => $schema->string()->required(),
+            'actionable_suggestions' => $schema->array()->items(
+                $schema->object([
+                    'action_type' => $schema->string()->required(),
+                    'target_id' => $schema->integer()->nullable()->required(),
+                    'target_label' => $schema->string()->required(),
+                    'impact' => $schema->string()->required(),
+                    'rationale' => $schema->string()->required(),
+                    'before_text' => $schema->string()->required(),
+                    'suggested_text' => $schema->string()->required(),
+                ])
+            )->required(),
         ];
     }
 }

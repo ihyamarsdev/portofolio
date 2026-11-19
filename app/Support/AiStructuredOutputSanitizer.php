@@ -74,6 +74,86 @@ class AiStructuredOutputSanitizer
     }
 
     /**
+     * Normalize an actionable-suggestions payload into the shape consumed by
+     * the Review & Apply Studio. The AI may ignore schema constraints, so this
+     * accepts objects, markdown-flattened strings, or a mixed list and always
+     * returns clean patch items.
+     *
+     * Every item is validated: action_type must be one of the known verbs,
+     * impact is clamped to high/medium/low, and target_id is only kept when it
+     * is a positive integer. Text fields are cleaned via cleanText().
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public static function normalizeActionableSuggestions(mixed $items): array
+    {
+        if (! is_array($items)) {
+            return [];
+        }
+
+        $allowedActions = ['update_summary', 'rewrite_experience', 'add_skill', 'tailor_project', 'advisory'];
+        $allowedImpacts = ['high', 'medium', 'low'];
+        $normalized = [];
+
+        foreach ($items as $item) {
+            if (is_string($item)) {
+                $text = self::cleanText($item);
+                if ($text === '' || self::isJunk($text)) {
+                    continue;
+                }
+                $normalized[] = [
+                    'action_type' => 'advisory',
+                    'target_id' => null,
+                    'target_label' => '',
+                    'impact' => 'medium',
+                    'rationale' => $text,
+                    'before_text' => '',
+                    'suggested_text' => '',
+                ];
+
+                continue;
+            }
+
+            if (! is_array($item) || ! self::isAssociative($item)) {
+                continue;
+            }
+
+            $action = strtolower(trim((string) ($item['action_type'] ?? $item['action'] ?? '')));
+            $action = in_array($action, $allowedActions, true) ? $action : 'advisory';
+
+            $impact = strtolower(trim((string) ($item['impact'] ?? 'medium')));
+            $impact = in_array($impact, $allowedImpacts, true) ? $impact : 'medium';
+
+            $targetId = $item['target_id'] ?? null;
+            if (is_numeric($targetId) && (int) $targetId > 0) {
+                $targetId = (int) $targetId;
+            } else {
+                $targetId = null;
+            }
+
+            $rationale = self::cleanText((string) ($item['rationale'] ?? $item['reason'] ?? ''));
+            $suggested = self::cleanText((string) ($item['suggested_text'] ?? $item['suggestion'] ?? $item['after'] ?? ''));
+            $before = self::cleanText((string) ($item['before_text'] ?? $item['before'] ?? ''));
+
+            if ($rationale === '' && $suggested === '' && $before === '') {
+                continue;
+            }
+
+            $normalized[] = [
+                'action_type' => $action,
+                'target_id' => $targetId,
+                'target_label' => self::cleanText((string) ($item['target_label'] ?? $item['target'] ?? '')),
+                'impact' => $impact,
+                'rationale' => $rationale,
+                'before_text' => $before,
+                'suggested_text' => $suggested,
+            ];
+        }
+
+        return $normalized;
+    }
+
+    /**
      * Normalize an experience_review payload into the schema shape — a list
      * of objects with section/strength/gap/rewrite_hint keys — regardless of
      * what the provider produced:

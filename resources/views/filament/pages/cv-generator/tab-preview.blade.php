@@ -46,6 +46,6 @@
                         <span class="text-xs text-slate-500 font-mono">{{ __('cv-workspace.preview.badge_size') }}</span>
                     </div>
 
-                    <iframe src="{{ route('cv.preview') }}?template={{ $selectedTemplate }}" class="w-full min-h-[750px] border-none bg-white" title="{{ __('cv-workspace.preview.iframe_title') }}"></iframe>
+                    <iframe src="{{ route('cv.preview') }}?template={{ $selectedTemplate }}&v={{ $previewNonce }}" class="w-full min-h-[750px] border-none bg-white" title="{{ __('cv-workspace.preview.iframe_title') }}"></iframe>
                 </div>
             </div>

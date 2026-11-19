@@ -213,4 +213,138 @@ return [
         'hint' => 'Pilih target role di panel kiri, tempel deskripsi lowongan bila ada, lalu jalankan analisis untuk melihat skor, checklist requirement, dan langkah perbaikan.',
         'run_analysis' => 'Jalankan Analisis AI',
     ],
+    'studio' => [
+        'eyebrow' => 'Review & Apply Studio',
+        'title' => 'Ubah analisis jadi tindakan',
+        'subtitle' => 'Tinjau tiap saran, sunting langsung, lalu terapkan ke CV Anda. Setiap perubahan bisa dibatalkan.',
+        'edit_jd' => 'Ubah JD / Match Baru',
+        'collapse_jd' => 'Sembunyikan input',
+        'applied_counter' => ':applied dari :total diterapkan',
+        'tabs' => [
+            'queue' => 'Antrian Tindakan',
+            'evidence' => 'Bukti Tercocokan',
+            'gaps' => 'Celah Skill & Requirement',
+            'rubric' => 'Rincian Rubrik',
+        ],
+        'exec' => [
+            'readiness' => 'Kesiapan HR',
+            'ats' => 'Kompatibel ATS',
+            'coverage' => 'Cakupan Kecocokan',
+            'applied' => 'Diterapkan ke CV',
+        ],
+        'queue' => [
+            'title' => 'Antrian Tindakan',
+            'hint' => 'Dampak tertinggi lebih dulu. Sunting teks saran sebelum menerapkan.',
+            'empty' => 'Tidak ada saran yang bisa diterapkan pada analisis ini. Coba jalankan match baru dengan deskripsi lowongan.',
+            'before' => 'Saat Ini',
+            'after' => 'Saran',
+            'rationale' => 'Mengapa ini membantu',
+            'target' => 'Target',
+            'impact' => [
+                'high' => 'Dampak tinggi',
+                'medium' => 'Dampak sedang',
+                'low' => 'Dampak rendah',
+            ],
+            'action' => [
+                'update_summary' => 'Perbarui Ringkasan',
+                'rewrite_experience' => 'Tulis Ulang Pengalaman',
+                'add_skill' => 'Tambah Skill',
+                'tailor_project' => 'Sesuaikan Proyek',
+                'advisory' => 'Saran',
+            ],
+            'apply' => 'Terapkan ke CV',
+            'applied' => 'Diterapkan',
+            'dismissed' => 'Diabaikan',
+            'undo' => 'Batalkan',
+            'dismiss' => 'Abaikan',
+            'select' => 'Pilih untuk terapkan massal',
+            'select_all' => 'Pilih semua',
+            'skill_note' => 'Pastikan Anda benar-benar punya pengalaman langsung sebelum menambahkan skill ini.',
+            'bulk_bar' => ':count dipilih',
+            'bulk_apply' => 'Terapkan :count terpilih',
+            'view_preview' => 'Lihat Preview CV Terbaru',
+            'inline_label' => 'Sunting teks saran',
+        ],
+        'evidence' => [
+            'title' => 'Bukti Tercocokan',
+            'hint' => 'Requirement lowongan yang didukung pengalaman atau proyek nyata di CV Anda.',
+            'empty' => 'Tidak ada requirement yang cocok dengan bukti pada analisis ini.',
+            'verified' => 'Terverifikasi',
+            'claimed' => 'Terdaku',
+        ],
+        'gaps' => [
+            'title' => 'Celah Skill & Requirement',
+            'hint' => 'Saran jujur — jangan pernah menambahkan skill atau metrik yang tidak bisa Anda buktikan.',
+            'empty' => 'Tidak ada celah signifikan terdeteksi.',
+            'missing_kw' => 'Kata kunci hilang',
+            'weak_kw' => 'Bukti lemah',
+        ],
+        'rubric' => [
+            'title' => 'Rincian Rubrik',
+            'hint' => 'Detail sekunder: skor objektif dan tier bukti.',
+        ],
+    ],
+
+    'notifications' => [
+        'applied' => [
+            'title' => 'Saran diterapkan',
+            'body' => ':target diperbarui. Preview CV Anda sudah mutakhir.',
+        ],
+        'skill_added' => [
+            'title' => 'Skill ditambahkan',
+            'body' => ':skill ditambahkan ke daftar skill Anda.',
+        ],
+        'undone' => [
+            'title' => 'Perubahan dibatalkan',
+            'body' => 'Nilai sebelumnya dipulihkan persis.',
+        ],
+        'dismissed' => [
+            'title' => 'Saran diabaikan',
+            'body' => 'Saran disembunyikan. Anda masih bisa menerapkannya kemudian.',
+        ],
+        'bulk_applied' => [
+            'title' => ':count saran diterapkan',
+            'body' => 'Semua perubahan terpilih diterapkan ke CV Anda.',
+        ],
+        'bulk_none' => [
+            'title' => 'Tidak ada yang diterapkan',
+            'body' => 'Tidak ada saran yang bisa dipilih.',
+        ],
+        'not_found' => [
+            'title' => 'Saran tidak ditemukan',
+            'body' => 'Saran ini sudah tidak tersedia. Muat ulang analisis.',
+        ],
+        'already_applied' => [
+            'title' => 'Sudah diterapkan',
+            'body' => 'Saran ini sudah diterapkan ke CV Anda.',
+        ],
+        'advisory_only' => [
+            'title' => 'Item saran',
+            'body' => 'Item ini hanya panduan dan tidak bisa diterapkan otomatis.',
+        ],
+        'empty_content' => [
+            'title' => 'Konten kosong',
+            'body' => 'Masukkan teks sebelum menerapkan saran ini.',
+        ],
+        'invalid_target' => [
+            'title' => 'Target tidak valid',
+            'body' => 'Data CV untuk saran ini sudah tidak ada.',
+        ],
+        'duplicate_skill' => [
+            'title' => 'Skill sudah ada',
+            'body' => ':skill sudah ada di daftar skill Anda.',
+        ],
+        'not_applied' => [
+            'title' => 'Tidak ada yang dibatalkan',
+            'body' => 'Saran ini belum diterapkan.',
+        ],
+        'target_gone' => [
+            'title' => 'Data tidak ditemukan',
+            'body' => 'Data CV sudah dihapus, sehingga tidak bisa dipulihkan.',
+        ],
+        'invalid_snapshot' => [
+            'title' => 'Tidak bisa membatalkan',
+            'body' => 'Nilai sebelumnya tidak bisa dipulihkan dengan aman.',
+        ],
+    ],
 ];

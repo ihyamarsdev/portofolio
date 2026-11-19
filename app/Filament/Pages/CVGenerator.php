@@ -11,8 +11,10 @@ use App\Models\Education;
 use App\Models\Experience;
 use App\Models\Profile;
 use App\Models\Skill;
+use App\Services\ApplyCvSuggestionService;
 use App\Services\CVGeneratorService;
 use App\Services\JobMatchService;
+use App\Support\AiStructuredOutputSanitizer;
 use BackedEnum;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
@@ -203,9 +205,22 @@ class CVGenerator extends Page
 
     public ?array $selectedAnalysisDetail = null;
 
+    // Review & Apply Studio state
+    public array $actionableSuggestions = [];
+
+    public array $selectedSuggestionIds = [];
+
+    public bool $showJdInput = true;
+
+    public string $aimatchTab = 'queue';
+
+    public int $previewNonce = 0;
+
     public function mount(): void
     {
         $this->loadAllData();
+        $this->refreshActionableSuggestions();
+        $this->showJdInput = $this->currentAnalysis === null;
     }
 
     public function switchTab(string $tab): void
@@ -232,33 +247,7 @@ class CVGenerator extends Page
 
             if ($analysis) {
                 $this->currentAnalysis = $analysis;
-                $this->analysisResult = [
-                    'ats_score' => $analysis->ats_score,
-                    'format_score' => $analysis->format_score,
-                    'about_me_score' => $analysis->about_me_score ?? 0,
-                    'impact_score' => $analysis->impact_score ?? 0,
-                    'role_alignment_score' => $analysis->role_alignment_score ?? 0,
-                    'security_score' => $analysis->security_score ?? 0,
-                    'reliability_score' => $analysis->reliability_score ?? 0,
-                    'cloud_score' => $analysis->cloud_score ?? 0,
-                    'keywords' => [
-                        'found' => $analysis->keywords_found ?? [],
-                        'missing' => $analysis->keywords_missing ?? [],
-                        'weak_evidence' => $analysis->weak_evidence ?? [],
-                    ],
-                    'suggestions' => $analysis->suggestions ?? [],
-                    'strengths' => $analysis->strengths ?? [],
-                    'critical_gaps' => $analysis->critical_gaps ?? [],
-                    'missing_metrics' => $analysis->missing_metrics ?? [],
-                    'rewrite_priorities' => $analysis->rewrite_priorities ?? [],
-                    'experience_review' => $analysis->experience_review ?? [],
-                    'industry_match' => $analysis->industry_match ?? [],
-                    'summary' => $analysis->summary,
-                    'job_match_score' => $analysis->job_match_score,
-                    'job_match_detail' => $analysis->job_match_detail,
-                    'job_title_targeted' => $analysis->job_title_targeted,
-                    'target_seniority' => $analysis->target_seniority,
-                ];
+                $this->analysisResult = $this->analysisResultFrom($analysis);
                 if ($analysis->summary) {
                     $this->jobDescription = 'Target Role: '.($analysis->job_title_targeted ?? 'Unknown')."\nSummary: ".$analysis->summary;
                 } else {
@@ -307,33 +296,7 @@ class CVGenerator extends Page
                     }
                 }
 
-                $this->analysisResult = [
-                    'ats_score' => $this->currentAnalysis->ats_score,
-                    'format_score' => $this->currentAnalysis->format_score,
-                    'about_me_score' => $this->currentAnalysis->about_me_score ?? 0,
-                    'impact_score' => $this->currentAnalysis->impact_score ?? 0,
-                    'role_alignment_score' => $this->currentAnalysis->role_alignment_score ?? 0,
-                    'security_score' => $this->currentAnalysis->security_score ?? 0,
-                    'reliability_score' => $this->currentAnalysis->reliability_score ?? 0,
-                    'cloud_score' => $this->currentAnalysis->cloud_score ?? 0,
-                    'keywords' => [
-                        'found' => $this->currentAnalysis->keywords_found ?? [],
-                        'missing' => $this->currentAnalysis->keywords_missing ?? [],
-                        'weak_evidence' => $this->currentAnalysis->weak_evidence ?? [],
-                    ],
-                    'suggestions' => $this->currentAnalysis->suggestions ?? [],
-                    'strengths' => $this->currentAnalysis->strengths ?? [],
-                    'critical_gaps' => $this->currentAnalysis->critical_gaps ?? [],
-                    'missing_metrics' => $this->currentAnalysis->missing_metrics ?? [],
-                    'rewrite_priorities' => $this->currentAnalysis->rewrite_priorities ?? [],
-                    'experience_review' => $this->currentAnalysis->experience_review ?? [],
-                    'industry_match' => $this->currentAnalysis->industry_match ?? [],
-                    'summary' => $this->currentAnalysis->summary,
-                    'job_match_score' => $this->currentAnalysis->job_match_score,
-                    'job_match_detail' => $this->currentAnalysis->job_match_detail,
-                    'job_title_targeted' => $this->currentAnalysis->job_title_targeted,
-                    'target_seniority' => $this->currentAnalysis->target_seniority,
-                ];
+                $this->analysisResult = $this->analysisResultFrom($this->currentAnalysis);
             }
         }
 
@@ -345,6 +308,42 @@ class CVGenerator extends Page
         $this->all_skills_list = Skill::orderBy('name', 'asc')->get();
         $this->certificates = Certificate::orderBy('issue_date', 'desc')->get();
         $this->allAnalyses = CVAnalysis::with('profile')->latest()->get();
+    }
+
+    /**
+     * Build the analysisResult array from a CVAnalysis record. Single source
+     * of truth used by mount, target-role switching, history loading and
+     * post-apply refreshes.
+     */
+    protected function analysisResultFrom(CVAnalysis $analysis): array
+    {
+        return [
+            'ats_score' => $analysis->ats_score,
+            'format_score' => $analysis->format_score,
+            'about_me_score' => $analysis->about_me_score ?? 0,
+            'impact_score' => $analysis->impact_score ?? 0,
+            'role_alignment_score' => $analysis->role_alignment_score ?? 0,
+            'security_score' => $analysis->security_score ?? 0,
+            'reliability_score' => $analysis->reliability_score ?? 0,
+            'cloud_score' => $analysis->cloud_score ?? 0,
+            'keywords' => [
+                'found' => $analysis->keywords_found ?? [],
+                'missing' => $analysis->keywords_missing ?? [],
+                'weak_evidence' => $analysis->weak_evidence ?? [],
+            ],
+            'suggestions' => $analysis->suggestions ?? [],
+            'strengths' => $analysis->strengths ?? [],
+            'critical_gaps' => $analysis->critical_gaps ?? [],
+            'missing_metrics' => $analysis->missing_metrics ?? [],
+            'rewrite_priorities' => $analysis->rewrite_priorities ?? [],
+            'experience_review' => $analysis->experience_review ?? [],
+            'industry_match' => $analysis->industry_match ?? [],
+            'summary' => $analysis->summary,
+            'job_match_score' => $analysis->job_match_score,
+            'job_match_detail' => $analysis->job_match_detail,
+            'job_title_targeted' => $analysis->job_title_targeted,
+            'target_seniority' => $analysis->target_seniority,
+        ];
     }
 
     // ==========================================
@@ -845,6 +844,21 @@ class CVGenerator extends Page
                 $jobMatchDetail['density'] = $density;
             }
 
+            // Structured, reviewable patch items for the Review & Apply Studio.
+            // Prefer AI-produced patches; fall back to deterministic ones.
+            // Both live in job_match_detail so legacy records stay untouched.
+            $aiPatches = AiStructuredOutputSanitizer::normalizeActionableSuggestions(
+                $result['actionable_suggestions'] ?? []
+            );
+            if ($aiPatches === [] && is_array($jobMatchDetail)) {
+                $aiPatches = $jobMatchService->buildActionablePatches(
+                    $jobMatchDetail['requirements'] ?? []
+                );
+            }
+            if (is_array($jobMatchDetail)) {
+                $jobMatchDetail['actionable_suggestions'] = $aiPatches;
+            }
+
             $targetedJobTitle = $result['job_title_targeted'] ?? null;
             if (empty($targetedJobTitle) || trim($targetedJobTitle) === '') {
                 $targetedJobTitle = $this->targetRole;
@@ -903,6 +917,8 @@ class CVGenerator extends Page
 
             $this->currentAnalysis = $analysis;
             $this->history = $profile->cvAnalyses()->latest()->take(10)->get();
+            $this->refreshActionableSuggestions();
+            $this->showJdInput = false;
 
             Notification::make()
                 ->title(__('cv-workspace.notifications.analysis_complete.title'))
@@ -935,6 +951,170 @@ class CVGenerator extends Page
         }
 
         $this->analyze();
+    }
+
+    // ==========================================
+    // REVIEW & APPLY STUDIO (AI MATCH)
+    // ==========================================
+
+    /**
+     * Rebuild the actionable suggestion list from the current analysis using
+     * the active locale. Called after analysis, history load, apply and undo.
+     */
+    public function refreshActionableSuggestions(): void
+    {
+        if (! $this->currentAnalysis) {
+            $this->actionableSuggestions = [];
+
+            return;
+        }
+
+        $this->actionableSuggestions = app(ApplyCvSuggestionService::class)
+            ->buildSuggestions($this->currentAnalysis->fresh(), app()->getLocale());
+    }
+
+    public function applySuggestion(string $suggestionId, ?string $editedContent = null): void
+    {
+        if (! $this->currentAnalysis) {
+            return;
+        }
+
+        $result = app(ApplyCvSuggestionService::class)->apply(
+            $this->currentAnalysis->fresh(),
+            $suggestionId,
+            $editedContent,
+            app()->getLocale()
+        );
+
+        $this->notifyApplyResult($result);
+        $this->refreshAfterApply();
+    }
+
+    public function applySelectedSuggestions(array $suggestionIds): void
+    {
+        $applied = 0;
+        $service = app(ApplyCvSuggestionService::class);
+
+        foreach ($suggestionIds as $id) {
+            if (! is_string($id)) {
+                continue;
+            }
+
+            $result = $service->apply(
+                $this->currentAnalysis->fresh(),
+                $id,
+                null,
+                app()->getLocale()
+            );
+
+            if ($result['ok']) {
+                $applied++;
+            }
+        }
+
+        if ($applied > 0) {
+            Notification::make()
+                ->title(__('cv-aimatch.notifications.bulk_applied.title', ['count' => $applied]))
+                ->body(__('cv-aimatch.notifications.bulk_applied.body'))
+                ->success()
+                ->send();
+        } else {
+            Notification::make()
+                ->title(__('cv-aimatch.notifications.bulk_none.title'))
+                ->body(__('cv-aimatch.notifications.bulk_none.body'))
+                ->warning()
+                ->send();
+        }
+
+        $this->refreshAfterApply();
+    }
+
+    public function undoSuggestion(string $suggestionId): void
+    {
+        if (! $this->currentAnalysis) {
+            return;
+        }
+
+        $result = app(ApplyCvSuggestionService::class)->undo(
+            $this->currentAnalysis->fresh(),
+            $suggestionId,
+            app()->getLocale()
+        );
+
+        $this->notifyApplyResult($result);
+        $this->refreshAfterApply();
+    }
+
+    public function dismissSuggestion(string $suggestionId): void
+    {
+        if (! $this->currentAnalysis) {
+            return;
+        }
+
+        $result = app(ApplyCvSuggestionService::class)->dismiss(
+            $this->currentAnalysis->fresh(),
+            $suggestionId,
+            app()->getLocale()
+        );
+
+        if ($result['ok']) {
+            $this->refreshActionableSuggestions();
+        }
+    }
+
+    public function toggleJdInput(): void
+    {
+        $this->showJdInput = ! $this->showJdInput;
+    }
+
+    public function setAimatchTab(string $tab): void
+    {
+        if (in_array($tab, ['queue', 'evidence', 'gaps', 'rubric'], true)) {
+            $this->aimatchTab = $tab;
+        }
+    }
+
+    public function viewUpdatedPreview(): void
+    {
+        $this->previewNonce++;
+        $this->switchTab('preview');
+    }
+
+    /**
+     * Refresh all cached CV data + analysis so the preview and other tabs
+     * immediately reflect applied/undone changes.
+     */
+    protected function refreshAfterApply(): void
+    {
+        $selectedAnalysisId = $this->currentAnalysis?->id;
+        $this->loadAllData();
+        // loadAllData() picks the latest analysis; restore the one the user
+        // is reviewing if it is an older history record.
+        if ($selectedAnalysisId !== null && $this->currentAnalysis?->id !== $selectedAnalysisId) {
+            $this->currentAnalysis = CVAnalysis::find($selectedAnalysisId);
+            if ($this->currentAnalysis) {
+                $this->analysisResult = $this->analysisResultFrom($this->currentAnalysis);
+            }
+        }
+        $this->selectedSuggestionIds = [];
+        $this->refreshActionableSuggestions();
+        $this->previewNonce++;
+
+        // Ask the preview iframe to reload with a fresh cache-busting URL.
+        $this->dispatch('cv-preview-refreshed', nonce: $this->previewNonce);
+    }
+
+    protected function notifyApplyResult(array $result): void
+    {
+        $key = 'cv-aimatch.notifications.'.$result['message'];
+        $title = __($key.'.title', $result['params'] ?? []);
+        $body = __($key.'.body', $result['params'] ?? []);
+
+        if (($result['ok'] ?? false) === true) {
+            Notification::make()->title($title)->body($body)->success()->send();
+        } else {
+            Notification::make()->title($title)->body($body)->warning()->send();
+        }
     }
 
     public function downloadCv()
@@ -1062,33 +1242,9 @@ class CVGenerator extends Page
         $analysis = CVAnalysis::findOrFail($id);
         $this->currentAnalysis = $analysis;
 
-        $this->analysisResult = [
-            'ats_score' => $analysis->ats_score,
-            'format_score' => $analysis->format_score,
-            'about_me_score' => $analysis->about_me_score ?? 0,
-            'impact_score' => $analysis->impact_score ?? 0,
-            'role_alignment_score' => $analysis->role_alignment_score ?? 0,
-            'security_score' => $analysis->security_score ?? 0,
-            'reliability_score' => $analysis->reliability_score ?? 0,
-            'cloud_score' => $analysis->cloud_score ?? 0,
-            'keywords' => [
-                'found' => $analysis->keywords_found ?? [],
-                'missing' => $analysis->keywords_missing ?? [],
-                'weak_evidence' => $analysis->weak_evidence ?? [],
-            ],
-            'suggestions' => $analysis->suggestions ?? [],
-            'strengths' => $analysis->strengths ?? [],
-            'critical_gaps' => $analysis->critical_gaps ?? [],
-            'missing_metrics' => $analysis->missing_metrics ?? [],
-            'rewrite_priorities' => $analysis->rewrite_priorities ?? [],
-            'experience_review' => $analysis->experience_review ?? [],
-            'industry_match' => $analysis->industry_match ?? [],
-            'summary' => $analysis->summary,
-            'job_match_score' => $analysis->job_match_score,
-            'job_match_detail' => $analysis->job_match_detail,
-            'job_title_targeted' => $analysis->job_title_targeted,
-            'target_seniority' => $analysis->target_seniority,
-        ];
+        $this->analysisResult = $this->analysisResultFrom($analysis);
+        $this->refreshActionableSuggestions();
+        $this->showJdInput = false;
 
         // Fill job description with summary context if available
         if ($analysis->summary) {

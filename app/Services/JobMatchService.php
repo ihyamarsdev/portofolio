@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Experience;
+use App\Models\Project;
+
 /**
  * Deterministic, evidence-based job match engine.
  *
@@ -440,6 +443,127 @@ class JobMatchService
         }
 
         return $suggestions;
+    }
+
+    /**
+     * Build structured, actionable patch items from the reconciled matches.
+     *
+     * This is the deterministic foundation for the Review & Apply Studio:
+     * - claimed requirements backed by a real CV quote become a
+     *   rewrite_experience patch with before_text = the exact quote;
+     * - missing requirements become advisory items with honest guidance
+     *   (never a fabricated skill or metric);
+     * - no target_id is guessed here — the apply engine hydrates IDs from the
+     *   database using the requirement's evidence quote at read time.
+     *
+     * Stored in job_match_detail.actionable_suggestions. The legacy
+     * `suggestions` string list and `rewrite_suggestions` remain untouched.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function buildActionablePatches(array $matches, int $limit = 6): array
+    {
+        $patches = [];
+
+        foreach ($matches as $match) {
+            if (count($patches) >= $limit) {
+                break;
+            }
+
+            $requirement = trim((string) ($match['requirement'] ?? ''));
+            if ($requirement === '') {
+                continue;
+            }
+
+            $status = $match['status'] ?? 'missing';
+            $quote = trim((string) ($match['evidence_quote'] ?? ''));
+            $reasoning = trim((string) ($match['reasoning'] ?? ''));
+
+            if ($status === 'missing') {
+                $patches[] = [
+                    'action_type' => 'advisory',
+                    'target_id' => null,
+                    'target_label' => $requirement,
+                    'impact' => 'high',
+                    'rationale' => $reasoning !== '' ? $reasoning : 'No evidence of '.$requirement.' in the CV.',
+                    'before_text' => '',
+                    'suggested_text' => 'If you have hands-on experience with '.$requirement
+                        .', add a truthful bullet describing where you used it and the outcome. Never list a skill you cannot back up.',
+                ];
+
+                continue;
+            }
+
+            if ($quote === '') {
+                continue;
+            }
+
+            $after = $this->strengthenBullet($quote, $requirement);
+            if ($after === $quote) {
+                continue;
+            }
+
+            $patches[] = [
+                'action_type' => 'rewrite_experience',
+                'target_id' => null, // hydrated from DB by evidence quote
+                'target_label' => '',
+                'impact' => $status === 'verified' ? 'medium' : 'high',
+                'rationale' => $reasoning !== '' ? $reasoning : 'Strengthen the evidence for '.$requirement.'.',
+                'before_text' => $quote,
+                'suggested_text' => $after,
+            ];
+        }
+
+        return $patches;
+    }
+
+    /**
+     * Resolve a patch's target_id from its before_text (an exact CV quote)
+     * by searching Experience / Project database records. Returns the first
+     * matching model's id and label, or nulls when no record owns the text.
+     *
+     * @return array{0: int|null, 1: string, 2: string|null} [id, label, action]
+     */
+    public function resolveTargetFromQuote(string $quote, string $locale = 'en'): array
+    {
+        $needle = mb_strtolower(trim($quote));
+        if ($needle === '') {
+            return [null, '', null];
+        }
+
+        foreach (Experience::all() as $exp) {
+            $haystacks = [
+                $this->localeText($exp, 'description', $locale),
+                implode(' ', is_array($exp->achievements) ? $exp->achievements : []),
+            ];
+            foreach ($haystacks as $haystack) {
+                if ($haystack !== '' && str_contains(mb_strtolower($haystack), $needle)) {
+                    $label = trim($exp->getTranslation('position', $locale).' @ '.$exp->getTranslation('company', $locale));
+
+                    return [$exp->id, $label, 'rewrite_experience'];
+                }
+            }
+        }
+
+        foreach (Project::all() as $project) {
+            $haystack = $this->localeText($project, 'description', $locale);
+            if ($haystack !== '' && str_contains(mb_strtolower($haystack), $needle)) {
+                return [$project->id, 'Project: '.$project->getTranslation('title', $locale), 'tailor_project'];
+            }
+        }
+
+        return [null, '', null];
+    }
+
+    protected function localeText($model, string $field, string $locale): string
+    {
+        if (! method_exists($model, 'getTranslation')) {
+            return (string) ($model->{$field} ?? '');
+        }
+
+        $value = $model->getTranslation($field, $locale, true);
+
+        return is_string($value) ? $value : '';
     }
 
     /**
